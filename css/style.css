@@ -258,6 +258,14 @@ nav a:hover { color: var(--primary); }
 }
 .pd-cart-btn:hover { background: var(--primary-dark); }
 .pd-cart-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pd-btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.pd-buy-btn {
+  flex: 1; padding: 14px; background: var(--secondary);
+  color: var(--white); border: none; border-radius: var(--radius);
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  transition: background 0.2s;
+}
+.pd-buy-btn:hover { background: #e06000; }
 
 /* Sections */
 .pd-section { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }

@@ -191,7 +191,9 @@
         '<button class="pd-qty-btn" onclick="changeQty(1)">+</button>' +
         '<span class="pd-stock' + (p.stock > 0 ? ' available' : '') + '">' + (p.stock > 0 ? 'স্টকে ' + p.stock + ' টি' : 'স্টকে নেই') + '</span>' +
         '</div>' +
-        '<button class="pd-cart-btn" onclick="addToCart(' + p.id + ')"' + (p.stock < 1 ? ' disabled' : '') + '>' + (p.stock > 0 ? 'কার্টে যোগ করুন' : 'স্টক আউট') + '</button>' +
+        (p.stock > 0
+  ? '<div class="pd-btn-row"><button class="pd-buy-btn" onclick="buyNow(' + p.id + ')">এখনই কিনুন</button><button class="pd-cart-btn" onclick="addToCart(' + p.id + ')">কার্টে যোগ করুন</button></div>'
+  : '<button class="pd-cart-btn" disabled>স্টক আউট</button>') +
         '</div>' +
         '</div>' +
         '<div class="pd-section">' +
