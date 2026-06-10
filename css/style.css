@@ -158,43 +158,102 @@ nav a:hover { color: var(--primary); }
 .btn-card-buy:hover { background: #e06000; }
 .btn-card-cart:disabled { opacity: 0.5; cursor: not-allowed; background: var(--gray); }
 
-.hero {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: var(--white);
-  padding: 60px 16px;
-  text-align: center;
-  margin-bottom: 32px;
+/* ---- Daraz Banner Carousel ---- */
+.dz-banner-wrap {
+  position: relative; max-width: var(--max-width); margin: 16px auto 32px;
+  overflow: hidden; border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
-.hero h1 { font-size: 36px; margin-bottom: 12px; }
-.hero p { font-size: 18px; opacity: 0.9; margin-bottom: 24px; }
-.hero .btn { background: var(--white); color: var(--primary); }
-.hero .btn:hover { background: var(--light-gray); }
+.dz-banner-track { display: flex; transition: transform 0.5s ease; }
+.dz-banner-slide {
+  min-width: 100%; min-height: 300px; display: flex;
+  align-items: center; justify-content: center;
+  padding: 40px 60px; color: var(--white);
+}
+.dz-banner-content { text-align: center; max-width: 600px; }
+.dz-banner-content h2 { font-size: 32px; margin-bottom: 12px; }
+.dz-banner-content p { font-size: 16px; opacity: 0.9; margin-bottom: 20px; }
+.dz-banner-btn {
+  display: inline-block; padding: 10px 28px; background: var(--white);
+  color: var(--dark); border-radius: 24px; font-weight: 700;
+  font-size: 15px; transition: transform 0.2s;
+}
+.dz-banner-btn:hover { transform: scale(1.05); color: var(--dark); }
+.dz-banner-dots {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px;
+}
+.dz-banner-dots span {
+  width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.5);
+  cursor: pointer;
+}
+.dz-banner-dots span.active { background: var(--white); }
+.dz-banner-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.3); border: none; color: var(--white);
+  font-size: 24px; padding: 12px 8px; cursor: pointer; border-radius: 4px;
+  transition: background 0.2s;
+}
+.dz-banner-arrow:hover { background: rgba(255,255,255,0.6); }
+.dz-banner-prev { left: 8px; }
+.dz-banner-next { right: 8px; }
+
+/* ---- Flash Sale ---- */
+.dz-flash-title { color: var(--danger); }
+.dz-flash-timer { font-size: 14px; font-weight: 400; color: var(--danger); }
+.dz-flash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.dz-flash-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden; cursor: pointer;
+  position: relative; transition: transform 0.2s, box-shadow 0.2s;
+}
+.dz-flash-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.dz-flash-badge {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  background: var(--danger); color: var(--white);
+  padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700;
+}
+.dz-flash-image { width: 100%; height: 180px; object-fit: cover; background: var(--light-gray); }
+.dz-flash-body { padding: 10px; }
+.dz-flash-title { font-size: 14px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; min-height: 40px; }
+.dz-flash-price { font-size: 16px; font-weight: 700; color: var(--danger); }
+.dz-flash-compare { font-size: 12px; color: var(--gray); text-decoration: line-through; margin-left: 6px; }
+.dz-flash-progress {
+  margin-top: 8px; height: 4px; background: var(--light-gray); border-radius: 2px; overflow: hidden;
+}
+.dz-flash-progress-bar { height: 100%; background: var(--danger); border-radius: 2px; }
+.dz-flash-sold { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+/* ---- Daraz Categories ---- */
+.dz-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.dz-cat-card {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 20px 12px; text-align: center;
+  cursor: pointer; transition: transform 0.2s;
+}
+.dz-cat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.dz-cat-icon {
+  width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.dz-cat-card h3 { font-size: 14px; font-weight: 600; color: var(--dark); }
 
 .section { margin-bottom: 40px; }
 .section-title {
   font-size: 22px; font-weight: 700;
   margin-bottom: 16px; padding-bottom: 8px;
   border-bottom: 2px solid var(--primary);
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
 }
-
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-}
-.category-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.category-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.category-card h3 { font-size: 16px; color: var(--dark); }
-.category-card .count { font-size: 13px; color: var(--gray); }
 
 /* ---- Daraz-style Product Detail ---- */
 .pd-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 24px 0; }
@@ -404,17 +463,45 @@ th { background: var(--light-gray); font-weight: 600; }
 .status-label { font-size: 12px; color: var(--gray); }
 .status-step.active .status-label { color: var(--dark); font-weight: 600; }
 
-footer {
-  background: var(--dark); color: var(--white);
-  padding: 32px 16px; text-align: center; margin-top: 48px;
+/* ---- Daraz Footer ---- */
+.dz-footer { background: var(--dark); color: var(--white); margin-top: 48px; }
+.dz-footer-inner {
+  max-width: var(--max-width); margin: 0 auto; padding: 40px 16px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
 }
+.dz-footer-col h4 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--white); }
+.dz-footer-col a { display: block; color: #9ca3af; font-size: 14px; margin-bottom: 8px; }
+.dz-footer-col a:hover { color: var(--white); }
+.dz-footer-payments { display: flex; flex-wrap: wrap; gap: 8px; }
+.dz-pay-badge {
+  background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 4px;
+  font-size: 13px; font-weight: 600; color: var(--white);
+}
+.dz-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  text-align: center; padding: 20px 16px;
+  font-size: 13px; color: #9ca3af;
+}
+
+/* Discount badge on product cards */
+.product-card-discount {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  background: var(--danger); color: var(--white);
+  padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700;
+}
+.product-card { position: relative; }
 
 @media (max-width: 768px) {
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .product-detail { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 24px; }
   .header-inner { flex-wrap: wrap; }
   nav { order: 3; width: 100%; justify-content: center; padding-top: 8px; }
   .search-box { order: 2; max-width: 100%; }
-  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .dz-cat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .dz-flash-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dz-banner-slide { min-height: 200px; padding: 24px 32px; }
+  .dz-banner-content h2 { font-size: 22px; }
+  .dz-banner-arrow { display: none; }
+  .dz-footer-inner { grid-template-columns: 1fr; }
 }

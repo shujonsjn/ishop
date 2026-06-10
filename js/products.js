@@ -103,7 +103,9 @@
       grid.innerHTML = data.products.map(function(p) {
         var img = (p.images && p.images.length) ? p.images[0] : '';
         var inStock = p.stock > 0;
+        var discount = p.compare_price ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
         return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'">' +
+          (discount > 0 ? '<div class=\"product-card-discount\">-' + discount + '%</div>' : '') +
           (img ? '<img class=\"product-card-image\" src=\"' + esc(img) + '\" alt=\"' + esc(p.name) + '\" loading=\"lazy\">' : '<div class=\"product-card-image\" style=\"display:flex;align-items:center;justify-content:center;color:var(--gray);\">ছবি নেই</div>') +
           '<div class=\"product-card-body\">' +
           '<div class=\"product-card-category\">' + esc(p.category_name || '') + '</div>' +
