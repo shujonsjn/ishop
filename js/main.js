@@ -123,7 +123,6 @@
 
   function renderProductCard(p) {
     var img = (p.images && p.images.length) ? p.images[0] : '';
-    var inStock = p.stock > 0;
     var discount = p.compare_price ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
     return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'">' +
       (discount > 0 ? '<div class=\"product-card-discount\">-' + discount + '%</div>' : '') +
@@ -133,11 +132,6 @@
       '<div class=\"product-card-title\">' + esc(p.name) + '</div>' +
       '<div class=\"product-card-price\">' + taka(p.price) +
       (p.compare_price ? ' <span class=\"compare\">' + taka(p.compare_price) + '</span>' : '') +
-      '</div>' +
-      '<div class=\"product-card-actions\">' +
-      (inStock
-        ? '<button class=\"btn-card-buy\" onclick=\"event.stopPropagation();buyNow(' + p.id + ')\">এখনই কিনুন</button><button class=\"btn-card-cart\" onclick=\"event.stopPropagation();addToCart(' + p.id + ')\">কার্টে যোগ করুন</button>'
-        : '<button class=\"btn-card-cart\" disabled>স্টক আউট</button>') +
       '</div></div></div>';
   }
 })();
