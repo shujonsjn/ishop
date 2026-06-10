@@ -4,6 +4,21 @@
 (function(){
   loadCartCount();
 
+  window.addToCart = function(productId) {
+    api('POST', '/cart', { product_id: productId, quantity: 1 }).then(function(data) {
+      if (data.error) { toast(data.error, 'error'); return; }
+      toast('কার্টে যোগ করা হয়েছে!');
+      loadCartCount();
+    });
+  };
+
+  window.buyNow = function(productId) {
+    api('POST', '/cart', { product_id: productId, quantity: 1 }).then(function(data) {
+      if (data.error) { toast(data.error, 'error'); return; }
+      window.location = '/checkout.html';
+    });
+  };
+
   window.searchProducts = function() {
     var q = document.getElementById('searchInput');
     if (q && q.value) window.location = '/products.html?search=' + encodeURIComponent(q.value);
@@ -31,6 +46,7 @@
 
   function renderProductCard(p) {
     var img = (p.images && p.images.length) ? p.images[0] : '';
+    var inStock = p.stock > 0;
     return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'">' +
       (img ? '<img class=\"product-card-image\" src=\"' + esc(img) + '\" alt=\"' + esc(p.name) + '\" loading=\"lazy\">' : '<div class=\"product-card-image\" style=\"display:flex;align-items:center;justify-content:center;color:var(--gray);\">ছবি নেই</div>') +
       '<div class=\"product-card-body\">' +
@@ -38,6 +54,11 @@
       '<div class=\"product-card-title\">' + esc(p.name) + '</div>' +
       '<div class=\"product-card-price\">' + taka(p.price) +
       (p.compare_price ? ' <span class=\"compare\">' + taka(p.compare_price) + '</span>' : '') +
+      '</div>' +
+      '<div class=\"product-card-actions\">' +
+      (inStock
+        ? '<button class=\"btn-card-cart\" onclick=\"event.stopPropagation();addToCart(' + p.id + ')\">কার্টে যোগ করুন</button><button class=\"btn-card-buy\" onclick=\"event.stopPropagation();buyNow(' + p.id + ')\">এখনই কিনুন</button>'
+        : '<button class=\"btn-card-cart\" disabled>স্টক আউট</button>') +
       '</div></div></div>';
   }
 })();

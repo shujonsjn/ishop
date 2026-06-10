@@ -113,6 +113,7 @@ nav a:hover { color: var(--primary); }
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
+  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .product-card:hover {
@@ -143,6 +144,19 @@ nav a:hover { color: var(--primary); }
   display: flex; justify-content: space-between;
   align-items: center; margin-top: 10px;
 }
+.product-card-actions {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.btn-card-cart, .btn-card-buy {
+  flex: 1; padding: 8px 10px; border: none; border-radius: 6px;
+  font-family: var(--font-bn); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s; text-align: center;
+}
+.btn-card-cart { background: var(--primary); color: var(--white); }
+.btn-card-cart:hover { background: var(--primary-dark); }
+.btn-card-buy { background: var(--secondary); color: var(--white); }
+.btn-card-buy:hover { background: #e06000; }
+.btn-card-cart:disabled { opacity: 0.5; cursor: not-allowed; background: var(--gray); }
 
 .hero {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
