@@ -82,16 +82,43 @@
     }).join('');
   });
 
-  /* ---- Featured Products ---- */
-  api('GET', '/products/featured').then(function(products) {
-    var grid = document.getElementById('featuredGrid');
-    if (!grid) return;
-    if (!products || products.length === 0) {
-      grid.innerHTML = '<div class=\"empty-state\"><h3>কোনো ফিচার্ড পণ্য নেই</h3></div>';
-      return;
-    }
-    grid.innerHTML = products.map(renderProductCard).join('');
-  });
+  /* ---- Just for You (paginated) ---- */
+  var jfyPage = 1;
+  var jfyLoading = false;
+  var jfyHasMore = true;
+  var JFY_PAGE_SIZE = 20;
+
+  window.loadMore = function() {
+    if (jfyLoading || !jfyHasMore) return;
+    jfyLoading = true;
+    var btn = document.getElementById('moreBtn');
+    if (btn) btn.textContent = 'লোড হচ্ছে...';
+    api('GET', '/products?page=' + jfyPage + '&limit=' + JFY_PAGE_SIZE).then(function(data) {
+      var grid = document.getElementById('featuredGrid');
+      if (!grid) return;
+      if (!data.products || data.products.length === 0) {
+        jfyHasMore = false;
+        if (btn) btn.style.display = 'none';
+        jfyLoading = false;
+        return;
+      }
+      grid.innerHTML += data.products.map(renderProductCard).join('');
+      jfyPage++;
+      jfyHasMore = data.page < data.totalPages;
+      jfyLoading = false;
+      if (btn) {
+        btn.textContent = jfyHasMore ? 'আরও দেখুন' : 'সব দেখানো হয়েছে';
+        if (!jfyHasMore) btn.style.display = 'none';
+      }
+      loadCartCount();
+    }).catch(function() {
+      jfyLoading = false;
+      var btn = document.getElementById('moreBtn');
+      if (btn) btn.textContent = 'আরও দেখুন';
+    });
+  };
+
+  loadMore();
 
   /* ---- Flash Sale Products ---- */
   api('GET', '/products/featured').then(function(products) {
