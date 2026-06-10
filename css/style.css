@@ -259,12 +259,12 @@ nav a:hover { color: var(--primary); }
 .pd-cart-btn:hover { background: var(--primary-dark); }
 .pd-cart-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .pd-btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.pd-buy-btn {
-  flex: 1; padding: 14px; background: var(--secondary);
-  color: var(--white); border: none; border-radius: var(--radius);
+.pd-btn-row .pd-cart-btn, .pd-btn-row .pd-buy-btn {
+  flex: 1; padding: 14px; border: none; border-radius: var(--radius);
   font-size: 16px; font-weight: 700; cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s; margin: 0; line-height: 1.2;
 }
+.pd-buy-btn { background: var(--secondary); color: var(--white); }
 .pd-buy-btn:hover { background: #e06000; }
 
 /* Sections */
