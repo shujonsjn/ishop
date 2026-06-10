@@ -7,6 +7,25 @@
   var page = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
   var productId = new URLSearchParams(window.location.search).get('id');
 
+  window.switchImage = function(idx) {
+    var img = document.getElementById('pdMainImg');
+    var thumbs = document.querySelectorAll('.pd-thumb');
+    if (img && window.pdImages && window.pdImages[idx]) {
+      img.src = window.pdImages[idx];
+      thumbs.forEach(function(t, i) { t.classList.toggle('active', i === idx); });
+    }
+  };
+
+  window.changeQty = function(delta) {
+    var el = document.getElementById('detailQty');
+    var val = parseInt(el.value) || 1;
+    var max = 99;
+    val += delta;
+    if (val < 1) val = 1;
+    if (val > max) val = max;
+    el.value = val;
+  };
+
   /* ---- Detail page ---- */
   if (document.getElementById('productDetail')) {
     loadProductDetail();
@@ -98,61 +117,88 @@
   /* ---- Product Detail ---- */
   function loadProductDetail() {
     if (!productId) {
-      document.getElementById('productDetail').innerHTML = '<div class=\"empty-state\"><h3>পণ্য পাওয়া যায়নি</h3></div>';
+      document.getElementById('productDetail').innerHTML = '<div class="empty-state"><h3>পণ্য পাওয়া যায়নি</h3></div>';
       return;
     }
     api('GET', '/products/' + productId).then(function(p) {
       if (!p || p.error) {
-        document.getElementById('productDetail').innerHTML = '<div class=\"empty-state\"><h3>' + (p ? esc(p.error) : 'পণ্য পাওয়া যায়নি') + '</h3></div>';
+        document.getElementById('productDetail').innerHTML = '<div class="empty-state"><h3>' + (p ? esc(p.error) : 'পণ্য পাওয়া যায়নি') + '</h3></div>';
         return;
       }
-      var img = (p.images && p.images.length) ? p.images[0] : '';
-      var starsHtml = '';
+
+      var imgs = (p.images && p.images.length) ? p.images : [];
+      var mainImg = imgs.length ? imgs[0] : '';
       var rating = Math.round(p.avg_rating || 0);
-      for (var i = 1; i <= 5; i++) {
-        starsHtml += '<span class=\"' + (i <= rating ? '' : 'empty') + '\">★</span>';
+      var stars = '';
+      for (var i = 1; i <= 5; i++) stars += '<span class="' + (i <= rating ? '' : 'empty') + '">★</span>';
+
+      var thumbsHtml = '';
+      imgs.forEach(function(url, idx) {
+        thumbsHtml += '<div class="pd-thumb' + (idx === 0 ? ' active' : '') + '" onclick="switchImage(' + idx + ')"><img src="' + esc(url) + '" alt=""></div>';
+      });
+
+      var savePercent = '';
+      if (p.compare_price && Number(p.compare_price) > Number(p.price)) {
+        var saved = Math.round((1 - Number(p.price) / Number(p.compare_price)) * 100);
+        savePercent = '<span class="pd-save">-' + saved + '%</span>';
       }
 
-      var html = '<div class=\"product-detail\">' +
-        '<div>' + (img ? '<img class=\"product-detail-image\" src=\"' + esc(img) + '\" alt=\"' + esc(p.name) + '\">' : '<div style=\"background:var(--light-gray);height:400px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:var(--gray);\">ছবি নেই</div>') + '</div>' +
-        '<div>' +
-        '<h1>' + esc(p.name) + '</h1>' +
-        '<div class=\"stars\">' + starsHtml + ' <span style=\"font-size:14px;color:var(--gray);\">(' + (p.review_count || 0) + ' রিভিউ)</span></div>' +
-        '<div class=\"price\">' + taka(p.price) +
-        (p.compare_price ? ' <span class=\"compare-price\">' + taka(p.compare_price) + '</span>' : '') +
+      var html = '<div class="pd-layout">' +
+        '<div class="pd-gallery">' +
+        '<div class="pd-main-image">' +
+        (mainImg ? '<img id="pdMainImg" src="' + esc(mainImg) + '" alt="' + esc(p.name) + '">' : '<div style="height:400px;display:flex;align-items:center;justify-content:center;color:var(--gray);">ছবি নেই</div>') +
         '</div>' +
-        '<div class=\"description\">' + (p.description || '').replace(/\\n/g, '<br>') + '</div>' +
-        '<div class=\"form-group\"><label>পরিমাণ</label><input type=\"number\" id=\"detailQty\" value=\"1\" min=\"1\" max=\"' + (p.stock || 99) + '\" style=\"width:80px;\"></div>' +
-        '<div class=\"actions\">' +
-        '<button class=\"btn btn-primary\" onclick=\"addToCart(' + p.id + ')\">কার্টে যোগ করুন</button>' +
-        '<span style=\"color:var(--gray);font-size:14px;\">' + (p.stock > 0 ? p.stock + ' টি stock এ আছে' : 'স্টকে নেই') + '</span>' +
+        (thumbsHtml ? '<div class="pd-thumbnails" id="pdThumbs">' + thumbsHtml + '</div>' : '') +
         '</div>' +
-        '<div style=\"margin-top:20px;\">' +
-        '<h3 style=\"margin-bottom:12px;\">রিভিউ (' + (p.review_count || 0) + ')</h3>';
+        '<div class="pd-info">' +
+        '<h1 class="pd-title">' + esc(p.name) + '</h1>' +
+        '<div class="pd-rating"><span class="stars">' + stars + '</span><span class="pd-review-count">(' + (p.review_count || 0) + ' রিভিউ)</span></div>' +
+        '<div class="pd-price-section">' +
+        '<div class="pd-price">' + taka(p.price) + '</div>' +
+        (p.compare_price ? '<div><span class="pd-compare">' + taka(p.compare_price) + '</span>' + savePercent + '</div>' : '') +
+        '</div>' +
+        '<div class="pd-brand">ব্র্যান্ড: <span>ইশপ</span></div>' +
+        '<hr class="pd-divider">' +
+        '<label class="pd-qty-label">পরিমাণ</label>' +
+        '<div class="pd-qty-row">' +
+        '<button class="pd-qty-btn" onclick="changeQty(-1)">−</button>' +
+        '<input class="pd-qty-input" type="text" id="detailQty" value="1" readonly>' +
+        '<button class="pd-qty-btn" onclick="changeQty(1)">+</button>' +
+        '<span class="pd-stock' + (p.stock > 0 ? ' available' : '') + '">' + (p.stock > 0 ? 'স্টকে ' + p.stock + ' টি' : 'স্টকে নেই') + '</span>' +
+        '</div>' +
+        '<button class="pd-cart-btn" onclick="addToCart(' + p.id + ')"' + (p.stock < 1 ? ' disabled' : '') + '>' + (p.stock > 0 ? 'কার্টে যোগ করুন' : 'স্টক আউট') + '</button>' +
+        '</div>' +
+        '</div>' +
+        '<div class="pd-section">' +
+        '<h3>বিবরণ</h3>' +
+        '<div class="pd-desc">' + (p.description || 'কোনো বিবরণ নেই').replace(/\\n/g, '<br>') + '</div>' +
+        '</div>' +
+        '<div class="pd-section">' +
+        '<h3>রিভিউ (' + (p.review_count || 0) + ')</h3>';
 
       if (p.reviews && p.reviews.length) {
         html += p.reviews.map(function(r) {
           var s = '';
-          for (var j = 1; j <= 5; j++) s += '<span class=\"' + (j <= r.rating ? '' : 'empty') + '\">★</span>';
-          return '<div style=\"padding:12px 0;border-bottom:1px solid var(--border);\">' +
-            '<div class=\"stars\" style=\"font-size:14px;\">' + s + '</div>' +
-            '<strong>' + esc(r.user_name || '') + '</strong> <span style=\"color:var(--gray);font-size:13px;\">' + timeAgo(r.created_at) + '</span>' +
-            (r.comment ? '<p style=\"margin-top:4px;\">' + esc(r.comment) + '</p>' : '') +
+          for (var j = 1; j <= 5; j++) s += '<span class="' + (j <= r.rating ? '' : 'empty') + '">★</span>';
+          return '<div class="pd-review-card">' +
+            '<div class="pd-review-header"><span class="stars" style="font-size:14px;">' + s + '</span><span class="pd-review-name">' + esc(r.user_name || '') + '</span><span class="pd-review-date">' + timeAgo(r.created_at) + '</span></div>' +
+            (r.comment ? '<div class="pd-review-comment">' + esc(r.comment) + '</div>' : '') +
             '</div>';
         }).join('');
       } else {
-        html += '<p style=\"color:var(--gray);\">কোনো রিভিউ নেই</p>';
+        html += '<p style="color:var(--gray);">কোনো রিভিউ নেই</p>';
       }
 
-      html += '<div style=\"margin-top:16px;padding-top:16px;border-top:1px solid var(--border);\">' +
-        '<h4 style=\"margin-bottom:8px;\">রিভিউ দিন</h4>' +
-        '<div class=\"form-group\"><label>রেটিং</label><select id=\"reviewRating\"><option value=\"5\">৫ ★</option><option value=\"4\">৪ ★</option><option value=\"3\">৩ ★</option><option value=\"2\">২ ★</option><option value=\"1\">১ ★</option></select></div>' +
-        '<div class=\"form-group\"><textarea id=\"reviewComment\" placeholder=\"আপনার মন্তব্য...\" rows=\"2\"></textarea></div>' +
-        '<button class=\"btn btn-sm btn-primary\" onclick=\"submitReview(' + p.id + ')\">রিভিউ পাঠান</button>' +
+      html += '<div class="pd-review-form">' +
+        '<h4>রিভিউ দিন</h4>' +
+        '<select id="reviewRating"><option value="5">৫ ★</option><option value="4">৪ ★</option><option value="3">৩ ★</option><option value="2">২ ★</option><option value="1">১ ★</option></select>' +
+        '<textarea id="reviewComment" placeholder="আপনার মন্তব্য..." rows="3"></textarea>' +
+        '<button class="btn btn-primary" onclick="submitReview(' + p.id + ')">রিভিউ পাঠান</button>' +
+        '</div>' +
         '</div>';
 
-      html += '</div></div></div>';
       document.getElementById('productDetail').innerHTML = html;
+      window.pdImages = imgs;
     });
   }
 
