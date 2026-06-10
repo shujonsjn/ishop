@@ -7,6 +7,7 @@
   window.addToCart = function(productId) {
     api('POST', '/cart', { product_id: productId, quantity: 1 }).then(function(data) {
       if (data.error) { toast(data.error, 'error'); return; }
+      if (data.sessionId) localStorage.setItem('sessionId', data.sessionId);
       toast('কার্টে যোগ করা হয়েছে!');
       loadCartCount();
     });
@@ -15,6 +16,7 @@
   window.buyNow = function(productId) {
     api('POST', '/cart', { product_id: productId, quantity: 1 }).then(function(data) {
       if (data.error) { toast(data.error, 'error'); return; }
+      if (data.sessionId) localStorage.setItem('sessionId', data.sessionId);
       window.location = '/checkout.html';
     });
   };

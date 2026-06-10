@@ -64,7 +64,7 @@
         el.textContent = data.count || 0;
         el.style.display = data.count > 0 ? 'flex' : 'none';
       }
-      if (data.sessionId && !localStorage.getItem('sessionId')) {
+      if (data.sessionId) {
         localStorage.setItem('sessionId', data.sessionId);
       }
     }).catch(function(){});
