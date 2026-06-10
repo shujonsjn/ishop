@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>চেকআউট — ইশপ</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">ই<span>শপ</span></a>
+    <nav>
+      <a href="/">হোম</a>
+      <a href="/products.html">পণ্য</a>
+      <a href="/cart.html">কার্ট</a>
+      <a href="/admin/">অ্যাডমিন</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container" style="padding-top:24px;">
+  <h2 style="margin-bottom:20px;">চেকআউট</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <div class="form-group">
+        <label>ঠিকানা *</label>
+        <textarea id="address" placeholder="আপনার পূর্ণ ঠিকানা" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ফোন *</label>
+        <input type="text" id="phone" placeholder="০১XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>নোট (ঐচ্ছিক)</label>
+        <textarea id="note" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label>পেমেন্ট মেথড</label>
+        <select id="paymentMethod">
+          <option value="cod">ক্যাশ অন ডেলিভারি (COD)</option>
+          <option value="sslcommerz">SSLCommerz (কার্ড/মোবাইল ব্যাংকিং)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="placeOrder()" id="placeOrderBtn">অর্ডার করুন</button>
+    </div>
+    <div>
+      <h3>অর্ডার সারাংশ</h3>
+      <div id="orderSummary"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

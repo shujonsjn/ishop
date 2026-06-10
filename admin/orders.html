@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>অর্ডার — ইশপ</title>
+<link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+.admin-sidebar { background: var(--dark); padding: 20px; }
+.admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
+.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
+.admin-content { padding: 24px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo">ইশপ <span>অ্যাডমিন</span></a>
+    <nav><a href="/">সাইটে যান</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <a href="/admin/">ড্যাশবোর্ড</a>
+    <a href="/admin/products.html">পণ্য</a>
+    <a href="/admin/categories.html">ক্যাটাগরি</a>
+    <a href="/admin/orders.html" class="active">অর্ডার</a>
+  </div>
+  <div class="admin-content">
+    <h2 style="margin-bottom:20px;">অর্ডার</h2>
+    <div id="loginPrompt" style="display:none;">
+      <p style="color:var(--gray);margin-bottom:12px;">অ্যাডমিন লগইন করুন</p>
+      <div class="form-group"><input type="text" id="adminEmail" placeholder="admin@email.com"></div>
+      <div class="form-group"><input type="password" id="adminPass" placeholder="password"></div>
+      <button class="btn btn-primary" onclick="adminLogin()">লগইন</button>
+    </div>
+    <select id="statusFilter" onchange="loadAdminOrders()" style="margin-bottom:16px;padding:8px;">
+      <option value="">সব অর্ডার</option>
+      <option value="pending">Pending</option>
+      <option value="paid">Paid</option>
+      <option value="processing">Processing</option>
+      <option value="shipped">Shipped</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <div id="ordersTableWrap"></div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

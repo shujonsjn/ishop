@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ক্যাটাগরি — ইশপ</title>
+<link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+.admin-sidebar { background: var(--dark); padding: 20px; }
+.admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
+.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
+.admin-content { padding: 24px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo">ইশপ <span>অ্যাডমিন</span></a>
+    <nav><a href="/">সাইটে যান</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <a href="/admin/">ড্যাশবোর্ড</a>
+    <a href="/admin/products.html">পণ্য</a>
+    <a href="/admin/categories.html" class="active">ক্যাটাগরি</a>
+    <a href="/admin/orders.html">অর্ডার</a>
+  </div>
+  <div class="admin-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2>ক্যাটাগরি</h2>
+      <button class="btn btn-primary" onclick="showCategoryForm()">+ নতুন</button>
+    </div>
+    <div id="loginPrompt" style="display:none;">
+      <p style="color:var(--gray);margin-bottom:12px;">অ্যাডমিন লগইন করুন</p>
+      <div class="form-group"><input type="text" id="adminEmail" placeholder="admin@email.com"></div>
+      <div class="form-group"><input type="password" id="adminPass" placeholder="password"></div>
+      <button class="btn btn-primary" onclick="adminLogin()">লগইন</button>
+    </div>
+    <div id="categoryTableWrap"></div>
+  </div>
+</div>
+
+<div id="categoryModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;">
+  <div style="max-width:500px;margin:80px auto;background:var(--white);padding:24px;border-radius:var(--radius);">
+    <h3 id="catModalTitle">নতুন ক্যাটাগরি</h3>
+    <div class="form-group"><label>নাম</label><input type="text" id="cfName"></div>
+    <div class="form-group"><label>বিবরণ</label><textarea id="cfDesc" rows="2"></textarea></div>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-primary" onclick="saveCategory()">সংরক্ষণ</button>
+      <button class="btn btn-outline" onclick="closeCategoryForm()">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

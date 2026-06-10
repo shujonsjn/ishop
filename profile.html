@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>প্রোফাইল — ইশপ</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">ই<span>শপ</span></a>
+    <nav>
+      <a href="/">হোম</a>
+      <a href="/products.html">পণ্য</a>
+      <a href="/orders.html">অর্ডার</a>
+      <a href="/admin/">অ্যাডমিন</a>
+      <a href="#" id="logoutLink" onclick="doLogout()">লগআউট</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container" style="padding-top:24px;">
+  <div class="card" style="max-width:600px;margin:0 auto;padding:24px;">
+    <h2 style="margin-bottom:20px;">আমার প্রোফাইল</h2>
+    <div class="form-group">
+      <label>নাম</label>
+      <input type="text" id="profileName">
+    </div>
+    <div class="form-group">
+      <label>ইমেইল</label>
+      <input type="email" id="profileEmail" readonly>
+    </div>
+    <div class="form-group">
+      <label>ফোন</label>
+      <input type="text" id="profilePhone">
+    </div>
+    <div class="form-group">
+      <label>ঠিকানা</label>
+      <textarea id="profileAddress" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="updateProfile()">আপডেট করুন</button>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

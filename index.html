@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ইশপ — অনলাইন শপিং</title>
+<meta name="description" content="ইশপ — আপনার পছন্দের পণ্য কিনুন সেরা দামে। ইলেকট্রনিক্স, ফ্যাশন, হোম অ্যাপ্লায়েন্স আরও অনেক কিছু।">
+<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">ই<span>শপ</span></a>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন...">
+      <button onclick="searchProducts()">খুঁজুন</button>
+    </div>
+    <nav>
+      <a href="/">হোম</a>
+      <a href="/products.html">পণ্য</a>
+      <a href="/cart.html">কার্ট <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/admin/">অ্যাডমিন</a>
+      <a href="/auth.html" id="authLink">লগইন</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>স্বাগতম ইশপে!</h1>
+    <p>সেরা ব্র্যান্ডের পণ্য সেরা দামে, ডেলিভারি সারা বাংলাদেশ</p>
+    <a href="/products.html" class="btn">পণ্য দেখুন</a>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section">
+    <div class="section-title">
+      <span>ক্যাটাগরি</span>
+    </div>
+    <div class="category-grid" id="categoryGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">
+      <span>ফিচার্ড পণ্য</span>
+      <a href="/products.html?featured=1" style="font-size:14px;font-weight:400;">সব দেখুন</a>
+    </div>
+    <div class="product-grid" id="featuredGrid"></div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 ইশপ — সকল অধিকার সংরক্ষিত</p>
+  </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
