@@ -22,7 +22,7 @@
       var html = '';
       data.items.forEach(function(item) {
         html += '<div style=\"display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);\">' +
-          '<span>' + esc(item.name) + ' x' + item.quantity + '</span>' +
+          '<span>' + esc(item.name) + (item.color ? ' (' + esc(item.color) + ')' : '') + ' x' + item.quantity + '</span>' +
           '<span>' + taka(item.subtotal) + '</span></div>';
       });
       html += '<div style=\"display:flex;justify-content:space-between;padding:12px 0;font-weight:700;font-size:18px;\">' +
