@@ -70,7 +70,7 @@
 
       grid.innerHTML = data.products.map(function(p) {
         var img = (p.images && p.images.length) ? p.images[0] : '';
-        return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\">' +
+        return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'">' +
           (img ? '<img class=\"product-card-image\" src=\"' + esc(img) + '\" alt=\"' + esc(p.name) + '\" loading=\"lazy\">' : '<div class=\"product-card-image\" style=\"display:flex;align-items:center;justify-content:center;color:var(--gray);\">ছবি নেই</div>') +
           '<div class=\"product-card-body\">' +
           '<div class=\"product-card-category\">' + esc(p.category_name || '') + '</div>' +

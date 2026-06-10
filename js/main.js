@@ -13,7 +13,7 @@
     var grid = document.getElementById('categoryGrid');
     if (!grid) return;
     grid.innerHTML = cats.map(function(c) {
-      return '<div class=\"category-card\" onclick=\"window.location=\'' + window.location.origin + '/products.html?category=' + encodeURIComponent(c.slug) + '\">' +
+      return '<div class=\"category-card\" onclick=\"window.location=\'' + window.location.origin + '/products.html?category=' + encodeURIComponent(c.slug) + '\'">' +
         '<h3>' + esc(c.name) + '</h3>' +
         '<div class=\"count\">' + (c.product_count || 0) + ' টি পণ্য</div></div>';
     }).join('');
@@ -31,7 +31,7 @@
 
   function renderProductCard(p) {
     var img = (p.images && p.images.length) ? p.images[0] : '';
-    return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\">' +
+    return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'">' +
       (img ? '<img class=\"product-card-image\" src=\"' + esc(img) + '\" alt=\"' + esc(p.name) + '\" loading=\"lazy\">' : '<div class=\"product-card-image\" style=\"display:flex;align-items:center;justify-content:center;color:var(--gray);\">ছবি নেই</div>') +
       '<div class=\"product-card-body\">' +
       '<div class=\"product-card-category\">' + esc(p.category_name || '') + '</div>' +
