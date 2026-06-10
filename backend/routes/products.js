@@ -1,4 +1,4 @@
-﻿import { Router } from 'express';
+import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -62,7 +62,7 @@ router.get('/', async (req, res) => {
     const rows = await db.prepare(sql).all(...args, limitNum, offset);
 
     res.json({
-      products: rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]') })),
+      products: rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })),
       total,
       page: pageNum,
       limit: limitNum,
@@ -76,7 +76,7 @@ router.get('/', async (req, res) => {
 router.get('/featured', async (req, res) => {
   try {
     const rows = await db.prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.featured = 1 AND p.active = 1 ORDER BY p.id DESC LIMIT 8').all();
-    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]') })));
+    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -88,7 +88,8 @@ router.get('/:slug', async (req, res) => {
     if (!row) return res.status(404).json({ error: 'Product not found' });
     row.images = JSON.parse(row.images || '[]');
 
-    const reviews = await db.prepare('SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON u.id = r.user_id WHERE r.product_id = ? ORDER BY r.id DESC').all(row.id);
+   
+    row.colors = JSON.parse(row.colors || '[]'); const reviews = await db.prepare('SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON u.id = r.user_id WHERE r.product_id = ? ORDER BY r.id DESC').all(row.id);
     const avgRating = await db.prepare('SELECT COALESCE(AVG(rating), 0) AS avg, COUNT(*) AS count FROM reviews WHERE product_id = ?').get(row.id);
 
     res.json({ ...row, reviews, avg_rating: avgRating.avg, review_count: avgRating.count });

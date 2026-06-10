@@ -32,7 +32,7 @@ router.get('/dashboard', authMiddleware, adminMiddleware, async (req, res) => {
 router.get('/products', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const rows = await db.prepare('SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY p.id DESC').all();
-    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]') })));
+    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -40,10 +40,10 @@ router.get('/products', authMiddleware, adminMiddleware, async (req, res) => {
 
 router.post('/products', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, price, compare_price, category_id, stock, featured, active, images } = req.body || {};
+    const { name, description, price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
     if (!name || !price) return res.status(400).json({ error: 'name and price are required' });
     const slug = name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') || 'product';
-    const result = await db.prepare('INSERT INTO products (name, slug, description, price, compare_price, category_id, stock, featured, active, images) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(name, slug, description || '', Number(price), compare_price ? Number(compare_price) : null, category_id || null, stock || 0, featured ? 1 : 0, active !== 0 ? 1 : 0, JSON.stringify(images || []));
+    const result = await db.prepare('INSERT INTO products (name, slug, description, price, compare_price, category_id, stock, featured, active, images, colors) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(name, slug, description || '', Number(price), compare_price ? Number(compare_price) : null, category_id || null, stock || 0, featured ? 1 : 0, active !== 0 ? 1 : 0, JSON.stringify(images || []), JSON.stringify(colors || []));
     const row = await db.prepare('SELECT * FROM products WHERE id = ?').get(Number(result.lastInsertRowid));
     res.status(201).json({ ...row, images: JSON.parse(row.images || '[]') });
   } catch (err) {
@@ -53,11 +53,11 @@ router.post('/products', authMiddleware, adminMiddleware, async (req, res) => {
 
 router.put('/products/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, price, compare_price, category_id, stock, featured, active, images } = req.body || {};
+    const { name, description, price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
     const existing = await db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Product not found' });
     const slug = name ? name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') : existing.slug;
-    await db.prepare('UPDATE products SET name = ?, slug = ?, description = ?, price = ?, compare_price = ?, category_id = ?, stock = ?, featured = ?, active = ?, images = ? WHERE id = ?').run(name || existing.name, slug, description !== undefined ? description : existing.description, price !== undefined ? Number(price) : existing.price, compare_price !== undefined ? Number(compare_price) : existing.compare_price, category_id !== undefined ? category_id : existing.category_id, stock !== undefined ? stock : existing.stock, featured !== undefined ? (featured ? 1 : 0) : existing.featured, active !== undefined ? (active ? 1 : 0) : existing.active, images ? JSON.stringify(images) : existing.images, req.params.id);
+    await db.prepare('UPDATE products SET name = ?, slug = ?, description = ?, price = ?, compare_price = ?, category_id = ?, stock = ?, featured = ?, active = ?, images = ?, colors = ? WHERE id = ?').run(name || existing.name, slug, description !== undefined ? description : existing.description, price !== undefined ? Number(price) : existing.price, compare_price !== undefined ? Number(compare_price) : existing.compare_price, category_id !== undefined ? category_id : existing.category_id, stock !== undefined ? stock : existing.stock, featured !== undefined ? (featured ? 1 : 0) : existing.featured, active !== undefined ? (active ? 1 : 0) : existing.active, images ? JSON.stringify(images) : existing.images, colors !== undefined ? JSON.stringify(colors) : existing.colors, req.params.id);
     const row = await db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
     res.json({ ...row, images: JSON.parse(row.images || '[]') });
   } catch (err) {

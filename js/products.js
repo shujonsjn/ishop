@@ -26,10 +26,22 @@
     el.value = val;
   };
 
+  window.selectedColor = '';
+
+  window.selectColor = function(color, el) {
+    window.selectedColor = color;
+    var label = document.getElementById('pdColorSelected');
+    if (label) label.textContent = color;
+    var swatches = document.querySelectorAll('.pd-color-swatch');
+    swatches.forEach(function(s) { s.classList.remove('active'); });
+    if (el) el.classList.add('active');
+  };
+
   window.addToCart = function(productId) {
     var qtyEl = document.getElementById('detailQty');
     var qty = qtyEl ? parseInt(qtyEl.value) || 1 : 1;
-    api('POST', '/cart', { product_id: productId, quantity: qty }).then(function(data) {
+    var color = window.selectedColor;
+    api('POST', '/cart', { product_id: productId, quantity: qty, color: color }).then(function(data) {
       if (data.error) { toast(data.error, 'error'); return; }
       if (data.sessionId) localStorage.setItem('sessionId', data.sessionId);
       toast('কার্টে যোগ করা হয়েছে!');
@@ -38,7 +50,8 @@
   };
 
   window.buyNow = function(productId) {
-    api('POST', '/cart', { product_id: productId, quantity: 1 }).then(function(data) {
+    var color = window.selectedColor;
+    api('POST', '/cart', { product_id: productId, quantity: 1, color: color }).then(function(data) {
       if (data.error) { toast(data.error, 'error'); return; }
       if (data.sessionId) localStorage.setItem('sessionId', data.sessionId);
       window.location = '/checkout.html';
@@ -183,6 +196,7 @@
         (p.compare_price ? '<div><span class="pd-compare">' + taka(p.compare_price) + '</span>' + savePercent + '</div>' : '') +
         '</div>' +
         '<div class="pd-brand">ব্র্যান্ড: <span>ইশপ</span></div>' +
+        (p.colors && p.colors.length ? '<div class="pd-color-label">রং: <span class="pd-color-selected" id="pdColorSelected">' + esc(p.colors[0]) + '</span></div><div class="pd-color-row" id="pdColorRow">' + p.colors.map(function(c, i) { return '<span class="pd-color-swatch' + (i === 0 ? ' active' : '') + '" data-color="' + esc(c) + '" onclick="selectColor(\'' + esc(c) + '\', this)">' + esc(c) + '</span>'; }).join('') + '</div>' : '') +
         '<hr class="pd-divider">' +
         '<label class="pd-qty-label">পরিমাণ</label>' +
         '<div class="pd-qty-row">' +

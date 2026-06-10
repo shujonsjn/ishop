@@ -99,7 +99,7 @@
         }).join('');
     });
 
-    ['pfName','pfPrice','pfCompare','pfStock','pfDesc','pfImages'].forEach(function(id) {
+    ['pfName','pfPrice','pfCompare','pfStock','pfDesc','pfImages','pfColors'].forEach(function(id) {
       var el = document.getElementById(id);
       if (!el) return;
       if (id === 'pfName') el.value = data ? data.name || '' : '';
@@ -108,6 +108,7 @@
       else if (id === 'pfStock') el.value = data ? data.stock || 0 : 10;
       else if (id === 'pfDesc') el.value = data ? data.description || '' : '';
       else if (id === 'pfImages') el.value = data && data.images ? JSON.stringify(data.images) : '[]';
+      else if (id === 'pfColors') el.value = data && data.colors ? data.colors.join(', ') : '';
     });
     document.getElementById('pfFeatured').checked = data ? !!data.featured : false;
     modal.dataset.editId = data ? data.id : '';
@@ -161,6 +162,7 @@
   };
 
   window.saveProduct = function() {
+    var colorsStr = document.getElementById('pfColors').value.trim();
     var data = {
       name: document.getElementById('pfName').value.trim(),
       category_id: document.getElementById('pfCategory').value,
@@ -170,7 +172,8 @@
       description: document.getElementById('pfDesc').value,
       images: JSON.parse(document.getElementById('pfImages').value || '[]'),
       featured: document.getElementById('pfFeatured').checked ? 1 : 0,
-      active: 1
+      active: 1,
+      colors: colorsStr ? colorsStr.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : []
     };
     if (!data.name) { toast('নাম দিন', 'error'); return; }
     if (!data.price) { toast('দাম দিন', 'error'); return; }

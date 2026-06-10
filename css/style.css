@@ -232,8 +232,18 @@ nav a:hover { color: var(--primary); }
   margin-left: 8px; font-weight: 400;
 }
 .pd-save { font-size: 13px; color: var(--success); font-weight: 600; margin-left: 8px; }
-.pd-brand { font-size: 14px; color: var(--gray); margin-bottom: 12px; }
+.pd-brand { font-size: 14px; color: var(--gray); margin-bottom: 8px; }
 .pd-brand span { color: var(--dark); font-weight: 500; }
+.pd-color-label { font-size: 14px; margin-bottom: 8px; }
+.pd-color-selected { font-weight: 600; color: var(--dark); }
+.pd-color-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.pd-color-swatch {
+  padding: 6px 16px; border: 1px solid var(--border); border-radius: 20px;
+  font-size: 13px; cursor: pointer; background: var(--white);
+  transition: all 0.2s;
+}
+.pd-color-swatch:hover { border-color: var(--primary); }
+.pd-color-swatch.active { border-color: var(--primary); background: var(--primary); color: var(--white); }
 .pd-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .pd-qty-label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 8px; }
 .pd-qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }

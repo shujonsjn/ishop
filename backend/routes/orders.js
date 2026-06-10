@@ -21,7 +21,7 @@ router.post('/', authMiddleware, async (req, res) => {
     const orderId = Number(result.lastInsertRowid);
 
     for (const item of items) {
-      await db.prepare('INSERT INTO order_items (order_id, product_id, name, price, quantity, image) VALUES (?, ?, ?, ?, ?, ?)').run(orderId, item.product_id, item.name, item.price, item.quantity, item.images ? JSON.parse(item.images)[0] || '' : '');
+      await db.prepare('INSERT INTO order_items (order_id, product_id, name, price, quantity, image, color) VALUES (?, ?, ?, ?, ?, ?, ?)').run(orderId, item.product_id, item.name, item.price, item.quantity, item.images ? JSON.parse(item.images)[0] || '' : '', item.color || '');
     }
 
     await db.prepare('DELETE FROM cart WHERE user_id = ?').run(req.user.id);
