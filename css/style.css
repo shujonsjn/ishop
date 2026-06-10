@@ -202,11 +202,12 @@ nav a:hover { color: var(--primary); }
 .dz-flash-title { color: var(--danger); }
 .dz-flash-timer { font-size: 14px; font-weight: 400; color: var(--danger); }
 .dz-flash-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
 }
-.dz-flash-card {
+.dz-flash-grid::-webkit-scrollbar { height: 6px; }
+.dz-flash-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.dz-flash-card { min-width: 180px; max-width: 200px; flex-shrink: 0; scroll-snap-align: start;
   background: var(--white); border-radius: var(--radius);
   box-shadow: var(--shadow); overflow: hidden; cursor: pointer;
   position: relative; transition: transform 0.2s, box-shadow 0.2s;
@@ -499,7 +500,7 @@ th { background: var(--light-gray); font-weight: 600; }
   nav { order: 3; width: 100%; justify-content: center; padding-top: 8px; }
   .search-box { order: 2; max-width: 100%; }
   .dz-cat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .dz-flash-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dz-flash-grid { gap: 10px; }
   .dz-banner-slide { min-height: 200px; padding: 24px 32px; }
   .dz-banner-content h2 { font-size: 22px; }
   .dz-banner-arrow { display: none; }
