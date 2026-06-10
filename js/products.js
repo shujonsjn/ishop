@@ -100,7 +100,7 @@
           '</div>' +
           '<div class=\"product-card-actions\">' +
           (inStock
-            ? '<button class=\"btn-card-cart\" onclick=\"event.stopPropagation();addToCart(' + p.id + ')\">কার্টে যোগ করুন</button><button class=\"btn-card-buy\" onclick=\"event.stopPropagation();buyNow(' + p.id + ')\">এখনই কিনুন</button>'
+            ? '<button class=\"btn-card-buy\" onclick=\"event.stopPropagation();buyNow(' + p.id + ')\">এখনই কিনুন</button><button class=\"btn-card-cart\" onclick=\"event.stopPropagation();addToCart(' + p.id + ')\">কার্টে যোগ করুন</button>'
             : '<button class=\"btn-card-cart\" disabled>স্টক আউট</button>') +
           '</div></div></div>';
       }).join('');
