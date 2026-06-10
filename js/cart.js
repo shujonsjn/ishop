@@ -21,6 +21,7 @@
           '<div class=\"cart-item-info\">' +
           '<div class=\"cart-item-title\">' + esc(item.name) + '</div>' +
           '<div class=\"cart-item-price\">' + taka(item.price) + '</div>' +
+          (item.color ? '<div class=\"cart-item-color\">রং: <span>' + esc(item.color) + '</span></div>' : '') +
           '</div>' +
           '<div class=\"cart-item-actions\">' +
           '<button class=\"qty-btn\" onclick=\"updateQty(' + item.id + ',' + (item.quantity - 1) + ')\">-</button>' +

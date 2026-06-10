@@ -348,6 +348,8 @@ th { background: var(--light-gray); font-weight: 600; }
 .cart-item-info { flex: 1; }
 .cart-item-title { font-weight: 600; }
 .cart-item-price { color: var(--primary); font-weight: 700; }
+.cart-item-color { font-size: 13px; color: var(--gray); margin-top: 4px; }
+.cart-item-color span { color: var(--dark); font-weight: 600; }
 .cart-item-actions { display: flex; gap: 8px; align-items: center; }
 .qty-btn {
   width: 32px; height: 32px; border: 1px solid var(--border);
