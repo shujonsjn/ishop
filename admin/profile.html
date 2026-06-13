@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="admin.title_dashboard">অ্যাডমিন ড্যাশবোর্ড — ইশপ</title>
+<title data-i18n="profile.title">প্রোফাইল — ইশপ</title>
 <link rel="stylesheet" href="../css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -11,7 +11,8 @@
 .admin-sidebar { background: var(--dark); padding: 20px; }
 .admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
 .admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
-.admin-content { padding: 24px; }
+.admin-content { padding: 24px; display:flex; flex-direction:column; align-items:center; }
+.profile-card { max-width: 500px; width:100%; background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
 </style>
 </head>
 <body>
@@ -25,23 +26,35 @@
 
 <div class="admin-layout">
   <div class="admin-sidebar">
-    <a href="/admin/" class="active" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
+    <a href="/admin/" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
     <a href="/admin/product-new.html" data-i18n="admin.new_product" style="background:var(--primary);color:var(--white);border-radius:6px;font-weight:600;margin-bottom:8px;">+ নতন পণ্য</a>
     <a href="/admin/products.html" data-i18n="admin.products">পণ্য</a>
     <a href="/admin/categories.html" data-i18n="admin.categories">ক্যাটাগরি</a>
     <a href="/admin/users.html" data-i18n="admin.users">ব্যবহারকারী</a>
     <a href="/admin/orders.html" data-i18n="admin.orders">অর্ডার</a>
-    <a href="/admin/settings.html" style="margin-top:20px;" data-i18n="admin.settings">সেটিংস</a>
-    <a href="/admin/profile.html" data-i18n="nav.profile">প্রোফাইল</a>
+    <a href="/admin/profile.html" style="margin-top:20px;" data-i18n="nav.profile">প্রোফাইল</a>
   </div>
   <div class="admin-content">
-    <h2 style="margin-bottom:20px;" data-i18n="admin.dashboard">ড্যাশবোর্ড</h2>
-    <div class="stats-grid" id="statsGrid"></div>
-    <div id="loginPrompt" style="display:none;">
-      <p style="color:var(--gray);margin-bottom:12px;" data-i18n="admin.login_prompt">অ্যাডমিন লগইন করুন</p>
-      <div class="form-group"><input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com"></div>
-      <div class="form-group"><input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="পাসওয়ার্ড"></div>
-      <button class="btn btn-primary" onclick="adminLogin()" data-i18n="admin.login_btn">লগইন</button>
+    <h2 style="margin-bottom:20px;text-align:center;width:100%;" data-i18n="profile.heading">আমার প্রোফাইল</h2>
+    <div class="profile-card" style="margin-bottom:24px;">
+      <div style="text-align:center;margin-bottom:16px;">
+        <img id="profileAvatar" src="" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--border);display:none;">
+        <div style="margin-top:8px;">
+          <label class="btn btn-outline" for="avatarUpload" style="cursor:pointer;font-size:13px;" data-i18n="profile.upload_photo">ছবি আপলোড</label>
+          <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+        </div>
+      </div>
+      <div class="form-group"><label data-i18n="profile.name">নাম</label><input type="text" id="profileName"></div>
+      <div class="form-group"><label data-i18n="profile.email">ইমেইল</label><input type="email" id="profileEmail" readonly style="background:#f3f4f6;cursor:not-allowed;"></div>
+      <div class="form-group"><label data-i18n="profile.phone">ফোন</label><input type="text" id="profilePhone"></div>
+      <div class="form-group"><label data-i18n="profile.address">ঠিকানা</label><textarea id="profileAddress" rows="2"></textarea></div>
+      <button class="btn btn-primary" onclick="updateProfile()" data-i18n="profile.update">আপডেট করুন</button>
+    </div>
+    <div class="profile-card">
+      <h3 style="margin-bottom:12px;" data-i18n="profile.change_password">পাসওয়ার্ড পরিবর্তন</h3>
+      <div class="form-group"><label data-i18n="profile.current_password">বর্তমান পাসওয়ার্ড</label><input type="password" id="profileCurPass"></div>
+      <div class="form-group"><label data-i18n="profile.new_password">নতুন পাসওয়ার্ড</label><input type="password" id="profileNewPass"></div>
+      <button class="btn btn-primary" onclick="changePassword()" data-i18n="profile.change_btn">পাসওয়ার্ড পরিবর্তন</button>
     </div>
   </div>
 </div>
@@ -100,5 +113,31 @@
 <script src="../js/i18n.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/admin.js"></script>
+<script>
+window.uploadAvatar = function(input) {
+  if (!input.files || !input.files[0]) return;
+  var fd = new FormData();
+  fd.append('avatar', input.files[0]);
+  apiForm('POST', '/users/me/avatar', fd).then(function(data) {
+    if (data.error) { toast(data.error, 'error'); return; }
+    var img = document.getElementById('profileAvatar');
+    img.src = data.avatar + '?t=' + Date.now();
+    img.style.display = 'inline-block';
+    toast(__('toast.photo_updated'));
+  });
+};
+window.changePassword = function() {
+  var cur = document.getElementById('profileCurPass').value;
+  var neu = document.getElementById('profileNewPass').value;
+  if (!cur || !neu) { toast(__('toast.enter_passwords'), 'error'); return; }
+  if (neu.length < 4) { toast(__('toast.password_short'), 'error'); return; }
+  api('PUT', '/users/me/password', { current_password: cur, new_password: neu }).then(function(data) {
+    if (data.error) { toast(data.error, 'error'); return; }
+    toast(__('toast.password_changed'));
+    document.getElementById('profileCurPass').value = '';
+    document.getElementById('profileNewPass').value = '';
+  });
+};
+</script>
 </body>
 </html>

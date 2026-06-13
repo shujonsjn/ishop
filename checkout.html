@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>চেকআউট — ইশপ</title>
+<title data-i18n="checkout.title">চেকআউট — ইশপ</title>
 <link rel="stylesheet" href="css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,32 +13,33 @@
   <div class="header-inner">
     <a href="/" class="logo">ই<span>শপ</span></a>
     <nav>
-      <a href="/">হোম</a>
-      <a href="/products.html">পণ্য</a>
-      <a href="/cart.html">কার্ট</a>
-      <a href="/admin/">অ্যাডমিন</a>
+      <a href="/" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
+      <a href="/cart.html" data-i18n="nav.cart">কার্ট</a>
+      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+      <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
     </nav>
   </div>
 </header>
 
 <div class="container" style="padding-top:24px;">
-  <h2 style="margin-bottom:20px;">চেকআউট</h2>
+  <h2 style="margin-bottom:20px;" data-i18n="checkout.heading">চেকআউট</h2>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
     <div>
       <div class="form-group">
-        <label>ঠিকানা *</label>
-        <textarea id="address" placeholder="আপনার পূর্ণ ঠিকানা" rows="3"></textarea>
+        <label data-i18n="checkout.address_label">ঠিকানা *</label>
+        <textarea id="address" placeholder="আপনার পূর্ণ ঠিকানা" rows="3" data-i18n-placeholder="checkout.address_placeholder"></textarea>
       </div>
       <div class="form-group">
-        <label>ফোন *</label>
-        <input type="text" id="phone" placeholder="০১XXXXXXXXX">
+        <label data-i18n="checkout.phone_label">ফোন *</label>
+        <input type="text" id="phone" placeholder="০১XXXXXXXXX" data-i18n-placeholder="checkout.phone_placeholder">
       </div>
       <div class="form-group">
-        <label>নোট (ঐচ্ছিক)</label>
+        <label data-i18n="checkout.note_label">নোট (ঐচ্ছিক)</label>
         <textarea id="note" rows="2"></textarea>
       </div>
       <div class="form-group">
-        <label>পেমেন্ট মেথড</label>
+        <label data-i18n="checkout.payment_label">পেমেন্ট মেথড</label>
         <select id="paymentMethod">
           <option value="cod">ক্যাশ অন ডেলিভারি (COD)</option>
           <option value="sslcommerz">SSLCommerz (কার্ড/মোবাইল ব্যাংকিং)</option>
@@ -47,13 +48,15 @@
       <button class="btn btn-primary btn-block" onclick="placeOrder()" id="placeOrderBtn">অর্ডার করুন</button>
     </div>
     <div>
-      <h3>অর্ডার সারাংশ</h3>
+      <h3 data-i18n="checkout.summary">অর্ডার সারাংশ</h3>
       <div id="orderSummary"></div>
     </div>
   </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/checkout.js"></script>
 </body>
 </html>

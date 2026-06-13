@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>পণ্য — ইশপ</title>
+<title id="pageTitle">পণ্য — ইশপ</title>
 <link rel="stylesheet" href="css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,46 +13,108 @@
   <div class="header-inner">
     <a href="/" class="logo">ই<span>শপ</span></a>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." value="">
-      <button onclick="doSearch()">খুঁজুন</button>
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." value="" data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="doSearch()" data-i18n="nav.search_btn">খুঁজুন</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
     <nav>
-      <a href="/">হোম</a>
-      <a href="/products.html">পণ্য</a>
-      <a href="/cart.html">কার্ট <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
-      <a href="/admin/">অ্যাডমিন</a>
-      <a href="/auth.html" id="authLink">লগইন</a>
+      <a href="/" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
+      <a href="/cart.html"><span data-i18n="nav.cart">কার্ট</span> <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+       <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
+       <a href="/auth.html" id="authLink" data-no-i18n="1">লগইন</a>
     </nav>
   </div>
 </header>
 
-<div class="container" style="padding-top:24px;">
-  <div class="filters">
-    <select id="categoryFilter" onchange="loadProducts()">
-      <option value="">সব ক্যাটাগরি</option>
-    </select>
-    <select id="sortFilter" onchange="loadProducts()">
+<div class="container" style="padding-top:20px;">
+
+  <!-- Breadcrumb -->
+  <div class="dz-breadcrumb" id="breadcrumb">
+    <a href="/">হোম</a> <span class="sep">›</span>
+    <a href="/products.html">পণ্য</a>
+  </div>
+
+  <!-- Page header -->
+  <div class="dz-cat-header" id="catHeader">
+    <h1 id="catTitle" data-i18n="products.heading">পণ্য</h1>
+    <span class="dz-cat-count" id="catCount"></span>
+  </div>
+
+  <!-- Sort bar -->
+  <div class="dz-sort-bar">
+    <span class="dz-sort-label" data-i18n="products.sort_label">সাজান:</span>
+    <select id="sortFilter" onchange="loadProducts(true)">
+      <option value="ai">AI রেকমেন্ডেড</option>
       <option value="newest">নতুন</option>
+      <option value="bestselling">বেস্ট সেলিং</option>
       <option value="price_asc">দাম (কম)</option>
       <option value="price_desc">দাম (বেশি)</option>
     </select>
+    <span class="dz-result-count" id="resultCount"></span>
+    <span class="dz-ai-badge">AI</span>
   </div>
 
-  <div class="product-grid" id="productGrid"></div>
-  <div class="pagination" id="pagination"></div>
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <h3>কোনো পণ্য পাওয়া যায়নি</h3>
-    <p>অন্য কীওয়ার্ড দিয়ে খুঁজুন</p>
+  <!-- Main layout: sidebar + grid -->
+  <div class="dz-cat-layout">
+    <aside class="dz-cat-sidebar" id="catSidebar">
+      <h3 data-i18n="products.sidebar_title">বিভাগ</h3>
+      <div id="categoryList"></div>
+    </aside>
+    <main class="dz-cat-main">
+      <div class="dz-ai-recs" id="aiRecs">
+        <div class="dz-ai-recs-header" data-i18n="products.ai_recs_title"><span class="dz-ai-recs-icon">🤖</span> AI রেকমেন্ডেশন</div>
+        <div class="dz-ai-recs-row" id="aiRecsRow"></div>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="pagination" id="pagination"></div>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <h3 data-i18n="products.empty">কোনো পণ্য পাওয়া যায়নি</h3>
+        <p data-i18n="products.empty_hint">অন্য কীওয়ার্ড দিয়ে খুঁজুন</p>
+      </div>
+    </main>
   </div>
 </div>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2026 ইশপ</p>
+<footer class="dz-footer">
+  <div class="dz-footer-inner">
+    <div class="dz-footer-col">
+      <h4 data-i18n="footer.customer_service">গ্রাহক সেবা</h4>
+      <a href="#" data-i18n="footer.help_center">সাহায্য কেন্দ্র</a>
+      <a href="#" data-i18n="footer.how_to_buy">কিভাবে কিনবেন</a>
+      <a href="#" data-i18n="footer.returns">রিটার্ন ও রিফান্ড</a>
+      <a href="#" data-i18n="footer.contact">যোগাযোগ</a>
+      <a href="#" data-i18n="footer.terms">শর্তাবলী</a>
+    </div>
+    <div class="dz-footer-col">
+      <h4 data-i18n="brand.name">ইশপ</h4>
+      <a href="#" data-i18n="footer.about">আমাদের সম্পর্কে</a>
+      <a href="#" data-i18n="footer.blog">ব্লগ</a>
+      <a href="#" data-i18n="footer.privacy">গোপনীয়তা নীতি</a>
+      <a href="#" data-i18n="footer.app">ইশপ অ্যাপ</a>
+      <a href="#" data-i18n="footer.seller">সেলার হন</a>
+    </div>
+    <div class="dz-footer-col">
+      <h4 data-i18n="footer.payment_methods">পেমেন্ট মেথড</h4>
+      <div class="dz-footer-payments">
+        <span class="dz-pay-badge">COD</span>
+        <span class="dz-pay-badge">VISA</span>
+        <span class="dz-pay-badge">MC</span>
+        <span class="dz-pay-badge">bKash</span>
+        <span class="dz-pay-badge">Nagad</span>
+        <span class="dz-pay-badge">Rocket</span>
+      </div>
+    </div>
+  </div>
+  <div class="dz-footer-bottom">
+    <p data-i18n="footer.copyright">&copy; 2026 ইশপ — সকল অধিকার সংরক্ষিত</p>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/products.js"></script>
 </body>
 </html>

@@ -2,3 +2,4 @@ node_modules/
 backend/uploads/
 *.db
 .env
+*.log

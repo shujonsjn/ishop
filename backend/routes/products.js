@@ -41,8 +41,8 @@ router.get('/', async (req, res) => {
       args.push(category, category);
     }
     if (search) {
-      where.push('(p.name LIKE ? OR p.description LIKE ?)');
-      args.push('%' + search + '%', '%' + search + '%');
+      where.push('(p.name LIKE ? OR p.en_name LIKE ? OR p.description LIKE ?)');
+      args.push('%' + search + '%', '%' + search + '%', '%' + search + '%');
     }
     if (featured === '1') {
       where.push('p.featured = 1');
@@ -52,13 +52,15 @@ router.get('/', async (req, res) => {
     const orderBy = sort === 'price_asc' ? 'ORDER BY p.price ASC'
       : sort === 'price_desc' ? 'ORDER BY p.price DESC'
       : sort === 'oldest' ? 'ORDER BY p.id ASC'
+      : sort === 'bestselling' ? 'ORDER BY p.stock ASC, p.id DESC'
+      : sort === 'ai' ? 'ORDER BY p.id DESC'
       : 'ORDER BY p.id DESC';
 
     const countSql = 'SELECT COUNT(*) AS total FROM products p LEFT JOIN categories c ON c.id = p.category_id ' + whereClause;
     const countResult = await db.prepare(countSql).get(...args);
     const total = countResult.total;
 
-    const sql = 'SELECT p.*, c.name AS category_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id ' + whereClause + ' ' + orderBy + ' LIMIT ? OFFSET ?';
+    const sql = 'SELECT p.*, c.name AS category_name, c.en_name AS category_en_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id ' + whereClause + ' ' + orderBy + ' LIMIT ? OFFSET ?';
     const rows = await db.prepare(sql).all(...args, limitNum, offset);
 
     res.json({
@@ -75,7 +77,7 @@ router.get('/', async (req, res) => {
 
 router.get('/featured', async (req, res) => {
   try {
-    const rows = await db.prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.featured = 1 AND p.active = 1 ORDER BY p.id DESC LIMIT 8').all();
+    const rows = await db.prepare("SELECT p.*, c.name AS category_name, c.en_name AS category_en_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.active = 1 AND (p.featured = 1 OR (p.compare_price IS NOT NULL AND p.compare_price > p.price)) ORDER BY p.featured DESC, (p.compare_price - p.price) DESC LIMIT 8").all();
     res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })));
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -84,7 +86,7 @@ router.get('/featured', async (req, res) => {
 
 router.get('/:slug', async (req, res) => {
   try {
-    const row = await db.prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE (p.slug = ? OR p.id = ?) AND p.active = 1').get(req.params.slug, isNaN(req.params.slug) ? -1 : Number(req.params.slug));
+    const row = await db.prepare('SELECT p.*, c.name AS category_name, c.en_name AS category_en_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE (p.slug = ? OR p.id = ?) AND p.active = 1').get(req.params.slug, isNaN(req.params.slug) ? -1 : Number(req.params.slug));
     if (!row) return res.status(404).json({ error: 'Product not found' });
     row.images = JSON.parse(row.images || '[]');
 

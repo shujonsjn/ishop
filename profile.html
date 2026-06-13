@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>প্রোফাইল — ইশপ</title>
+<title data-i18n="profile.title">প্রোফাইল — ইশপ</title>
 <link rel="stylesheet" href="css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,39 +13,68 @@
   <div class="header-inner">
     <a href="/" class="logo">ই<span>শপ</span></a>
     <nav>
-      <a href="/">হোম</a>
-      <a href="/products.html">পণ্য</a>
-      <a href="/orders.html">অর্ডার</a>
-      <a href="/admin/">অ্যাডমিন</a>
-      <a href="#" id="logoutLink" onclick="doLogout()">লগআউট</a>
+      <a href="/" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
+      <a href="/orders.html" data-i18n="nav.orders">অর্ডার</a>
+      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+      <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
+      <a href="#" id="logoutLink" onclick="doLogout()" data-no-i18n="1">লগআউট</a>
     </nav>
   </div>
 </header>
 
 <div class="container" style="padding-top:24px;">
   <div class="card" style="max-width:600px;margin:0 auto;padding:24px;">
-    <h2 style="margin-bottom:20px;">আমার প্রোফাইল</h2>
+    <h2 style="margin-bottom:20px;" data-i18n="profile.heading">আমার প্রোফাইল</h2>
     <div class="form-group">
-      <label>নাম</label>
+<label data-i18n="profile.name">নাম</label>
       <input type="text" id="profileName">
     </div>
     <div class="form-group">
-      <label>ইমেইল</label>
+<label data-i18n="profile.email">ইমেইল</label>
       <input type="email" id="profileEmail" readonly>
     </div>
     <div class="form-group">
-      <label>ফোন</label>
+<label data-i18n="profile.phone">ফোন</label>
       <input type="text" id="profilePhone">
     </div>
     <div class="form-group">
-      <label>ঠিকানা</label>
+<label data-i18n="profile.address">ঠিকানা</label>
       <textarea id="profileAddress" rows="3"></textarea>
     </div>
-    <button class="btn btn-primary" onclick="updateProfile()">আপডেট করুন</button>
+    <button class="btn btn-primary" onclick="updateProfile()" data-i18n="profile.update">আপডেট করুন</button>
   </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>
+<script>
+(function(){
+  var pn = document.getElementById('profileName');
+  if (!pn) { document.write('DEBUG: profileName not found'); return; }
+  var t;
+  try { t = window._token || localStorage.getItem('token'); } catch(e) { t = null; }
+  if (!t) {
+    document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#fff3cd;color:#856404;">🔒 Please <a href="/auth.html">login</a> to view your profile.</div>');
+    return;
+  }
+  fetch('/api/users/me', { headers: { 'Authorization': 'Bearer ' + t } })
+    .then(function(r) { return r.json(); })
+    .then(function(user) {
+      if (!user || user.error) {
+        document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#f8d7da;color:#721c24;">❌ Error: ' + (user ? JSON.stringify(user) : 'null response') + '</div>');
+        return;
+      }
+      document.getElementById('profileName').value = user.name || '';
+      document.getElementById('profileEmail').value = user.email || '';
+      document.getElementById('profilePhone').value = user.phone || '';
+      document.getElementById('profileAddress').value = user.address || '';
+    })
+    .catch(function(err) {
+      document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#f8d7da;color:#721c24;">🌐 Network error: ' + err.message + '</div>');
+    });
+})();
+</script>
 </body>
 </html>

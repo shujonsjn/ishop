@@ -21,7 +21,7 @@ router.get('/dashboard', authMiddleware, adminMiddleware, async (req, res) => {
     const productCount = await db.prepare('SELECT COUNT(*) AS c FROM products').get();
     const orderCount = await db.prepare('SELECT COUNT(*) AS c FROM orders').get();
     const userCount = await db.prepare('SELECT COUNT(*) AS c FROM users').get();
-    const revenue = await db.prepare("SELECT COALESCE(SUM(total), 0) AS total FROM orders WHERE payment_status = 'paid'").get();
+    const revenue = await db.prepare("SELECT COALESCE(SUM(total), 0) AS total FROM orders WHERE payment_status = 'paid' OR status = 'paid'").get();
     const pendingOrders = await db.prepare("SELECT COUNT(*) AS c FROM orders WHERE status = 'pending'").get();
     res.json({ products: productCount.c, orders: orderCount.c, users: userCount.c, revenue: revenue.total, pendingOrders: pendingOrders.c });
   } catch (err) {
@@ -40,10 +40,10 @@ router.get('/products', authMiddleware, adminMiddleware, async (req, res) => {
 
 router.post('/products', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
+    const { name, en_name, description, price, purchase_price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
     if (!name || !price) return res.status(400).json({ error: 'name and price are required' });
     const slug = name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') || 'product';
-    const result = await db.prepare('INSERT INTO products (name, slug, description, price, compare_price, category_id, stock, featured, active, images, colors) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(name, slug, description || '', Number(price), compare_price ? Number(compare_price) : null, category_id || null, stock || 0, featured ? 1 : 0, active !== 0 ? 1 : 0, JSON.stringify(images || []), JSON.stringify(colors || []));
+    const result = await db.prepare('INSERT INTO products (name, en_name, slug, description, price, purchase_price, compare_price, category_id, stock, featured, active, images, colors) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').run(name, en_name || '', slug, description || '', Number(price), Number(purchase_price) || 0, compare_price ? Number(compare_price) : null, category_id || null, stock || 0, featured ? 1 : 0, active !== 0 ? 1 : 0, JSON.stringify(images || []), JSON.stringify(colors || []));
     const row = await db.prepare('SELECT * FROM products WHERE id = ?').get(Number(result.lastInsertRowid));
     res.status(201).json({ ...row, images: JSON.parse(row.images || '[]') });
   } catch (err) {
@@ -53,11 +53,11 @@ router.post('/products', authMiddleware, adminMiddleware, async (req, res) => {
 
 router.put('/products/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
+    const { name, en_name, description, price, purchase_price, compare_price, category_id, stock, featured, active, images, colors } = req.body || {};
     const existing = await db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Product not found' });
     const slug = name ? name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') : existing.slug;
-    await db.prepare('UPDATE products SET name = ?, slug = ?, description = ?, price = ?, compare_price = ?, category_id = ?, stock = ?, featured = ?, active = ?, images = ?, colors = ? WHERE id = ?').run(name || existing.name, slug, description !== undefined ? description : existing.description, price !== undefined ? Number(price) : existing.price, compare_price !== undefined ? Number(compare_price) : existing.compare_price, category_id !== undefined ? category_id : existing.category_id, stock !== undefined ? stock : existing.stock, featured !== undefined ? (featured ? 1 : 0) : existing.featured, active !== undefined ? (active ? 1 : 0) : existing.active, images ? JSON.stringify(images) : existing.images, colors !== undefined ? JSON.stringify(colors) : existing.colors, req.params.id);
+    await db.prepare('UPDATE products SET name = ?, en_name = ?, slug = ?, description = ?, price = ?, purchase_price = ?, compare_price = ?, category_id = ?, stock = ?, featured = ?, active = ?, images = ?, colors = ? WHERE id = ?').run(name || existing.name, en_name !== undefined ? en_name : existing.en_name || '', slug, description !== undefined ? description : existing.description, price !== undefined ? Number(price) : existing.price, purchase_price !== undefined ? Number(purchase_price) : (existing.purchase_price || 0), compare_price !== undefined ? Number(compare_price) : existing.compare_price, category_id !== undefined ? category_id : existing.category_id, stock !== undefined ? stock : existing.stock, featured !== undefined ? (featured ? 1 : 0) : existing.featured, active !== undefined ? (active ? 1 : 0) : existing.active, images ? JSON.stringify(images) : existing.images, colors !== undefined ? JSON.stringify(colors) : existing.colors, req.params.id);
     const row = await db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
     res.json({ ...row, images: JSON.parse(row.images || '[]') });
   } catch (err) {
@@ -71,28 +71,41 @@ router.delete('/products/:id', authMiddleware, adminMiddleware, async (req, res)
 });
 
 router.get('/categories', authMiddleware, adminMiddleware, async (req, res) => {
-  try { const rows = await db.prepare('SELECT * FROM categories ORDER BY name ASC').all(); res.json(rows); }
+  try { const rows = await db.prepare('SELECT * FROM categories ORDER BY sort_order ASC, id ASC').all(); res.json(rows); }
   catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 router.post('/categories', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, image } = req.body || {};
+    const { name, en_name, description, image } = req.body || {};
     if (!name) return res.status(400).json({ error: 'name required' });
     const slug = name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') || 'category';
-    const result = await db.prepare('INSERT INTO categories (name, slug, description, image) VALUES (?, ?, ?, ?)').run(name, slug, description || '', image || '');
+    const maxRow = await db.prepare('SELECT MAX(sort_order) AS m FROM categories').get();
+    const sortOrder = (maxRow && maxRow.m != null ? Number(maxRow.m) : 0) + 1;
+    const result = await db.prepare('INSERT INTO categories (name, en_name, slug, description, image, sort_order) VALUES (?, ?, ?, ?, ?, ?)').run(name, en_name || '', slug, description || '', image || '', sortOrder);
     const row = await db.prepare('SELECT * FROM categories WHERE id = ?').get(Number(result.lastInsertRowid));
     res.status(201).json(row);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+router.put('/categories/order', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { ids } = req.body || {};
+    if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids array required' });
+    for (let i = 0; i < ids.length; i++) {
+      await db.prepare('UPDATE categories SET sort_order = ? WHERE id = ?').run(i + 1, ids[i]);
+    }
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 router.put('/categories/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, description, image } = req.body || {};
+    const { name, en_name, description, image } = req.body || {};
     const existing = await db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Category not found' });
     const slug = name ? name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') : existing.slug;
-    await db.prepare('UPDATE categories SET name = ?, slug = ?, description = ?, image = ? WHERE id = ?').run(name || existing.name, slug, description !== undefined ? description : existing.description, image !== undefined ? image : existing.image, req.params.id);
+    await db.prepare('UPDATE categories SET name = ?, en_name = ?, slug = ?, description = ?, image = ? WHERE id = ?').run(name || existing.name, en_name !== undefined ? en_name : existing.en_name || '', slug, description !== undefined ? description : existing.description, image !== undefined ? image : existing.image, req.params.id);
     const row = await db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     res.json(row);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -104,6 +117,13 @@ router.delete('/categories/:id', authMiddleware, adminMiddleware, async (req, re
     if (used.c > 0) return res.status(409).json({ error: 'Category has ' + used.c + ' products. Remove them first.' });
     await db.prepare('DELETE FROM categories WHERE id = ?').run(req.params.id);
     res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const rows = await db.prepare('SELECT id, name, email, phone, address, role, created_at FROM users ORDER BY id DESC').all();
+    res.json(rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -132,6 +152,31 @@ router.put('/orders/:id/status', authMiddleware, adminMiddleware, async (req, re
     if (!validStatuses.includes(status)) return res.status(400).json({ error: 'Invalid status' });
     await db.prepare('UPDATE orders SET status = ?, payment_status = COALESCE(?, payment_status) WHERE id = ?').run(status, payment_status || null, req.params.id);
     res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+/* Public — no auth needed */
+router.get('/settings', async (req, res) => {
+  try {
+    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('site_name', 'logo_url', 'banners', 'flash_sale_end', 'flash_sale_color')").all();
+    const settings = {};
+    rows.forEach(function(r) { settings[r.key] = r.value; });
+    res.json(settings);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.put('/settings', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const allowed = ['site_name', 'logo_url', 'banners', 'flash_sale_end', 'flash_sale_color'];
+    for (const key of allowed) {
+      if (req.body[key] !== undefined) {
+        await db.prepare('INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = ?').run(key, String(req.body[key]), String(req.body[key]));
+      }
+    }
+    const rows = await db.prepare('SELECT key, value FROM settings').all();
+    const settings = {};
+    rows.forEach(function(r) { settings[r.key] = r.value; });
+    res.json(settings);
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const rows = await db.prepare('SELECT c.*, COUNT(p.id) AS product_count FROM categories c LEFT JOIN products p ON p.category_id = c.id AND p.active = 1 GROUP BY c.id ORDER BY c.name ASC').all();
+    const rows = await db.prepare('SELECT c.*, COUNT(p.id) AS product_count FROM categories c LEFT JOIN products p ON p.category_id = c.id AND p.active = 1 GROUP BY c.id ORDER BY c.sort_order ASC').all();
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="admin.title_dashboard">অ্যাডমিন ড্যাশবোর্ড — ইশপ</title>
+<title data-i18n="admin.title_users">ব্যবহারকারী — ইশপ</title>
 <link rel="stylesheet" href="../css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -25,24 +25,26 @@
 
 <div class="admin-layout">
   <div class="admin-sidebar">
-    <a href="/admin/" class="active" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
+    <a href="/admin/" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
     <a href="/admin/product-new.html" data-i18n="admin.new_product" style="background:var(--primary);color:var(--white);border-radius:6px;font-weight:600;margin-bottom:8px;">+ নতন পণ্য</a>
     <a href="/admin/products.html" data-i18n="admin.products">পণ্য</a>
     <a href="/admin/categories.html" data-i18n="admin.categories">ক্যাটাগরি</a>
-    <a href="/admin/users.html" data-i18n="admin.users">ব্যবহারকারী</a>
+    <a href="/admin/users.html" class="active" data-i18n="admin.users">ব্যবহারকারী</a>
     <a href="/admin/orders.html" data-i18n="admin.orders">অর্ডার</a>
     <a href="/admin/settings.html" style="margin-top:20px;" data-i18n="admin.settings">সেটিংস</a>
     <a href="/admin/profile.html" data-i18n="nav.profile">প্রোফাইল</a>
   </div>
   <div class="admin-content">
-    <h2 style="margin-bottom:20px;" data-i18n="admin.dashboard">ড্যাশবোর্ড</h2>
-    <div class="stats-grid" id="statsGrid"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 data-i18n="admin.users">ব্যবহারকারী</h2>
+    </div>
     <div id="loginPrompt" style="display:none;">
       <p style="color:var(--gray);margin-bottom:12px;" data-i18n="admin.login_prompt">অ্যাডমিন লগইন করুন</p>
       <div class="form-group"><input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com"></div>
       <div class="form-group"><input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="পাসওয়ার্ড"></div>
       <button class="btn btn-primary" onclick="adminLogin()" data-i18n="admin.login_btn">লগইন</button>
     </div>
+    <div id="usersTableWrap"></div>
   </div>
 </div>
 

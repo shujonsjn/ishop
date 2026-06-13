@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>পণ্য — ইশপ</title>
+<title data-i18n="detail.title">পণ্য — ইশপ</title>
 <link rel="stylesheet" href="css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,15 +13,17 @@
   <div class="header-inner">
     <a href="/" class="logo">ই<span>শপ</span></a>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন...">
-      <button onclick="window.location='/products.html?search='+encodeURIComponent(document.getElementById('searchInput').value)">খুঁজুন</button>
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="window.location='/products.html?search='+encodeURIComponent(document.getElementById('searchInput').value)" data-i18n="nav.search_btn">খুঁজুন</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
     <nav>
-      <a href="/">হোম</a>
-      <a href="/products.html">পণ্য</a>
-      <a href="/cart.html">কার্ট <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
-      <a href="/admin/">অ্যাডমিন</a>
-      <a href="/auth.html" id="authLink">লগইন</a>
+      <a href="/" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
+      <a href="/cart.html"><span data-i18n="nav.cart">কার্ট</span> <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+       <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
+       <a href="/auth.html" id="authLink" data-no-i18n="1">লগইন</a>
     </nav>
   </div>
 </header>
@@ -30,11 +32,13 @@
 
 <footer>
   <div class="container">
-    <p>&copy; 2026 ইশপ</p>
+    <p data-i18n="footer.copyright">&copy; 2026 ইশপ</p>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/products.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 (function(){
   var token = localStorage.getItem('token');
   if (!token) {
-    toast('দয়া করে লগইন করুন', 'error');
+    toast(__('toast.please_login'), 'error');
     window.location = '/auth.html?redirect=checkout.html';
     return;
   }
@@ -16,17 +16,17 @@
       var el = document.getElementById('orderSummary');
       if (!el) return;
       if (!data.items || data.items.length === 0) {
-        el.innerHTML = '<p style=\"color:var(--gray);\">কার্ট খালি</p>';
+        el.innerHTML = '<p style=\"color:var(--gray);\">' + __('checkout.cart_empty') + '</p>';
         return;
       }
       var html = '';
       data.items.forEach(function(item) {
         html += '<div style=\"display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);\">' +
-          '<span>' + esc(item.name) + (item.color ? ' (' + esc(item.color) + ')' : '') + ' x' + item.quantity + '</span>' +
+          '<span>' + esc(window.productName(item)) + (item.color ? ' (' + esc(item.color) + ')' : '') + ' x' + item.quantity + '</span>' +
           '<span>' + taka(item.subtotal) + '</span></div>';
       });
       html += '<div style=\"display:flex;justify-content:space-between;padding:12px 0;font-weight:700;font-size:18px;\">' +
-        '<span>মোট</span><span>' + taka(data.total) + '</span></div>';
+        '<span>' + __('checkout.total') + '</span><span>' + taka(data.total) + '</span></div>';
       el.innerHTML = html;
     });
   }
@@ -38,11 +38,11 @@
     var paymentMethod = document.getElementById('paymentMethod').value;
     var btn = document.getElementById('placeOrderBtn');
 
-    if (!address) { toast('ঠিকানা দিন', 'error'); return; }
-    if (!phone) { toast('ফোন নম্বর দিন', 'error'); return; }
+    if (!address) { toast(__('toast.enter_address'), 'error'); return; }
+    if (!phone) { toast(__('toast.enter_phone'), 'error'); return; }
 
     btn.disabled = true;
-    btn.textContent = 'প্রক্রিয়াকরণ...';
+    btn.textContent = __('checkout.order_processing');
 
     api('POST', '/orders', {
       shipping_address: address,
@@ -50,26 +50,26 @@
       note: note,
       payment_method: paymentMethod
     }).then(function(order) {
-      if (order.error) { toast(order.error, 'error'); btn.disabled = false; btn.textContent = 'অর্ডার করুন'; return; }
+      if (order.error) { toast(order.error, 'error'); btn.disabled = false; btn.textContent = __('checkout.order_btn'); return; }
 
       if (paymentMethod === 'sslcommerz') {
         api('POST', '/payment/initiate', { order_id: order.id }).then(function(payRes) {
           if (payRes.redirect) {
             window.location = payRes.redirect;
           } else {
-            toast('পেমেন্ট initiation এ সমস্যা', 'error');
+            toast(__('toast.payment_error'), 'error');
             btn.disabled = false;
-            btn.textContent = 'অর্ডার করুন';
+            btn.textContent = __('checkout.order_btn');
           }
         });
       } else {
-        toast('অর্ডার সফল হয়েছে!', 'success');
+        toast(__('toast.order_success'), 'success');
         setTimeout(function() { window.location = '/orders.html?id=' + order.id; }, 1500);
       }
     }).catch(function() {
-      toast('সার্ভার সমস্যা', 'error');
+      toast(__('toast.server_error'), 'error');
       btn.disabled = false;
-      btn.textContent = 'অর্ডার করুন';
+      btn.textContent = __('checkout.order_btn');
     });
   };
 })();

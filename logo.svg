@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="196" height="56" rx="10" fill="white" stroke="url(#lg)" stroke-width="2"/>
+  <!-- Shopping bag icon -->
+  <g transform="translate(18, 10)">
+    <rect x="4" y="12" width="24" height="20" rx="3" fill="url(#lg)"/>
+    <path d="M4 14 L8 4 Q10 0 16 0 Q22 0 24 4 L28 14" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="12" cy="22" r="2" fill="white"/>
+    <circle cx="20" cy="22" r="2" fill="white"/>
+  </g>
+  <!-- Text: ইশপ -->
+  <text x="58" y="33" font-family="Hind Siliguri, Arial, sans-serif" font-size="20" font-weight="700" fill="#1a73e8">ই</text>
+  <text x="80" y="33" font-family="Hind Siliguri, Arial, sans-serif" font-size="20" font-weight="700" fill="#ff6b00">শপ</text>
+  <!-- Tagline -->
+  <text x="58" y="48" font-family="Inter, Arial, sans-serif" font-size="9" fill="#6b7280" font-weight="500">BUY &bull; SELL &bull; SAVE</text>
+</svg>

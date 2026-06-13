@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="settings.title">সেটিংস — ইশপ</title>
+<link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+.admin-sidebar { background: var(--dark); padding: 20px; }
+.admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
+.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
+.admin-content { padding: 24px; display:flex; flex-direction:column; align-items:center; }
+.settings-card { max-width: 640px; width:100%; background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.logo-preview { max-width: 200px; max-height: 60px; margin-top: 8px; border-radius: 4px; border: 1px solid var(--border); }
+.banner-slide-card { background: #f9fafb; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.banner-slide-card .form-group { margin-bottom: 8px; }
+.banner-slide-card .form-group label { font-weight: 500; font-size: 12px; color: var(--gray); }
+.banner-slide-card .bn-en-row { display: flex; gap: 8px; }
+.banner-slide-card .bn-en-row .form-group { flex: 1; }
+.banner-preview { width: 100%; height: 100px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 12px; color: #999; position: relative; overflow: hidden; }
+.banner-preview img { width: 100%; height: 100%; object-fit: cover; }
+.banner-preview .overlay-text { position: absolute; text-align: center; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.banner-preview .overlay-text h4 { font-size: 14px; margin-bottom: 2px; }
+.banner-preview .overlay-text p { font-size: 10px; opacity: 0.8; }
+.banner-img-upload { width:100%; height:80px; border-radius:6px; background-size:cover; background-position:center; display:flex; align-items:flex-end; overflow:hidden; cursor:pointer; }
+.banner-img-empty { border:2px dashed var(--border); background:#f3f4f6; align-items:center; justify-content:center; }
+.banner-img-placeholder { display:flex; flex-direction:column; align-items:center; gap:4px; color:#9ca3af; font-size:12px; }
+.banner-img-icon { font-size:24px; }
+.banner-img-actions { display:flex; gap:6px; align-items:center; width:100%; padding:6px 8px; background:linear-gradient(transparent,rgba(0,0,0,0.6)); }
+.banner-img-label { font-size:11px; color:#fff; flex:1; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo" id="siteLogo">ইশপ <span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
+    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <a href="/admin/" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
+    <a href="/admin/product-new.html" data-i18n="admin.new_product" style="background:var(--primary);color:var(--white);border-radius:6px;font-weight:600;margin-bottom:8px;">+ নতন পণ্য</a>
+    <a href="/admin/products.html" data-i18n="admin.products">পণ্য</a>
+    <a href="/admin/categories.html" data-i18n="admin.categories">ক্যাটাগরি</a>
+    <a href="/admin/users.html" data-i18n="admin.users">ব্যবহারকারী</a>
+    <a href="/admin/orders.html" data-i18n="admin.orders">অর্ডার</a>
+    <a href="/admin/settings.html" class="active" data-i18n="admin.settings" style="margin-top:20px;">সেটিংস</a>
+    <a href="/admin/profile.html" data-i18n="nav.profile">প্রোফাইল</a>
+  </div>
+  <div class="admin-content">
+    <div id="loginPrompt" style="display:none;text-align:center;padding:60px 20px;">
+      <h2 data-i18n="admin.login_title">অ্যাডমিন লগইন</h2>
+      <div style="max-width:320px;margin:0 auto;">
+        <input id="adminEmail" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius);">
+        <input id="adminPass" type="password" placeholder="Password" style="width:100%;padding:10px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius);">
+        <button class="btn btn-primary" onclick="adminLogin()" style="width:100%;padding:10px;" data-i18n="admin.login_btn">লগইন</button>
+      </div>
+    </div>
+    <h2 style="margin-bottom:20px;text-align:center;width:100%;" data-i18n="settings.heading">সাইট সেটিংস</h2>
+    <div class="settings-card">
+      <div class="form-group"><label data-i18n="settings.site_name">সাইটের নাম</label><input type="text" id="settingSiteName"></div>
+      <div class="form-group">
+        <label data-i18n="settings.logo">লোগো</label>
+        <input type="file" id="logoUpload" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-outline" onclick="document.getElementById('logoUpload').click()" data-i18n="settings.upload_logo">লোগো আপলোড</button>
+          <button class="btn btn-outline" style="color:var(--danger);border-color:var(--danger);" onclick="removeLogo()" data-i18n="settings.remove_logo">লোগো সরান</button>
+        </div>
+        <div id="logoPreviewWrap" style="display:none;margin-top:8px;"><img id="logoPreview" class="logo-preview"></div>
+      </div>
+      <div class="form-group"><label data-i18n="settings.logo_url">লোগো URL</label><input type="text" id="settingLogoUrl" placeholder="/uploads/logo.png"></div>
+      <button class="btn btn-primary" onclick="saveSettings()" data-i18n="settings.save">সেটিংস সংরক্ষণ</button>
+    </div>
+
+    <h2 style="margin:32px 0 16px;text-align:center;width:100%;" data-i18n="settings.banners_heading">হিরো ব্যানার</h2>
+    <div class="settings-card">
+      <div id="bannerEditorList"></div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-outline btn-sm" onclick="addBannerSlide()" data-i18n="settings.add_slide">+ স্লাইড যোগ করুন</button>
+        <button class="btn btn-primary" onclick="saveBanners()" data-i18n="settings.save_banners">ব্যানার সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <h2 style="margin:32px 0 16px;text-align:center;width:100%;" data-i18n="settings.flash_heading">ফ্ল্যাশ সেল</h2>
+    <div class="settings-card">
+      <div class="form-group">
+        <label data-i18n="settings.flash_end_time">শেষ হওয়ার সময়</label>
+        <input type="datetime-local" id="settingFlashEnd" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);">
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label data-i18n="settings.flash_font_color">ফন্টের রং</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="color" id="settingFlashColor" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+          <input type="text" id="settingFlashColorText" placeholder="#e74c3c" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveFlashEnd()" data-i18n="settings.save_flash">ফ্ল্যাশ সেল সংরক্ষণ</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/admin.js"></script>
+<script>
+window.uploadLogo = function(input) {
+  if (!input.files || !input.files[0]) return;
+  var fd = new FormData();
+  fd.append('image', input.files[0]);
+  apiAdmin('POST', '/upload', fd).then(function(data) {
+    if (data.error) { toast(data.error, 'error'); return; }
+    document.getElementById('settingLogoUrl').value = data.url;
+    document.getElementById('logoPreview').src = data.url;
+    document.getElementById('logoPreviewWrap').style.display = 'block';
+    toast(__('toast.logo_uploaded'));
+  });
+};
+
+window.removeLogo = function() {
+  document.getElementById('settingLogoUrl').value = '';
+  document.getElementById('logoPreviewWrap').style.display = 'none';
+};
+
+/* ---- Banner Editor ---- */
+var bannerSlides = [];
+
+function bannerImageHtml(s) {
+  if (s.bgImage) {
+    return '<div class="banner-img-upload" style="background-image:url(' + esc(s.bgImage) + ')">' +
+      '<div class="banner-img-actions">' +
+        '<span class="banner-img-label">' + (window.__ ? __('settings.has_image') : 'ছবি আপলোড করা হয়েছে') + '</span>' +
+        '<button class="btn btn-sm btn-outline" onclick="document.getElementById(\'banBgUpload_' + bannerSlides.indexOf(s) + '\').click()">' + (window.__ ? __('settings.change_image') : 'পরিবর্তন') + '</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="removeBannerImage(' + bannerSlides.indexOf(s) + ')">' + (window.__ ? __('settings.remove_image') : 'সরান') + ' &times;</button>' +
+      '</div>' +
+    '</div>';
+  }
+  return '<div class="banner-img-upload banner-img-empty" onclick="document.getElementById(\'banBgUpload_' + bannerSlides.indexOf(s) + '\').click()">' +
+    '<div class="banner-img-placeholder">' +
+      '<span class="banner-img-icon">&#128247;</span>' +
+      '<span>' + (window.__ ? __('settings.bg_upload') : 'ছবি আপলোড করুন') + '</span>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderBannerEditor() {
+  var list = document.getElementById('bannerEditorList');
+  list.innerHTML = '';
+  bannerSlides.forEach(function(s, i) {
+    var card = document.createElement('div');
+    card.className = 'banner-slide-card';
+    var bgStyle = s.bgImage ? 'background-image:url(' + s.bgImage + ');background-size:cover;background-position:center;' : 'background:' + (s.bg || 'linear-gradient(135deg,#1a73e8,#7c3aed)');
+    card.innerHTML =
+      '<div class="banner-preview" style="' + bgStyle + '">' +
+        (s.bgImage ? '' : '<div class="overlay-text"><h4>' + esc(s.title || '') + '</h4><p>' + esc(s.desc || '') + '</p></div>') +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-bottom:8px;">' +
+        '<button class="btn btn-sm btn-outline" onclick="moveBannerSlide(' + i + ',-1)" ' + (i === 0 ? 'disabled style="opacity:0.3"' : '') + '>' + (window.__ && __.settings && __.settings.up ? __('settings.up') : 'উপরে') + ' &uarr;</button>' +
+        '<button class="btn btn-sm btn-outline" onclick="moveBannerSlide(' + i + ',1)" ' + (i === bannerSlides.length-1 ? 'disabled style="opacity:0.3"' : '') + '>' + (window.__ && __.settings && __.settings.down ? __('settings.down') : 'নিচে') + ' &darr;</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="removeBannerSlide(' + i + ')" style="margin-left:auto;">' + (window.__ && __.settings && __.settings.remove_slide ? __('settings.remove_slide') : 'সরান') + ' &times;</button>' +
+      '</div>' +
+      '<input type="file" accept="image/*" style="display:none" id="banBgUpload_' + i + '" onchange="uploadBannerBg(' + i + ',this)">' +
+      '<div class="form-group"><label>' + (window.__ ? __('settings.background') : 'পেছনের ছবি') + '</label>' +
+        bannerImageHtml(s) +
+      '</div>' +
+      '<div class="form-group"><label>' + (window.__ ? __('settings.bg_color') : 'গ্রেডিয়েন্ট / রং') + '</label>' +
+        '<input type="text" id="banBg_' + i + '" value="' + esc(s.bg || 'linear-gradient(135deg,#1a73e8,#7c3aed)') + '" placeholder="linear-gradient(135deg,#color1,#color2)" style="font-size:12px;width:100%;">' +
+      '</div>' +
+      '<div class="bn-en-row">' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.title_bn') : 'শিরোনাম (বাংলা)') + '</label><input type="text" id="banTitleBn_' + i + '" value="' + esc(s.title || '') + '"></div>' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.title_en') : 'Title (English)') + '</label><input type="text" id="banTitleEn_' + i + '" value="' + esc(s.titleEn || '') + '"></div>' +
+      '</div>' +
+      '<div class="bn-en-row">' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.desc_bn') : 'বিবরণ (বাংলা)') + '</label><input type="text" id="banDescBn_' + i + '" value="' + esc(s.desc || '') + '"></div>' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.desc_en') : 'Description (English)') + '</label><input type="text" id="banDescEn_' + i + '" value="' + esc(s.descEn || '') + '"></div>' +
+      '</div>' +
+      '<div class="bn-en-row">' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.btn_bn') : 'বাটন (বাংলা)') + '</label><input type="text" id="banBtnBn_' + i + '" value="' + esc(s.btnText || '') + '"></div>' +
+        '<div class="form-group"><label>' + (window.__ ? __('settings.btn_en') : 'Button (English)') + '</label><input type="text" id="banBtnEn_' + i + '" value="' + esc(s.btnTextEn || '') + '"></div>' +
+      '</div>' +
+      '<div class="form-group"><label>' + (window.__ ? __('settings.btn_link') : 'বাটন লিংক') + '</label><input type="text" id="banLink_' + i + '" value="' + esc(s.btnLink || '/products.html') + '"></div>' +
+      '<div class="form-group"><label>' + (window.__ ? __('settings.btn_color') : 'বাটন কালার') + '</label><input type="color" id="banBtnColor_' + i + '" value="' + esc(s.btnColor || '#ffffff') + '" style="height:40px;width:80px;padding:2px;cursor:pointer;"></div>';
+    list.appendChild(card);
+  });
+}
+
+window.addBannerSlide = function() {
+  bannerSlides.push({ bg: 'linear-gradient(135deg,#1a73e8,#7c3aed)', bgImage: '', title: '', titleEn: '', desc: '', descEn: '', btnText: '', btnTextEn: '', btnLink: '/products.html' });
+  renderBannerEditor();
+};
+
+window.removeBannerSlide = function(i) {
+  bannerSlides.splice(i, 1);
+  renderBannerEditor();
+};
+
+window.moveBannerSlide = function(i, dir) {
+  var j = i + dir;
+  if (j < 0 || j >= bannerSlides.length) return;
+  var tmp = bannerSlides[i];
+  bannerSlides[i] = bannerSlides[j];
+  bannerSlides[j] = tmp;
+  renderBannerEditor();
+};
+
+window.uploadBannerBg = function(i, input) {
+  if (!input.files || !input.files[0]) return;
+  var fd = new FormData();
+  fd.append('image', input.files[0]);
+  apiAdmin('POST', '/upload', fd).then(function(data) {
+    if (data.error) { toast(data.error, 'error'); return; }
+    bannerSlides[i].bgImage = data.url;
+    bannerSlides[i].bg = '';
+    renderBannerEditor();
+    toast((window.__ ? __('toast.image_uploaded') : 'ছবি আপলোড হয়েছে'));
+  });
+};
+
+window.removeBannerImage = function(i) {
+  bannerSlides[i].bgImage = '';
+  bannerSlides[i].bg = 'linear-gradient(135deg,#1a73e8,#7c3aed)';
+  renderBannerEditor();
+};
+
+function collectBanners() {
+  return bannerSlides.map(function(s, i) {
+    return {
+      bg: document.getElementById('banBg_' + i).value,
+      bgImage: s.bgImage || '',
+      title: document.getElementById('banTitleBn_' + i).value,
+      titleEn: document.getElementById('banTitleEn_' + i).value,
+      desc: document.getElementById('banDescBn_' + i).value,
+      descEn: document.getElementById('banDescEn_' + i).value,
+      btnText: document.getElementById('banBtnBn_' + i).value,
+      btnTextEn: document.getElementById('banBtnEn_' + i).value,
+      btnLink: document.getElementById('banLink_' + i).value,
+      btnColor: document.getElementById('banBtnColor_' + i).value || '#ffffff'
+    };
+  });
+}
+
+window.saveBanners = function() {
+  var data = { banners: JSON.stringify(collectBanners()) };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+window.saveFlashEnd = function() {
+  var val = document.getElementById('settingFlashEnd').value;
+  if (!val) { toast('সময় নির্বাচন করুন', 'error'); return; }
+  var endDate = new Date(val);
+  if (isNaN(endDate.getTime())) { toast('অবৈধ সময়', 'error'); return; }
+  var data = { flash_sale_end: endDate.toISOString() };
+  var color = document.getElementById('settingFlashColorText').value.trim();
+  if (color) data.flash_sale_color = color;
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+document.getElementById('settingFlashColor').addEventListener('input', function() {
+  document.getElementById('settingFlashColorText').value = this.value;
+});
+document.getElementById('settingFlashColorText').addEventListener('input', function() {
+  var c = this.value.trim();
+  if (/^#[0-9a-f]{6}$/i.test(c)) document.getElementById('settingFlashColor').value = c;
+});
+</script>
+</body>
+</html>

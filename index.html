@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ইশপ — অনলাইন শপিং</title>
-<meta name="description" content="ইশপ — আপনার পছন্দের পণ্য কিনুন সেরা দামে। ইলেকট্রনিক্স, ফ্যাশন, হোম অ্যাপ্লায়েন্স আরও অনেক কিছু।">
+<title data-i18n="index.title">ইশপ — অনলাইন শপিং</title>
+<meta name="description" data-i18n="brand.tagline" content="ইশপ — আপনার পছন্দের পণ্য কিনুন সেরা দামে। ইলেকট্রনিক্স, ফ্যাশন, হোম অ্যাপ্লায়েন্স আরও অনেক কিছু।">
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,44 +16,24 @@
   <div class="header-inner">
     <a href="/" class="logo">ই<span>শপ</span></a>
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন...">
-      <button onclick="searchProducts()">খুঁজুন</button>
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="searchProducts()" data-i18n="nav.search_btn">খুঁজুন</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
     <nav>
-      <a href="/">হোম</a>
-      <a href="/products.html">পণ্য</a>
-      <a href="/cart.html">কার্ট <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
-      <a href="/admin/">অ্যাডমিন</a>
-      <a href="/auth.html" id="authLink">লগইন</a>
+      <a href="/" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
+      <a href="/cart.html"><span data-i18n="nav.cart">কার্ট</span> <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+       <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
+       <a href="/auth.html" id="authLink" data-no-i18n="1">লগইন</a>
     </nav>
   </div>
 </header>
 
 <!-- Banner carousel -->
 <div class="dz-banner-wrap">
-  <div class="dz-banner-track" id="bannerTrack">
-    <div class="dz-banner-slide" style="background:linear-gradient(135deg,#1a73e8,#0d47a1);">
-      <div class="dz-banner-content">
-        <h2>বিশেষ গ্রীষ্মকালীন সেল</h2>
-        <p>সেরা ব্র্যান্ডের পণ্য সেরা দামে, ডেলিভারি সারা বাংলাদেশ</p>
-        <a href="/products.html" class="dz-banner-btn">এখনই কেনাকাটা করুন</a>
-      </div>
-    </div>
-    <div class="dz-banner-slide" style="background:linear-gradient(135deg,#ff6b00,#e65100);">
-      <div class="dz-banner-content">
-        <h2>ফ্ল্যাশ সেল — ৭০% পর্যন্ত ছাড়</h2>
-        <p>সীমিত সময়ের অফার, দেরি করবেন না!</p>
-        <a href="/products.html" class="dz-banner-btn">সেল দেখুন</a>
-      </div>
-    </div>
-    <div class="dz-banner-slide" style="background:linear-gradient(135deg,#00a86b,#00695c);">
-      <div class="dz-banner-content">
-        <h2>ফ্রি ডেলিভারি</h2>
-        <p>৫০০ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি</p>
-        <a href="/products.html" class="dz-banner-btn">পণ্য দেখুন</a>
-      </div>
-    </div>
-  </div>
+  <div class="dz-banner-track" id="bannerTrack"></div>
   <div class="dz-banner-dots" id="bannerDots"></div>
   <button class="dz-banner-arrow dz-banner-prev" onclick="moveBanner(-1)">&#10094;</button>
   <button class="dz-banner-arrow dz-banner-next" onclick="moveBanner(1)">&#10095;</button>
@@ -64,9 +44,9 @@
   <!-- Flash Sale -->
   <section class="section">
     <div class="section-title">
-      <span class="dz-flash-title">&#9889; ফ্ল্যাশ সেল</span>
+      <span class="dz-flash-title" data-i18n="flash.title">&#9889; ফ্ল্যাশ সেল</span>
       <span class="dz-flash-timer" id="flashTimer">শেষ হবে ০২:০০:০০</span>
-      <a href="/products.html" style="font-size:14px;font-weight:400;">সব পণ্য কিনুন</a>
+      <a href="/products.html" style="font-size:14px;font-weight:400;" data-i18n="flash.all">সব পণ্য কিনুন</a>
     </div>
     <div class="dz-flash-grid" id="flashGrid"></div>
   </section>
@@ -74,7 +54,7 @@
   <!-- Categories -->
   <section class="section">
     <div class="section-title">
-      <span>বিভাগসমূহ</span>
+      <span data-i18n="categories.title">বিভাগসমূহ</span>
     </div>
     <div class="dz-cat-grid" id="categoryGrid"></div>
   </section>
@@ -82,12 +62,12 @@
   <!-- Just for You / Featured -->
   <section class="section">
     <div class="section-title">
-      <span>শুধুমাত্র আপনার জন্য</span>
-      <a href="/products.html?featured=1" style="font-size:14px;font-weight:400;">সব দেখুন</a>
+      <span data-i18n="justforyou.title">শুধুমাত্র আপনার জন্য</span>
+      <a href="/products.html?featured=1" style="font-size:14px;font-weight:400;" data-i18n="justforyou.seeall">সব দেখুন</a>
     </div>
     <div class="product-grid" id="featuredGrid"></div>
     <div style="text-align:center;margin-top:20px;">
-      <button class="more-btn" id="moreBtn" onclick="loadMore()">আরও দেখুন</button>
+      <button class="more-btn" id="moreBtn" onclick="loadMore()" data-i18n="more.show">আরও দেখুন</button>
     </div>
   </section>
 </div>
@@ -95,23 +75,23 @@
 <footer class="dz-footer">
   <div class="dz-footer-inner">
     <div class="dz-footer-col">
-      <h4>গ্রাহক সেবা</h4>
-      <a href="#">সাহায্য কেন্দ্র</a>
-      <a href="#">কিভাবে কিনবেন</a>
-      <a href="#">রিটার্ন ও রিফান্ড</a>
-      <a href="#">যোগাযোগ</a>
-      <a href="#">শর্তাবলী</a>
+      <h4 data-i18n="footer.customer_service">গ্রাহক সেবা</h4>
+      <a href="#" data-i18n="footer.help_center">সাহায্য কেন্দ্র</a>
+      <a href="#" data-i18n="footer.how_to_buy">কিভাবে কিনবেন</a>
+      <a href="#" data-i18n="footer.returns">রিটার্ন ও রিফান্ড</a>
+      <a href="#" data-i18n="footer.contact">যোগাযোগ</a>
+      <a href="#" data-i18n="footer.terms">শর্তাবলী</a>
     </div>
     <div class="dz-footer-col">
-      <h4>ইশপ</h4>
-      <a href="#">আমাদের সম্পর্কে</a>
-      <a href="#">ব্লগ</a>
-      <a href="#">গোপনীয়তা নীতি</a>
-      <a href="#">ইশপ অ্যাপ</a>
-      <a href="#">সেলার হন</a>
+      <h4 data-i18n="brand.name">ইশপ</h4>
+      <a href="#" data-i18n="footer.about">আমাদের সম্পর্কে</a>
+      <a href="#" data-i18n="footer.blog">ব্লগ</a>
+      <a href="#" data-i18n="footer.privacy">গোপনীয়তা নীতি</a>
+      <a href="#" data-i18n="footer.app">ইশপ অ্যাপ</a>
+      <a href="#" data-i18n="footer.seller">সেলার হন</a>
     </div>
     <div class="dz-footer-col">
-      <h4>পেমেন্ট মেথড</h4>
+      <h4 data-i18n="footer.payment_methods">পেমেন্ট মেথড</h4>
       <div class="dz-footer-payments">
         <span class="dz-pay-badge">COD</span>
         <span class="dz-pay-badge">VISA</span>
@@ -123,11 +103,13 @@
     </div>
   </div>
   <div class="dz-footer-bottom">
-    <p>&copy; 2026 ইশপ — সকল অধিকার সংরক্ষিত</p>
+    <p data-i18n="footer.copyright">&copy; 2026 ইশপ — সকল অধিকার সংরক্ষিত</p>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
