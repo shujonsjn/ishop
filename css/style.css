@@ -108,6 +108,7 @@ header {
   max-width: var(--max-width);
   margin: 0 auto;
   gap: 16px;
+  overflow: hidden;
 }
 .lang-toggle {
   background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;
@@ -920,7 +921,7 @@ th { background: var(--gradient-primary); color: var(--white); font-weight: 600;
 .status-step.active .status-label { color: var(--dark); font-weight: 600; }
 
 /* ---- Daraz Footer ---- */
-.dz-footer { background: var(--footer-bg, linear-gradient(135deg, #1f2937 0%, #111827 100%)); color: var(--footer-text, var(--white)); margin-top: 48px; }
+.dz-footer { background: var(--footer-bg, linear-gradient(135deg, #1f2937 0%, #111827 100%)); color: var(--footer-text, var(--white)); margin-top: 48px; overflow: hidden; }
 .dz-footer-inner {
   max-width: var(--max-width); margin: 0 auto; padding: 24px 16px;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
