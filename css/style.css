@@ -294,6 +294,8 @@ nav a:hover { color: #fff; }
   cursor: pointer;
   transition: all 0.25s ease;
   border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
 }
 .product-card:hover {
   transform: translateY(-4px);
@@ -301,10 +303,10 @@ nav a:hover { color: #fff; }
   border-color: var(--primary-light);
 }
 .product-card-image {
-  width: 100%; height: 180px;
+  width: 100%; height: 220px;
   object-fit: contain; background: #fff; padding: 8px;
 }
-.product-card-body { padding: 14px; }
+.product-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
 .product-card-title {
   font-size: var(--fs-lg); font-weight: 600;
   display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
@@ -409,6 +411,7 @@ nav a:hover { color: #fff; }
   box-shadow: var(--shadow); overflow: hidden; cursor: pointer;
   position: relative; transition: all 0.25s ease;
   border: 1px solid transparent;
+  display: flex; flex-direction: column;
 }
 .dz-flash-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); border-color: var(--primary-light); }
 .dz-flash-badge {
@@ -416,8 +419,8 @@ nav a:hover { color: #fff; }
   background: var(--flash-color, var(--danger)); color: var(--white);
   padding: 2px 8px; border-radius: 4px; font-size: var(--fs-sm); font-weight: 700;
 }
-.dz-flash-image { width: 100%; height: 180px; object-fit: contain; background: #fff; padding: 8px; }
-.dz-flash-body { padding: 14px; }
+.dz-flash-image { width: 100%; height: 220px; object-fit: contain; background: #fff; padding: 8px; }
+.dz-flash-body { padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
 .dz-flash-title { font-size: var(--fs-lg); font-weight: 600; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
 .dz-flash-price { font-size: var(--fs-2xl); font-weight: 700; color: var(--primary); }
 .dz-flash-compare { font-size: var(--fs-base); color: var(--gray); text-decoration: line-through; margin-left: 8px; }
@@ -495,6 +498,10 @@ nav a:hover { color: #fff; }
   border: 1px solid #e0e0e0;
   padding: 24px;
   align-items: start;
+  width: 1168px;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Gallery - Left column */
@@ -510,8 +517,8 @@ nav a:hover { color: #fff; }
 }
 .pd-img-wrap { position: relative; }
 .pd-img-wrap img {
-  width: 100%; display: block; cursor: zoom-in; object-fit: contain; background: #fff;
-  min-height: 340px; max-height: 380px;
+  width: 100%; display: block; cursor: zoom-in; object-fit: cover;
+  height: 420px; background: #fff;
 }
 .pd-no-img { height: 340px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bbb; font-size: var(--fs-7xl); }
 .pd-no-img p { font-size: var(--fs-base); margin-top: 8px; }
@@ -761,19 +768,19 @@ nav a:hover { color: #fff; }
 @media (max-width: 960px) {
   .pd-layout { grid-template-columns: 300px 1fr; }
   .pd-trust-col { grid-column: 1 / -1; }
-  .pd-gallery .pd-img-wrap img { min-height: 280px; max-height: 300px; }
+  .pd-gallery .pd-img-wrap img { min-height: 320px; max-height: 360px; }
   .pd-gallery .pd-thumb { width: 50px; height: 50px; }
 }
 @media (max-width: 768px) {
-  .pd-layout { grid-template-columns: 1fr; padding: 16px; }
+  .pd-layout { grid-template-columns: 1fr; padding: 16px; min-height: auto; }
   .pd-gallery-inner { max-width: 400px; margin: 0 auto; }
-  .pd-gallery .pd-img-wrap img { min-height: 280px; }
+  .pd-gallery .pd-img-wrap img { min-height: 320px; }
   .pd-trust-col { grid-column: 1; }
 }
 @media (max-width: 640px) {
-  .pd-layout { grid-template-columns: 1fr; padding: 12px; }
+  .pd-layout { grid-template-columns: 1fr; padding: 12px; min-height: auto; }
   .pd-gallery-inner { max-width: 300px; margin: 0 auto; }
-  .pd-gallery .pd-img-wrap img { min-height: 240px; }
+  .pd-gallery .pd-img-wrap img { min-height: 260px; }
   .pd-gallery .pd-thumb { width: 50px; height: 50px; }
   .pd-trust-col { grid-column: 1; }
   .pd-floating-cart { bottom: 16px; right: 16px; width: 48px; height: 48px; }
