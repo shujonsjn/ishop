@@ -268,4 +268,6 @@
       adminLink.style.display = 'none';
     });
   }
+
+  document.body.style.opacity = '1';
 })();
