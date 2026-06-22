@@ -69,6 +69,8 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 body {
   font-family: var(--font-bn);
   font-size: var(--fs-base);
@@ -98,11 +100,7 @@ header {
   top: 0;
   z-index: 100;
   overflow: hidden;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  scrollbar-width: none;
 }
-header::-webkit-scrollbar { display: none; }
 :root { --header-bg: linear-gradient(135deg, #1a73e8 0%, #7c3aed 100%); }
 .header-inner {
   display: flex;
