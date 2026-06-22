@@ -1740,6 +1740,7 @@
   }
 
   initAdmin();
+  document.body.style.opacity = '1';
 })();
 
 window.adminLogout = function() {
