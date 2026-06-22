@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title>পেজ এডিটর v2.0</title>
+<link rel="stylesheet" href="../css/style.css?v=3.2">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.pages-layout { display: flex; gap: 24px; }
+.pages-sidebar { width: 220px; min-width: 220px; }
+.pages-sidebar button { display: block; width: 100%; padding: 10px 14px; margin-bottom: 4px; border: none; border-radius: 8px; background: transparent; cursor: pointer; text-align: left; font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: all 0.2s; }
+.pages-sidebar button:hover { background: #f3f4f6; }
+.pages-sidebar button.active { background: var(--primary); color: #fff; font-weight: 600; }
+.pages-editor { flex: 1; }
+.section-editor { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.section-editor .sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.section-editor .sec-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
+.section-editor label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+.section-editor input[type="text"], .section-editor textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; }
+.section-editor textarea { min-height: 100px; }
+.section-editor input:focus, .section-editor textarea:focus { border-color: var(--primary); outline: none; }
+.btn-add { padding: 10px 20px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+.btn-remove { padding: 4px 10px; background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+.btn-save { padding: 12px 32px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+.btn-save:hover { background: var(--primary-dark); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo" id="siteLogo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
+    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <div class="admin-sidebar">
+    <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+    <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+    <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+    <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+    <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+    <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+    <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+    <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+    <hr class="sidebar-divider">
+    <a href="/admin/pages.html" class="active"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+    <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+    <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+  </div>
+  <div class="admin-content">
+    <div class="page-header"><h2>📄 পেজ এডিটর</h2></div>
+
+    <div id="loginPrompt" class="login-prompt">
+      <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2 data-i18n="admin.login_title">Admin Login</h2>
+        <input id="adminEmail" type="text" placeholder="admin@email.com">
+        <input id="adminPass" type="password" placeholder="Password">
+        <button onclick="adminLogin()">Sign In</button>
+      </div>
+    </div>
+
+    <div id="pagesApp" style="display:none;">
+      <div class="pages-layout">
+        <div class="pages-sidebar" id="pagesSidebar"></div>
+        <div class="pages-editor" id="pagesEditor"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+var token = localStorage.getItem('adminToken');
+if (!token) { document.getElementById('loginPrompt').style.display = 'block'; } 
+else { document.getElementById('pagesApp').style.display = 'block'; }
+
+function adminLogin() {
+  var e = document.getElementById('adminEmail').value;
+  var p = document.getElementById('adminPass').value;
+  fetch('/api/users/login', { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body: 'email='+encodeURIComponent(e)+'&password='+encodeURIComponent(p) })
+  .then(function(r){return r.json()}).then(function(d){
+    if (d.token && d.user && d.user.role === 'admin') {
+      localStorage.setItem('adminToken', d.token);
+      token = d.token;
+      document.getElementById('loginPrompt').style.display = 'none';
+      document.getElementById('pagesApp').style.display = 'block';
+      loadPages();
+    } else { alert('Invalid credentials'); }
+  });
+}
+
+function adminLogout() { localStorage.removeItem('adminToken'); window.location = '/admin/'; }
+
+var pageDefs = [
+  { key: 'page_home', bn: 'হোমপেজ', en: 'Homepage', icon: '🏠', type: 'home' },
+  { key: 'page_products', bn: 'পণ্য পেজ', en: 'Products Page', icon: '📦', type: 'products_page' },
+  { key: 'page_about', bn: 'আমাদের সম্পর্কে', en: 'About Us', icon: '🏢', type: 'sections' },
+  { key: 'page_blog', bn: 'ব্লগ', en: 'Blog', icon: '📝', type: 'blog' },
+  { key: 'page_privacy', bn: 'প্রাইভেসি পলিসি', en: 'Privacy Policy', icon: '🔒', type: 'sections' },
+  { key: 'page_terms', bn: 'শর্তাবলী', en: 'Terms & Conditions', icon: '📜', type: 'sections' },
+  { key: 'page_refund', bn: 'রিফান্ড ও রিটার্ন', en: 'Refund & Returns', icon: '💰', type: 'sections' },
+  { key: 'page_how_to_buy', bn: 'কিভাবে কিনবেন', en: 'How to Buy', icon: '🛒', type: 'steps' },
+  { key: 'page_help', bn: 'হেল্প সেন্টার', en: 'Help Center', icon: '❓', type: 'faq' },
+  { key: 'page_app', bn: 'ইশপ অ্যাপ', en: 'iShop App', icon: '📱', type: 'features' },
+  { key: 'page_seller', bn: 'সেলার হোন', en: 'Become a Seller', icon: '🏪', type: 'benefits' }
+];
+
+var allData = {};
+var currentPage = 'page_home';
+
+function loadPages() {
+  fetch('/api/admin/settings', { headers: { Authorization: 'Bearer ' + token } })
+  .then(function(r){return r.json()}).then(function(s){
+    pageDefs.forEach(function(p){
+      try { allData[p.key] = JSON.parse(s[p.key] || '{}'); } catch(e){ allData[p.key] = {}; }
+    });
+    renderSidebar();
+    renderEditor(currentPage);
+  });
+}
+
+function renderSidebar() {
+  var el = document.getElementById('pagesSidebar');
+  var lang = localStorage.getItem('lang') || 'bn';
+  el.innerHTML = pageDefs.map(function(p){
+    var label = lang === 'en' ? p.en : p.bn;
+    return '<button onclick="switchPage(\'' + p.key + '\')" class="' + (p.key === currentPage ? 'active' : '') + '">' + p.icon + ' ' + label + '</button>';
+  }).join('');
+}
+
+function switchPage(key) {
+  currentPage = key;
+  renderSidebar();
+  renderEditor(key);
+}
+
+function renderEditor(key) {
+  var def = pageDefs.find(function(p){return p.key === key;});
+  var data = allData[key] || {};
+  var el = document.getElementById('pagesEditor');
+  var html = '';
+
+  if (def.type === 'home') {
+    html += '<div class="section-editor"><h3 style="margin-bottom:16px;">🏠 হোমপেজ কন্টেন্ট</h3>';
+    html += '<label>ফ্ল্যাশ সেল শিরোনাম (বাংলা)</label><input type="text" id="homeFlashTitle" value="' + esc(data.flashTitle || '') + '">';
+    html += '<label style="margin-top:8px;">ফ্ল্যাশ সেল শিরোনাম (English)</label><input type="text" id="homeFlashTitleEn" value="' + esc(data.flashTitleEn || '') + '">';
+    html += '<label style="margin-top:8px;">"সব পণ্য কিনুন" লিংক (বাংলা)</label><input type="text" id="homeFlashAll" value="' + esc(data.flashAll || '') + '">';
+    html += '<label style="margin-top:8px;">"সব পণ্য কিনুন" লিংক (English)</label><input type="text" id="homeFlashAllEn" value="' + esc(data.flashAllEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>ক্যাটাগরি শিরোনাম (বাংলা)</label><input type="text" id="homeCatTitle" value="' + esc(data.catTitle || '') + '">';
+    html += '<label style="margin-top:8px;">ক্যাটাগরি শিরোনাম (English)</label><input type="text" id="homeCatTitleEn" value="' + esc(data.catTitleEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>"শুধুমাত্র আপনার জন্য" শিরোনাম (বাংলা)</label><input type="text" id="homeJfyTitle" value="' + esc(data.jfyTitle || '') + '">';
+    html += '<label style="margin-top:8px;">"শুধুমাত্র আপনার জন্য" শিরোনাম (English)</label><input type="text" id="homeJfyTitleEn" value="' + esc(data.jfyTitleEn || '') + '">';
+    html += '<label style="margin-top:8px;">"সব দেখুন" লিংক (বাংলা)</label><input type="text" id="homeJfySeeAll" value="' + esc(data.jfySeeAll || '') + '">';
+    html += '<label style="margin-top:8px;">"সব দেখুন" লিংক (English)</label><input type="text" id="homeJfySeeAllEn" value="' + esc(data.jfySeeAllEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>"আরও দেখুন" বাটন (বাংলা)</label><input type="text" id="homeMoreBtn" value="' + esc(data.moreBtn || '') + '">';
+    html += '<label style="margin-top:8px;">"আরও দেখুন" বাটন (English)</label><input type="text" id="homeMoreBtnEn" value="' + esc(data.moreBtnEn || '') + '">';
+    html += '</div>';
+  }
+  else if (def.type === 'products_page') {
+    html += '<div class="section-editor"><h3 style="margin-bottom:16px;">📦 পণ্য পেজ কন্টেন্ট</h3>';
+    html += '<label>পেজ শিরোনাম (বাংলা)</label><input type="text" id="prodTitle" value="' + esc(data.title || '') + '">';
+    html += '<label style="margin-top:8px;">পেজ শিরোনাম (English)</label><input type="text" id="prodTitleEn" value="' + esc(data.titleEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>সাজানো লেবেল (বাংলা)</label><input type="text" id="prodSortLabel" value="' + esc(data.sortLabel || '') + '">';
+    html += '<label style="margin-top:8px;">সাজানো লেবেল (English)</label><input type="text" id="prodSortLabelEn" value="' + esc(data.sortLabelEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>সাইডবার শিরোনাম (বাংলা)</label><input type="text" id="prodSidebarTitle" value="' + esc(data.sidebarTitle || '') + '">';
+    html += '<label style="margin-top:8px;">সাইডবার শিরোনাম (English)</label><input type="text" id="prodSidebarTitleEn" value="' + esc(data.sidebarTitleEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>AI রেকমেন্ডেশন (বাংলা)</label><input type="text" id="prodAiTitle" value="' + esc(data.aiTitle || '') + '">';
+    html += '<label style="margin-top:8px;">AI রেকমেন্ডেশন (English)</label><input type="text" id="prodAiTitleEn" value="' + esc(data.aiTitleEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>খালি অবস্থা শিরোনাম (বাংলা)</label><input type="text" id="prodEmptyTitle" value="' + esc(data.emptyTitle || '') + '">';
+    html += '<label style="margin-top:8px;">খালি অবস্থা শিরোনাম (English)</label><input type="text" id="prodEmptyTitleEn" value="' + esc(data.emptyTitleEn || '') + '">';
+    html += '<label style="margin-top:8px;">খালি অবস্থা টিপস (বাংলা)</label><input type="text" id="prodEmptyHint" value="' + esc(data.emptyHint || '') + '">';
+    html += '<label style="margin-top:8px;">খালি অবস্থা টিপস (English)</label><input type="text" id="prodEmptyHintEn" value="' + esc(data.emptyHintEn || '') + '">';
+    html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>ব্রেডক্রাম্ব — হোম (বাংলা)</label><input type="text" id="prodBreadHome" value="' + esc(data.breadHome || '') + '">';
+    html += '<label style="margin-top:8px;">ব্রেডক্রাম্ব — হোম (English)</label><input type="text" id="prodBreadHomeEn" value="' + esc(data.breadHomeEn || '') + '">';
+    html += '<label style="margin-top:8px;">ব্রেডক্রাম্ব — পণ্য (বাংলা)</label><input type="text" id="prodBreadProducts" value="' + esc(data.breadProducts || '') + '">';
+    html += '<label style="margin-top:8px;">ব্রেডক্রাম্ব — পণ্য (English)</label><input type="text" id="prodBreadProductsEn" value="' + esc(data.breadProductsEn || '') + '">';
+    html += '</div>';
+  }
+  else if (def.type === 'sections' || def.type === 'steps') {
+    html += '<div class="section-editor"><label>পেজ শিরোনাম</label><input type="text" id="pgTitle" value="' + esc(data.title || '') + '"></div>';
+    var items = data.sections || [];
+    items.forEach(function(sec, i){
+      html += '<div class="section-editor"><div class="sec-header"><h3>সেকশন ' + (i+1) + '</h3><button class="btn-remove" onclick="removeSection(' + i + ')">✕ সরান</button></div>';
+      html += '<label>শিরোনাম</label><input type="text" id="secTitle_' + i + '" value="' + esc(sec.title || '') + '">';
+      html += '<label style="margin-top:8px;">বিবরণ</label><textarea id="secContent_' + i + '" rows="4">' + esc(sec.content || '') + '</textarea></div>';
+    });
+    html += '<button class="btn-add" onclick="addSection()">+ নতুন সেকশন</button>';
+  }
+  else if (def.type === 'blog') {
+    html += '<div class="section-editor"><label>পেজ শিরোনাম</label><input type="text" id="pgTitle" value="ব্লগ"></div>';
+    var posts = data.posts || [];
+    posts.forEach(function(post, i){
+      html += '<div class="section-editor"><div class="sec-header"><h3>পোস্ট ' + (i+1) + '</h3><button class="btn-remove" onclick="removePost(' + i + ')">✕ সরান</button></div>';
+      html += '<label>শিরোনাম</label><input type="text" id="postTitle_' + i + '" value="' + esc(post.title || '') + '">';
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;"><div><label>তারিখ</label><input type="text" id="postDate_' + i + '" value="' + esc(post.date || '') + '"></div><div><label>ট্যাগ</label><input type="text" id="postTag_' + i + '" value="' + esc(post.tag || '') + '"></div></div>';
+      html += '<label style="margin-top:8px;">বিবরণ</label><textarea id="postDesc_' + i + '" rows="3">' + esc(post.desc || '') + '</textarea></div>';
+    });
+    html += '<button class="btn-add" onclick="addPost()">+ নতুন পোস্ট</button>';
+  }
+  else if (def.type === 'faq') {
+    html += '<div class="section-editor"><label>পেজ শিরোনাম</label><input type="text" id="pgTitle" value="' + esc(data.title || '') + '"></div>';
+    var faqs = data.faqs || [];
+    faqs.forEach(function(faq, i){
+      html += '<div class="section-editor"><div class="sec-header"><h3>FAQ ' + (i+1) + '</h3><button class="btn-remove" onclick="removeFaq(' + i + ')">✕ সরান</button></div>';
+      html += '<label>প্রশ্ন</label><input type="text" id="faqQ_' + i + '" value="' + esc(faq.q || '') + '">';
+      html += '<label style="margin-top:8px;">উত্তর</label><textarea id="faqA_' + i + '" rows="3">' + esc(faq.a || '') + '</textarea></div>';
+    });
+    html += '<button class="btn-add" onclick="addFaq()">+ নতুন FAQ</button>';
+  }
+  else if (def.type === 'features') {
+    html += '<div class="section-editor"><label>শিরোনাম</label><input type="text" id="pgTitle" value="' + esc(data.title || '') + '"></div>';
+    html += '<div class="section-editor"><label>সাবটাইটেল</label><input type="text" id="pgSubtitle" value="' + esc(data.subtitle || '') + '"></div>';
+    var feats = data.features || [];
+    feats.forEach(function(f, i){
+      html += '<div class="section-editor"><div class="sec-header"><h3>ফিচার ' + (i+1) + '</h3><button class="btn-remove" onclick="removeFeature(' + i + ')">✕ সরান</button></div>';
+      html += '<div style="display:grid;grid-template-columns:80px 1fr;gap:12px;">';
+      html += '<div><label>আইকন</label><input type="text" id="featIcon_' + i + '" value="' + esc(f.icon || '') + '" style="text-align:center;font-size:20px;"></div>';
+      html += '<div><label>শিরোনাম</label><input type="text" id="featTitle_' + i + '" value="' + esc(f.title || '') + '"></div></div>';
+      html += '<label style="margin-top:8px;">বিবরণ</label><input type="text" id="featDesc_' + i + '" value="' + esc(f.desc || '') + '"></div>';
+    });
+    html += '<button class="btn-add" onclick="addFeature()">+ নতুন ফিচার</button>';
+  }
+  else if (def.type === 'benefits') {
+    html += '<div class="section-editor"><label>শিরোনাম</label><input type="text" id="pgTitle" value="' + esc(data.title || '') + '"></div>';
+    html += '<div class="section-editor"><label>সাবটাইটেল</label><input type="text" id="pgSubtitle" value="' + esc(data.subtitle || '') + '"></div>';
+    var bens = data.benefits || [];
+    bens.forEach(function(b, i){
+      html += '<div class="section-editor"><div class="sec-header"><h3>বেনিফিট ' + (i+1) + '</h3><button class="btn-remove" onclick="removeBenefit(' + i + ')">✕ সরান</button></div>';
+      html += '<div style="display:grid;grid-template-columns:80px 1fr;gap:12px;">';
+      html += '<div><label>আইকন</label><input type="text" id="benIcon_' + i + '" value="' + esc(b.icon || '') + '" style="text-align:center;font-size:20px;"></div>';
+      html += '<div><label>শিরোনাম</label><input type="text" id="benTitle_' + i + '" value="' + esc(b.title || '') + '"></div></div>';
+      html += '<label style="margin-top:8px;">বিবরণ</label><input type="text" id="benDesc_' + i + '" value="' + esc(b.desc || '') + '"></div>';
+    });
+    html += '<button class="btn-add" onclick="addBenefit()">+ নতুন বেনিফিট</button>';
+  }
+
+  html += '<button class="btn-save" onclick="savePage()">💾 সংরক্ষণ করুন</button>';
+  el.innerHTML = html;
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function savePage() {
+  var def = pageDefs.find(function(p){return p.key === currentPage;});
+  var data = allData[currentPage] || {};
+
+  data.title = document.getElementById('pgTitle') ? document.getElementById('pgTitle').value : data.title;
+  var sub = document.getElementById('pgSubtitle');
+  if (sub) data.subtitle = sub.value;
+
+  if (def.type === 'home') {
+    data.flashTitle = document.getElementById('homeFlashTitle') ? document.getElementById('homeFlashTitle').value : '';
+    data.flashTitleEn = document.getElementById('homeFlashTitleEn') ? document.getElementById('homeFlashTitleEn').value : '';
+    data.flashAll = document.getElementById('homeFlashAll') ? document.getElementById('homeFlashAll').value : '';
+    data.flashAllEn = document.getElementById('homeFlashAllEn') ? document.getElementById('homeFlashAllEn').value : '';
+    data.catTitle = document.getElementById('homeCatTitle') ? document.getElementById('homeCatTitle').value : '';
+    data.catTitleEn = document.getElementById('homeCatTitleEn') ? document.getElementById('homeCatTitleEn').value : '';
+    data.jfyTitle = document.getElementById('homeJfyTitle') ? document.getElementById('homeJfyTitle').value : '';
+    data.jfyTitleEn = document.getElementById('homeJfyTitleEn') ? document.getElementById('homeJfyTitleEn').value : '';
+    data.jfySeeAll = document.getElementById('homeJfySeeAll') ? document.getElementById('homeJfySeeAll').value : '';
+    data.jfySeeAllEn = document.getElementById('homeJfySeeAllEn') ? document.getElementById('homeJfySeeAllEn').value : '';
+    data.moreBtn = document.getElementById('homeMoreBtn') ? document.getElementById('homeMoreBtn').value : '';
+    data.moreBtnEn = document.getElementById('homeMoreBtnEn') ? document.getElementById('homeMoreBtnEn').value : '';
+  }
+  else if (def.type === 'products_page') {
+    data.title = document.getElementById('prodTitle') ? document.getElementById('prodTitle').value : '';
+    data.titleEn = document.getElementById('prodTitleEn') ? document.getElementById('prodTitleEn').value : '';
+    data.sortLabel = document.getElementById('prodSortLabel') ? document.getElementById('prodSortLabel').value : '';
+    data.sortLabelEn = document.getElementById('prodSortLabelEn') ? document.getElementById('prodSortLabelEn').value : '';
+    data.sidebarTitle = document.getElementById('prodSidebarTitle') ? document.getElementById('prodSidebarTitle').value : '';
+    data.sidebarTitleEn = document.getElementById('prodSidebarTitleEn') ? document.getElementById('prodSidebarTitleEn').value : '';
+    data.aiTitle = document.getElementById('prodAiTitle') ? document.getElementById('prodAiTitle').value : '';
+    data.aiTitleEn = document.getElementById('prodAiTitleEn') ? document.getElementById('prodAiTitleEn').value : '';
+    data.emptyTitle = document.getElementById('prodEmptyTitle') ? document.getElementById('prodEmptyTitle').value : '';
+    data.emptyTitleEn = document.getElementById('prodEmptyTitleEn') ? document.getElementById('prodEmptyTitleEn').value : '';
+    data.emptyHint = document.getElementById('prodEmptyHint') ? document.getElementById('prodEmptyHint').value : '';
+    data.emptyHintEn = document.getElementById('prodEmptyHintEn') ? document.getElementById('prodEmptyHintEn').value : '';
+    data.breadHome = document.getElementById('prodBreadHome') ? document.getElementById('prodBreadHome').value : '';
+    data.breadHomeEn = document.getElementById('prodBreadHomeEn') ? document.getElementById('prodBreadHomeEn').value : '';
+    data.breadProducts = document.getElementById('prodBreadProducts') ? document.getElementById('prodBreadProducts').value : '';
+    data.breadProductsEn = document.getElementById('prodBreadProductsEn') ? document.getElementById('prodBreadProductsEn').value : '';
+  }
+  else if (def.type === 'sections' || def.type === 'steps') {
+    data.sections = [];
+    var i = 0;
+    while (document.getElementById('secTitle_' + i)) {
+      data.sections.push({ title: document.getElementById('secTitle_' + i).value, content: document.getElementById('secContent_' + i).value });
+      i++;
+    }
+  }
+  else if (def.type === 'blog') {
+    data.posts = [];
+    var i = 0;
+    while (document.getElementById('postTitle_' + i)) {
+      data.posts.push({ title: document.getElementById('postTitle_' + i).value, date: document.getElementById('postDate_' + i).value, tag: document.getElementById('postTag_' + i).value, desc: document.getElementById('postDesc_' + i).value });
+      i++;
+    }
+  }
+  else if (def.type === 'faq') {
+    data.faqs = [];
+    var i = 0;
+    while (document.getElementById('faqQ_' + i)) {
+      data.faqs.push({ q: document.getElementById('faqQ_' + i).value, a: document.getElementById('faqA_' + i).value });
+      i++;
+    }
+  }
+  else if (def.type === 'features') {
+    data.features = [];
+    var i = 0;
+    while (document.getElementById('featTitle_' + i)) {
+      data.features.push({ icon: document.getElementById('featIcon_' + i).value, title: document.getElementById('featTitle_' + i).value, desc: document.getElementById('featDesc_' + i).value });
+      i++;
+    }
+  }
+  else if (def.type === 'benefits') {
+    data.benefits = [];
+    var i = 0;
+    while (document.getElementById('benTitle_' + i)) {
+      data.benefits.push({ icon: document.getElementById('benIcon_' + i).value, title: document.getElementById('benTitle_' + i).value, desc: document.getElementById('benDesc_' + i).value });
+      i++;
+    }
+  }
+
+  allData[currentPage] = data;
+  var body = {};
+  body[currentPage] = data;
+  fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) })
+  .then(function(r){return r.json()}).then(function(){
+    toast('সংরক্ষিত হয়েছে!', 'success');
+  }).catch(function(){ toast('সংরক্ষণ ব্যর্থ', 'error'); });
+}
+
+function addSection() {
+  var d = allData[currentPage] || {};
+  if (!d.sections) d.sections = [];
+  d.sections.push({ title: '', content: '' });
+  allData[currentPage] = d;
+  renderEditor(currentPage);
+}
+function removeSection(i) {
+  var d = allData[currentPage]; if(d.sections) d.sections.splice(i,1);
+  renderEditor(currentPage);
+}
+function addPost() {
+  var d = allData[currentPage] || {};
+  if (!d.posts) d.posts = [];
+  d.posts.push({ title: '', date: '', tag: '', desc: '' });
+  allData[currentPage] = d;
+  renderEditor(currentPage);
+}
+function removePost(i) {
+  var d = allData[currentPage]; if(d.posts) d.posts.splice(i,1);
+  renderEditor(currentPage);
+}
+function addFaq() {
+  var d = allData[currentPage] || {};
+  if (!d.faqs) d.faqs = [];
+  d.faqs.push({ q: '', a: '' });
+  allData[currentPage] = d;
+  renderEditor(currentPage);
+}
+function removeFaq(i) {
+  var d = allData[currentPage]; if(d.faqs) d.faqs.splice(i,1);
+  renderEditor(currentPage);
+}
+function addFeature() {
+  var d = allData[currentPage] || {};
+  if (!d.features) d.features = [];
+  d.features.push({ icon: '✨', title: '', desc: '' });
+  allData[currentPage] = d;
+  renderEditor(currentPage);
+}
+function removeFeature(i) {
+  var d = allData[currentPage]; if(d.features) d.features.splice(i,1);
+  renderEditor(currentPage);
+}
+function addBenefit() {
+  var d = allData[currentPage] || {};
+  if (!d.benefits) d.benefits = [];
+  d.benefits.push({ icon: '✅', title: '', desc: '' });
+  allData[currentPage] = d;
+  renderEditor(currentPage);
+}
+function removeBenefit(i) {
+  var d = allData[currentPage]; if(d.benefits) d.benefits.splice(i,1);
+  renderEditor(currentPage);
+}
+
+if (token) loadPages();
+</script>
+</body>
+</html>

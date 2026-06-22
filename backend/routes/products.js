@@ -64,7 +64,7 @@ router.get('/', async (req, res) => {
     const rows = await db.prepare(sql).all(...args, limitNum, offset);
 
     res.json({
-      products: rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })),
+      products: rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]'), sizes: JSON.parse(r.sizes || '[]'), has_sizes: !!r.has_sizes })),
       total,
       page: pageNum,
       limit: limitNum,
@@ -78,7 +78,7 @@ router.get('/', async (req, res) => {
 router.get('/featured', async (req, res) => {
   try {
     const rows = await db.prepare("SELECT p.*, c.name AS category_name, c.en_name AS category_en_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.active = 1 AND (p.featured = 1 OR (p.compare_price IS NOT NULL AND p.compare_price > p.price)) ORDER BY p.featured DESC, (p.compare_price - p.price) DESC LIMIT 8").all();
-    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]') })));
+    res.json(rows.map(r => ({ ...r, images: JSON.parse(r.images || '[]'), colors: JSON.parse(r.colors || '[]'), sizes: JSON.parse(r.sizes || '[]'), has_sizes: !!r.has_sizes })));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -89,9 +89,10 @@ router.get('/:slug', async (req, res) => {
     const row = await db.prepare('SELECT p.*, c.name AS category_name, c.en_name AS category_en_name, c.slug AS category_slug FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE (p.slug = ? OR p.id = ?) AND p.active = 1').get(req.params.slug, isNaN(req.params.slug) ? -1 : Number(req.params.slug));
     if (!row) return res.status(404).json({ error: 'Product not found' });
     row.images = JSON.parse(row.images || '[]');
-
-   
-    row.colors = JSON.parse(row.colors || '[]'); const reviews = await db.prepare('SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON u.id = r.user_id WHERE r.product_id = ? ORDER BY r.id DESC').all(row.id);
+    row.colors = JSON.parse(row.colors || '[]');
+    row.sizes = JSON.parse(row.sizes || '[]');
+    row.color_images = JSON.parse(row.color_images || '{}');
+    row.has_sizes = !!row.has_sizes; const reviews = await db.prepare('SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON u.id = r.user_id WHERE r.product_id = ? ORDER BY r.id DESC').all(row.id);
     const avgRating = await db.prepare('SELECT COALESCE(AVG(rating), 0) AS avg, COUNT(*) AS count FROM reviews WHERE product_id = ?').get(row.id);
 
     res.json({ ...row, reviews, avg_rating: avgRating.avg, review_count: avgRating.count });
@@ -126,6 +127,39 @@ router.post('/:id/review', authMiddleware, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+/* ---- Q&A ---- */
+router.get('/:id/questions', async (req, res) => {
+  try {
+    const rows = await db.prepare('SELECT pq.*, u.name AS user_name FROM product_questions pq LEFT JOIN users u ON u.id = pq.user_id WHERE pq.product_id = ? ORDER BY pq.id DESC').all(req.params.id);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/:id/questions', async (req, res) => {
+  try {
+    const { question } = req.body || {};
+    if (!question || !question.trim()) {
+      return res.status(400).json({ error: 'Question is required' });
+    }
+    const product = await db.prepare('SELECT 1 FROM products WHERE id = ?').get(req.params.id);
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    const userId = req.user ? req.user.id : null;
+    const result = await db.prepare('INSERT INTO product_questions (product_id, user_id, question) VALUES (?, ?, ?)').run(req.params.id, userId, question.trim());
+    res.status(201).json({ id: Number(result.lastInsertRowid), ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/:id/variants', async (req, res) => {
+  try {
+    const variants = await db.prepare('SELECT * FROM product_variants WHERE product_id = ?').all(req.params.id);
+    res.json(variants);
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 export { upload, slugify };

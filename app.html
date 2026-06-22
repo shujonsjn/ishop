@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title>à¦‡à¦¶à¦ª à¦…à§à¦¯à¦¾à¦ª v2.0</title>
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="css/style.css?v=3.4">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+.app-page { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+.app-hero { text-align: center; padding: 40px 0 20px; }
+.app-hero .icon { font-size: 64px; margin-bottom: 12px; }
+.app-hero h1 { font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+.app-hero p { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
+.app-btns { display: flex; gap: 16px; justify-content: center; }
+.app-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; text-decoration: none; color: #fff; transition: all 0.25s; }
+.app-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+.app-btn.play { background: #000; }
+.app-btn.store { background: #0071e3; }
+.app-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px 0; }
+.app-feat { text-align: center; padding: 24px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; }
+.app-feat .icon { font-size: 36px; margin-bottom: 10px; }
+.app-feat h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.app-feat p { font-size: 13px; color: var(--gray); margin: 0; line-height: 1.6; }
+.app-screens { text-align: center; margin: 40px 0; }
+.app-screens h2 { font-size: 22px; font-weight: 600; margin-bottom: 20px; }
+.app-placeholder { width: 200px; height: 360px; background: linear-gradient(135deg, var(--primary-light), #e0e7ff); border-radius: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" id="siteLogo">à¦‡à¦¶à¦ª</a>
+    <script>(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var sn=s.site_name||'';var el=document.getElementById('siteLogo');if(el){if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>';}else if(sn.length>1){el.innerHTML=sn.charAt(0)+'<span>'+sn.slice(1)+'</span>';}else{el.textContent=sn;}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);if(s.header_show_search==='0'&&document.getElementById('searchBox'))document.getElementById('searchBox').style.display='none';if(s.header_show_home==='0'&&document.getElementById('navHome'))document.getElementById('navHome').style.display='none';if(s.header_show_products==='0'&&document.getElementById('navProducts'))document.getElementById('navProducts').style.display='none';if(s.header_show_cart==='0'&&document.getElementById('navCart'))document.getElementById('navCart').style.display='none';if(s.header_show_admin==='0'&&document.getElementById('navAdmin'))document.getElementById('navAdmin').style.display='none';if(s.header_show_lang==='0'&&document.getElementById('langToggle'))document.getElementById('langToggle').style.display='none';if(s.header_show_auth==='0'&&document.getElementById('authLink'))document.getElementById('authLink').style.display='none';if(s.header_padding){var hd=document.querySelector('header');if(hd)hd.style.padding=s.header_padding;}if(s.header_search_placeholder_bn){var si=document.getElementById('searchInput');if(si){var lg=localStorage.getItem('lang')||'bn';si.placeholder=lg==='en'&&s.header_search_placeholder_en?s.header_search_placeholder_en:s.header_search_placeholder_bn;}}if(s.header_show_orders==='0'){document.querySelectorAll('a[href*="profile.html#orders"]').forEach(function(a){a.style.display='none';});}if(s.header_show_orders==='1'){document.querySelectorAll('a[href*="profile.html#orders"]').forEach(function(a){a.style.display='';});}}catch(e){}})();</script>
+    <div class="search-box" id="searchBox">
+      <input type="text" id="searchInput" placeholder="à¦ªà¦£à§à¦¯ à¦–à§à¦à¦œà§à¦¨..." data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="searchProducts()" aria-label="Search">ðŸ”</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+    <nav>
+      <a href="/" id="navHome" data-i18n="nav.home">à¦¹à§‹à¦®</a>
+      <a href="/products.html" id="navProducts" data-i18n="nav.products">à¦ªà¦£à§à¦¯</a>
+      <a href="/cart.html" id="navCart"><span data-i18n="nav.cart">à¦•à¦¾à¦°à§à¦Ÿ</span> <span class="cart-icon">ðŸ›’<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/profile.html#orders" id="navOrders" data-i18n="nav.orders">à¦…à¦°à§à¦¡à¦¾à¦°</a>
+      <a href="/admin/" data-i18n="nav.admin" id="navAdmin" style="display:none">à¦…à§à¦¯à¦¾à¦¡à¦®à¦¿à¦¨</a>
+      <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
+      <a href="/auth.html" id="authLink" data-no-i18n="1">à¦²à¦—à¦‡à¦¨</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <div class="app-page">
+    <div id="pageContent"></div>
+  </div>
+</div>
+
+<footer class="dz-footer">
+  <div class="dz-footer-inner"></div>
+  <div class="dz-footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 â€” à¦¸à¦•à¦² à¦…à¦§à¦¿à¦•à¦¾à¦° à¦¸à¦‚à¦°à¦•à§à¦·à¦¿à¦¤</p></div>
+</footer>
+
+<script src="js/i18n-strings.js"></script>
+<script>
+(function(){
+  try {
+    var s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    var lang = localStorage.getItem('lang') || 'bn';
+    var t = function(bn,en){ return lang==='en'?(en||bn):bn; };
+    var d = document;
+    var i18nKeys = window.__i18nStrings || {};
+    d.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(i18nKeys[k]) el.textContent = t(i18nKeys[k].bn,i18nKeys[k].en);
+    });
+    var ph = d.getElementById('searchInput');
+    if(ph) ph.placeholder = t('à¦ªà¦£à§à¦¯ à¦–à§à¦à¦œà§à¦¨...','Search products...');
+    var lt = d.getElementById('langToggle');
+    if(lt) lt.textContent = lang==='bn'?'EN':'à¦¬à¦¾à¦‚à¦²à¦¾';
+    var fc = null;
+    try { fc = s.footer_content ? JSON.parse(s.footer_content) : null; } catch(e){}
+    var fwrap = d.querySelector('.dz-footer .dz-footer-inner');
+    if (fc && fc.length && fwrap) {
+      fwrap.innerHTML = fc.map(function(col){
+        var h = '<div class="dz-footer-col">';
+        if(col.type==='payments'){
+          h += '<h4>'+(lang==='en'?(col.titleEn||col.title):col.title)+'</h4>';
+          h += '<div class="dz-footer-payments">';
+          ['COD','VISA','MC','bKash','Nagad','Rocket'].forEach(function(b){h+='<span class="dz-pay-badge">'+b+'</span>';});
+          h += '</div>';
+        } else {
+          if(col.title||col.titleEn) h += '<h4>'+(lang==='en'?(col.titleEn||col.title):col.title)+'</h4>';
+          (col.links||[]).forEach(function(lnk){
+            var txt = lang==='en'?(lnk.textEn||lnk.text):lnk.text;
+            if(txt) h += '<a href="'+(lnk.url||'#')+'">'+txt+'</a>';
+          });
+        }
+        return h+'</div>';
+      }).join('');
+    }
+    var al = d.getElementById('authLink');
+    if(al){
+      var token = localStorage.getItem('token');
+      if(token){ al.style.display='none'; }
+      else { al.textContent=t('à¦²à¦—à¦‡à¦¨','Login'); al.href='/auth.html'; }
+    }
+    var adminLink = d.getElementById('adminLink');
+    if(adminLink){
+      var tok = localStorage.getItem('token');
+      if(!tok){ adminLink.style.display='none'; }
+      else { try { var us=JSON.parse(localStorage.getItem('user')||'{}'); adminLink.style.display=us.role==='admin'?'':'none'; } catch(e){ adminLink.style.display='none'; } }
+    }
+  } catch(e){}
+})();
+</script>
+<script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+loadCartCount();
+window.searchProducts = function() {
+  var q = document.getElementById('searchInput');
+  if (q && q.value) window.location = '/products.html?search=' + encodeURIComponent(q.value);
+};
+</script>
+<script>
+fetch('/api/admin/settings').then(function(r){return r.json()}).then(function(s){
+  try{window.applySiteTheme(s)}catch(e){}
+  var raw=s.page_app;
+  if(!raw)return;
+  var p=typeof raw==='string'?JSON.parse(raw):raw;
+  var c=document.getElementById('pageContent');
+  var h='';
+  if(p.title||p.icon||p.subtitle){
+    h+='<div class="app-hero">';
+    if(p.icon)h+='<div class="icon">'+p.icon+'</div>';
+    if(p.title)h+='<h1>'+p.title+'</h1>';
+    if(p.subtitle)h+='<p>'+p.subtitle+'</p>';
+    h+='<div class="app-btns">';
+    if(p.play_link)h+='<a href="'+p.play_link+'" class="app-btn play"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/></svg> Google Play</a>';
+    if(p.store_link)h+='<a href="'+p.store_link+'" class="app-btn store"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,16.56 2.93,11.3 4.7,7.72C5.57,5.94 7.36,4.86 9.28,4.84C10.56,4.81 11.78,5.72 12.57,5.72C13.36,5.72 14.85,4.62 16.4,4.8C17.06,4.83 18.86,5.06 19.96,6.56C19.87,6.62 17.57,8 17.58,10.88C17.61,14.32 20.57,15.43 20.6,15.44C20.57,15.52 20.12,17.07 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/></svg> App Store</a>';
+    h+='</div></div>';
+  }
+  if(Array.isArray(p.features)){
+    h+='<div class="app-features">';
+    p.features.forEach(function(f){
+      h+='<div class="app-feat">';
+      if(f.icon)h+='<div class="icon">'+f.icon+'</div>';
+      if(f.title)h+='<h3>'+f.title+'</h3>';
+      if(f.desc)h+='<p>'+f.desc+'</p>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  c.innerHTML=h;
+}).catch(function(){});
+</script>
+</body>
+</html>

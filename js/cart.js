@@ -1,5 +1,5 @@
 ﻿/* ==========================================================
-   CART.JS — Shopping cart
+   CART.JS — Shopping cart (Daraz-style)
    ========================================================== */
 (function(){
   loadCartCount();
@@ -10,30 +10,64 @@
       var el = document.getElementById('cartContent');
       if (!el) return;
       if (!data.items || data.items.length === 0) {
-        el.innerHTML = '<div class=\"empty-state\"><h3>' + __('cart.empty') + '</h3><p>' + __('cart.see_products') + ' <a href=\"/products.html\">' + __('cart.product_list') + '</a></p></div>';
+        el.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:16px;">🛒</div><h3>' + __('cart.empty') + '</h3><p>' + __('cart.see_products') + ' <a href="/products.html">' + __('cart.product_list') + '</a></p></div>';
         return;
       }
-      var html = '<div style=\"max-width:800px;margin:0 auto;\">';
+
+      var itemCount = data.items.reduce(function(sum, i) { return sum + i.quantity; }, 0);
+
+      var html = '<div class="cart-layout">';
+
+      html += '<div class="cart-items-col">';
+      html += '<div class="cart-items-header"><span>' + __('cart.heading') + '</span><span class="cart-items-count">' + itemCount + ' ' + __('cart.items') + '</span></div>';
+
       data.items.forEach(function(item) {
-        var img = (item.images && item.images.length) ? item.images[0] : '';
-        html += '<div class=\"cart-item\">' +
-          (img ? '<img class=\"cart-item-image\" src=\"' + esc(img) + '\">' : '<div class=\"cart-item-image\" style=\"background:var(--light-gray);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gray);\">' + __('products.no_image') + '</div>') +
-          '<div class=\"cart-item-info\">' +
-          '<div class=\"cart-item-title\">' + esc(window.productName(item)) + '</div>' +
-          '<div class=\"cart-item-price\">' + taka(item.price) + '</div>' +
-          (item.color ? '<div class=\"cart-item-color\">' + __('cart.color') + ' <span>' + esc(item.color) + '</span></div>' : '') +
+        var img = '';
+        if (item.color && item.color_images) {
+          var ci = item.color_images;
+          if (typeof ci === 'string') { try { ci = JSON.parse(ci); } catch(e) { ci = {}; } }
+          if (ci[item.color] && ci[item.color].length) img = ci[item.color][0];
+        }
+        if (!img) img = window.productImage(item);
+
+        var variants = [];
+        if (item.color) variants.push(esc(item.color));
+        if (item.size) variants.push(esc(item.size));
+
+        html += '<div class="cart-item">' +
+          '<a href="/product.html?id=' + item.product_id + '" class="cart-item-img-wrap">' +
+          (img ? '<img class="cart-item-image" src="' + esc(img) + '" alt="' + esc(window.productName(item)) + '">' : '<div class="cart-item-image cart-item-no-img">📷</div>') +
+          '</a>' +
+          '<div class="cart-item-info">' +
+          '<a href="/product.html?id=' + item.product_id + '" class="cart-item-title">' + esc(window.productName(item)) + '</a>' +
+          (variants.length ? '<div class="cart-item-variants">' + variants.map(function(v) { return '<span class="cart-variant-tag">' + v + '</span>'; }).join('') + '</div>' : '') +
+          '<div class="cart-item-price">' + taka(item.price) + '</div>' +
           '</div>' +
-          '<div class=\"cart-item-actions\">' +
-          '<button class=\"qty-btn\" onclick=\"updateQty(' + item.id + ',' + (item.quantity - 1) + ')\">-</button>' +
-          '<input class=\"qty-input\" type=\"text\" value=\"' + item.quantity + '\" readonly>' +
-          '<button class=\"qty-btn\" onclick=\"updateQty(' + item.id + ',' + (item.quantity + 1) + ')\">+</button>' +
-          '<button class=\"btn btn-sm btn-danger\" onclick=\"removeItem(' + item.id + ')\">' + __('cart.remove') + '</button>' +
+          '<div class="cart-item-right">' +
+          '<div class="cart-item-qty">' +
+          '<button class="qty-btn" onclick="updateQty(' + item.id + ',' + (item.quantity - 1) + ')">−</button>' +
+          '<span class="qty-display">' + item.quantity + '</span>' +
+          '<button class="qty-btn" onclick="updateQty(' + item.id + ',' + (item.quantity + 1) + ')">+</button>' +
           '</div>' +
-          '<div style=\"font-weight:700;min-width:80px;text-align:right;\">' + taka(item.subtotal) + '</div>' +
+          '<div class="cart-item-subtotal">' + taka(item.subtotal) + '</div>' +
+          '<button class="cart-item-remove" onclick="removeItem(' + item.id + ')" title="' + __('cart.remove') + '">✕</button>' +
+          '</div>' +
           '</div>';
       });
-      html += '<div style=\"text-align:right;padding:20px 0;font-size:20px;font-weight:700;\">' + __('cart.total') + ' ' + taka(data.total) + '</div>';
-      html += '<div style=\"text-align:right;\"><a href=\"/checkout.html\" class=\"btn btn-secondary\">' + __('cart.checkout') + '</a></div>';
+      html += '</div>';
+
+      html += '<div class="cart-summary-col">';
+      html += '<div class="cart-summary-box">';
+      html += '<h3>' + __('cart.order_summary') + '</h3>';
+      html += '<div class="cart-summary-row"><span>' + __('cart.items') + ' (' + itemCount + ')</span><span>' + taka(data.total) + '</span></div>';
+      html += '<div class="cart-summary-row"><span>' + __('cart.delivery') + '</span><span>' + __('cart.calculated_at_checkout') + '</span></div>';
+      html += '<div class="cart-summary-divider"></div>';
+      html += '<div class="cart-summary-row cart-summary-total"><span>' + __('cart.total') + '</span><span>' + taka(data.total) + '</span></div>';
+      html += '<a href="/checkout.html" class="btn btn-primary btn-block cart-checkout-btn">' + __('cart.checkout') + '</a>';
+      html += '<div class="cart-summary-note">🔒 ' + __('cart.secure_checkout') + '</div>';
+      html += '</div>';
+      html += '</div>';
+
       html += '</div>';
       el.innerHTML = html;
     });

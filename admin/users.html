@@ -1,100 +1,62 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="admin.title_users">ব্যবহারকারী — ইশপ</title>
-<link rel="stylesheet" href="../css/style.css">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-.admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
-.admin-sidebar { background: var(--dark); padding: 20px; }
-.admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
-.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
-.admin-content { padding: 24px; }
-</style>
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title data-i18n="admin.title_users">ব্যবহারকারী v2.0</title>
+<link rel="stylesheet" href="../css/style.css?v=3.2">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <a href="/admin/" class="logo">ইশপ <span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
+    <a href="/admin/" class="logo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
     <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
   </div>
 </header>
 
 <div class="admin-layout">
-  <div class="admin-sidebar">
-    <a href="/admin/" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
-    <a href="/admin/product-new.html" data-i18n="admin.new_product" style="background:var(--primary);color:var(--white);border-radius:6px;font-weight:600;margin-bottom:8px;">+ নতন পণ্য</a>
-    <a href="/admin/products.html" data-i18n="admin.products">পণ্য</a>
-    <a href="/admin/categories.html" data-i18n="admin.categories">ক্যাটাগরি</a>
-    <a href="/admin/users.html" class="active" data-i18n="admin.users">ব্যবহারকারী</a>
-    <a href="/admin/orders.html" data-i18n="admin.orders">অর্ডার</a>
-    <a href="/admin/settings.html" style="margin-top:20px;" data-i18n="admin.settings">সেটিংস</a>
-    <a href="/admin/profile.html" data-i18n="nav.profile">প্রোফাইল</a>
-  </div>
-  <div class="admin-content">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <h2 data-i18n="admin.users">ব্যবহারকারী</h2>
+    <div class="admin-sidebar">
+      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      <a href="/admin/users.html" class="active"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+<hr class="sidebar-divider">
+      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+      <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
     </div>
-    <div id="loginPrompt" style="display:none;">
-      <p style="color:var(--gray);margin-bottom:12px;" data-i18n="admin.login_prompt">অ্যাডমিন লগইন করুন</p>
-      <div class="form-group"><input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com"></div>
-      <div class="form-group"><input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="পাসওয়ার্ড"></div>
-      <button class="btn btn-primary" onclick="adminLogin()" data-i18n="admin.login_btn">লগইন</button>
-    </div>
-    <div id="usersTableWrap"></div>
-  </div>
-</div>
-
-<div id="productModal" style="display:none;" class="product-panel">
-  <div class="panel-overlay" onclick="closeProductForm()"></div>
-  <div class="panel-content">
-    <div class="panel-header">
-      <h3 id="modalTitle">নতুন পণ্য</h3>
-      <button class="panel-close" onclick="closeProductForm()">&times;</button>
-    </div>
-    <div class="form-group"><label data-i18n="admin.name_bn">নাম (বাংলা)</label><input type="text" id="pfName"></div>
-    <div class="form-group"><label data-i18n="admin.name_en">Name (English)</label><input type="text" id="pfEName"></div>
-    <div class="form-group"><label data-i18n="admin.category">ক্যাটাগরি</label><select id="pfCategory"></select></div>
-    <div class="form-group"><label data-i18n="admin.price">দাম (৳)</label><input type="number" id="pfPrice" step="0.01"></div>
-    <div class="form-group"><label data-i18n="admin.compare_price">ছাড় মূল্য (ঐচ্ছিক)</label><input type="number" id="pfCompare" step="0.01"></div>
-    <div class="form-group"><label data-i18n="admin.stock">স্টক</label><input type="number" id="pfStock" value="10"></div>
-    <div class="form-group"><label data-i18n="admin.colors">রং (কমা দিয়ে আলাদা করুন, যেমন: লাল, নীল, কালো)</label><input type="text" id="pfColors" data-i18n-placeholder="admin.colors_placeholder" placeholder="যেমন: লাল, নীল, কালো"></div>
-    <div class="form-group">
-      <label><input type="checkbox" id="pfFeatured"> <span data-i18n="admin.featured">ফিচার্ড</span></label>
-    </div>
-    <div class="form-group"><label data-i18n="admin.description">বিবরণ</label>
-      <div class="desc-toolbar" id="descToolbar">
-        <button type="button" onclick="descFormat('bold')" title="Bold"><b>B</b></button>
-        <button type="button" onclick="descFormat('italic')" title="Italic"><i>I</i></button>
-        <button type="button" onclick="descFormat('underline')" title="Underline"><u>U</u></button>
-        <span class="tb-sep"></span>
-        <button type="button" onclick="descFormat('h1')" title="Heading 1">H1</button>
-        <button type="button" onclick="descFormat('h2')" title="Heading 2">H2</button>
-        <button type="button" onclick="descFormat('h3')" title="Heading 3">H3</button>
-        <span class="tb-sep"></span>
-        <button type="button" onclick="descFormat('ul')" title="Bullet list">• UL</button>
-        <button type="button" onclick="descFormat('ol')" title="Numbered list">1. OL</button>
-        <span class="tb-sep"></span>
-        <button type="button" onclick="descFormat('link')" title="Insert link">🔗</button>
-        <button type="button" onclick="descFormat('image')" title="Insert image">🖼</button>
-        <span class="tb-sep"></span>
-        <button type="button" onclick="descFormat('left')" title="Align left">≡</button>
-        <button type="button" onclick="descFormat('center')" title="Align center">≡</button>
-        <span class="tb-sep"></span>
-        <button type="button" onclick="toggleDescPreview()" id="descPreviewBtn" data-i18n="admin.preview">Preview</button>
+    <div class="admin-content">
+      <div class="page-header"><h2 data-i18n="admin.customers_heading">গ্রাহক ব্যবস্থাপনা</h2></div>
+    <div id="loginPrompt" class="login-prompt">
+      <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2 data-i18n="admin.login_title">Admin Login</h2>
+        <p class="login-sub" data-i18n="admin.login_sub">Sign in to manage users</p>
+        <input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com">
+        <input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="Password">
+        <button onclick="adminLogin()" data-i18n="admin.login_btn">Sign In</button>
+        <p class="login-footer" data-i18n="admin.login_footer">Admin Panel</p>
       </div>
-      <textarea id="pfDesc" rows="8" style="font-family:var(--font-bn);font-size:14px;width:100%;padding:10px;border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);resize:vertical;" oninput="autoDescPreview()"></textarea>
-      <div id="pfDescPreview" style="display:none;padding:16px;border:1px solid var(--border);border-top:0;border-radius:0 0 var(--radius) var(--radius);background:var(--white);line-height:1.8;font-size:15px;"></div>
     </div>
-    <div class="form-group"><label data-i18n="admin.image_upload">ছবি আপলোড</label><input type="file" id="pfImageUpload" accept="image/*" onchange="uploadProductImage(this)"> <span id="uploadStatus" style="font-size:13px;color:var(--gray);margin-left:8px;"></span></div>
-    <div class="form-group"><label data-i18n="admin.image_url">ছবির URL (JSON array)</label><textarea id="pfImages" rows="2">[]</textarea></div>
-    <div id="pfPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
-    <div style="display:flex;gap:12px;">
-      <button class="btn btn-primary" onclick="saveProduct()" data-i18n="admin.save">সংরক্ষণ</button>
-      <button class="btn btn-outline" onclick="closeProductForm()" data-i18n="admin.cancel">বাতিল</button>
+    <div id="usersAdminWrap" style="display:none;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <span id="userCount" class="product-count"></span>
+        <button class="btn btn-outline btn-sm" onclick="downloadUsersExcel()" style="display:flex;align-items:center;gap:6px;">📥 Excel ডাউনলোড</button>
+      </div>
+
+      <div id="usersTableWrap"></div>
     </div>
   </div>
 </div>
@@ -102,5 +64,58 @@
 <script src="../js/i18n.js"></script>
 <script src="../js/api.js"></script>
 <script src="../js/admin.js"></script>
+<script>
+function downloadUsersExcel() {
+  apiAdmin('GET', '/users?role=user').then(function(users) {
+    if (!users || users.length === 0) { toast('ডাউনলোড করার মতো ডাটা নেই', 'error'); return; }
+    var lang = window.getLang ? getLang() : 'bn';
+    var headers = ['ID', lang === 'en' ? 'Name' : 'নাম', 'Email', lang === 'en' ? 'Phone' : 'ফোন', lang === 'en' ? 'Address' : 'ঠিকানা', lang === 'en' ? 'Role' : 'রোল', lang === 'en' ? 'Joined' : 'যোগদান'];
+    var rows = [headers.join(',')];
+    users.forEach(function(u) {
+      var row = [
+        u.id,
+        '"' + (u.name || '').replace(/"/g, '""') + '"',
+        '"' + (u.email || '').replace(/"/g, '""') + '"',
+        '"' + (u.phone || '').replace(/"/g, '""') + '"',
+        '"' + (u.address || '').replace(/"/g, '""') + '"',
+        '"' + (u.role || '').replace(/"/g, '""') + '"',
+        '"' + (u.created_at || '').replace(/"/g, '""') + '"'
+      ];
+      rows.push(row.join(','));
+    });
+    var csv = '\uFEFF' + rows.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'customers_' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('Excel ডাউনলোড হয়েছে!');
+  });
+}
+
+function toggleUserRole(id, currentRole) {
+  var newRole = currentRole === 'admin' ? 'user' : 'admin';
+  var label = newRole === 'admin' ? __('confirm.make_admin') : __('confirm.make_user');
+  if (!confirm(label)) return;
+  apiAdmin('PUT', '/users/' + id + '/role', { role: newRole }).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('toast.role_updated'));
+    loadAdminUsers();
+  });
+}
+
+function deleteUser(id) {
+  if (!confirm(__('confirm.delete_user'))) return;
+  apiAdmin('DELETE', '/users/' + id).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('toast.user_deleted'));
+    loadAdminUsers();
+  });
+}
+</script>
 </body>
 </html>

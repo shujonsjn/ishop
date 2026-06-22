@@ -1,106 +1,376 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="settings.title">সেটিংস — ইশপ</title>
-<link rel="stylesheet" href="../css/style.css">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-.admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
-.admin-sidebar { background: var(--dark); padding: 20px; }
-.admin-sidebar a { display: block; color: #d1d5db; padding: 10px; border-radius: 6px; margin-bottom: 4px; }
-.admin-sidebar a:hover, .admin-sidebar a.active { background: rgba(255,255,255,0.1); color: var(--white); }
-.admin-content { padding: 24px; display:flex; flex-direction:column; align-items:center; }
-.settings-card { max-width: 640px; width:100%; background: var(--white); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
-.logo-preview { max-width: 200px; max-height: 60px; margin-top: 8px; border-radius: 4px; border: 1px solid var(--border); }
-.banner-slide-card { background: #f9fafb; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-.banner-slide-card .form-group { margin-bottom: 8px; }
-.banner-slide-card .form-group label { font-weight: 500; font-size: 12px; color: var(--gray); }
-.banner-slide-card .bn-en-row { display: flex; gap: 8px; }
-.banner-slide-card .bn-en-row .form-group { flex: 1; }
-.banner-preview { width: 100%; height: 100px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 12px; color: #999; position: relative; overflow: hidden; }
-.banner-preview img { width: 100%; height: 100%; object-fit: cover; }
-.banner-preview .overlay-text { position: absolute; text-align: center; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.3); }
-.banner-preview .overlay-text h4 { font-size: 14px; margin-bottom: 2px; }
-.banner-preview .overlay-text p { font-size: 10px; opacity: 0.8; }
-.banner-img-upload { width:100%; height:80px; border-radius:6px; background-size:cover; background-position:center; display:flex; align-items:flex-end; overflow:hidden; cursor:pointer; }
-.banner-img-empty { border:2px dashed var(--border); background:#f3f4f6; align-items:center; justify-content:center; }
-.banner-img-placeholder { display:flex; flex-direction:column; align-items:center; gap:4px; color:#9ca3af; font-size:12px; }
-.banner-img-icon { font-size:24px; }
-.banner-img-actions { display:flex; gap:6px; align-items:center; width:100%; padding:6px 8px; background:linear-gradient(transparent,rgba(0,0,0,0.6)); }
-.banner-img-label { font-size:11px; color:#fff; flex:1; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
-</style>
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title data-i18n="settings.title">সেটিংস v2.0</title>
+<link rel="stylesheet" href="../css/style.css?v=3.2">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <a href="/admin/" class="logo" id="siteLogo">ইশপ <span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
+    <a href="/admin/" class="logo" id="siteLogo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
     <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
   </div>
 </header>
 
 <div class="admin-layout">
-  <div class="admin-sidebar">
-    <a href="/admin/" data-i18n="admin.dashboard">ড্যাশবোর্ড</a>
-    <a href="/admin/product-new.html" data-i18n="admin.new_product" style="background:var(--primary);color:var(--white);border-radius:6px;font-weight:600;margin-bottom:8px;">+ নতন পণ্য</a>
-    <a href="/admin/products.html" data-i18n="admin.products">পণ্য</a>
-    <a href="/admin/categories.html" data-i18n="admin.categories">ক্যাটাগরি</a>
-    <a href="/admin/users.html" data-i18n="admin.users">ব্যবহারকারী</a>
-    <a href="/admin/orders.html" data-i18n="admin.orders">অর্ডার</a>
-    <a href="/admin/settings.html" class="active" data-i18n="admin.settings" style="margin-top:20px;">সেটিংস</a>
-    <a href="/admin/profile.html" data-i18n="nav.profile">প্রোফাইল</a>
-  </div>
+    <div class="admin-sidebar">
+      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+<hr class="sidebar-divider">
+      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+      <a href="/admin/settings.html" class="active"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+    </div>
   <div class="admin-content">
-    <div id="loginPrompt" style="display:none;text-align:center;padding:60px 20px;">
-      <h2 data-i18n="admin.login_title">অ্যাডমিন লগইন</h2>
-      <div style="max-width:320px;margin:0 auto;">
-        <input id="adminEmail" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius);">
-        <input id="adminPass" type="password" placeholder="Password" style="width:100%;padding:10px;margin-bottom:8px;border:1px solid var(--border);border-radius:var(--radius);">
-        <button class="btn btn-primary" onclick="adminLogin()" style="width:100%;padding:10px;" data-i18n="admin.login_btn">লগইন</button>
-      </div>
-    </div>
-    <h2 style="margin-bottom:20px;text-align:center;width:100%;" data-i18n="settings.heading">সাইট সেটিংস</h2>
-    <div class="settings-card">
-      <div class="form-group"><label data-i18n="settings.site_name">সাইটের নাম</label><input type="text" id="settingSiteName"></div>
-      <div class="form-group">
-        <label data-i18n="settings.logo">লোগো</label>
-        <input type="file" id="logoUpload" accept="image/*" style="display:none" onchange="uploadLogo(this)">
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button class="btn btn-outline" onclick="document.getElementById('logoUpload').click()" data-i18n="settings.upload_logo">লোগো আপলোড</button>
-          <button class="btn btn-outline" style="color:var(--danger);border-color:var(--danger);" onclick="removeLogo()" data-i18n="settings.remove_logo">লোগো সরান</button>
-        </div>
-        <div id="logoPreviewWrap" style="display:none;margin-top:8px;"><img id="logoPreview" class="logo-preview"></div>
-      </div>
-      <div class="form-group"><label data-i18n="settings.logo_url">লোগো URL</label><input type="text" id="settingLogoUrl" placeholder="/uploads/logo.png"></div>
-      <button class="btn btn-primary" onclick="saveSettings()" data-i18n="settings.save">সেটিংস সংরক্ষণ</button>
-    </div>
-
-    <h2 style="margin:32px 0 16px;text-align:center;width:100%;" data-i18n="settings.banners_heading">হিরো ব্যানার</h2>
-    <div class="settings-card">
-      <div id="bannerEditorList"></div>
-      <div style="margin-top:12px;">
-        <button class="btn btn-outline btn-sm" onclick="addBannerSlide()" data-i18n="settings.add_slide">+ স্লাইড যোগ করুন</button>
-        <button class="btn btn-primary" onclick="saveBanners()" data-i18n="settings.save_banners">ব্যানার সংরক্ষণ</button>
+    <div class="page-header"><h2 data-i18n="admin.settings">সেটিংস</h2></div>
+    <div id="loginPrompt" class="login-prompt">
+      <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2 data-i18n="admin.login_title">Admin Login</h2>
+        <p class="login-sub" data-i18n="admin.login_sub">Sign in to manage settings</p>
+        <input id="adminEmail" type="text" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com">
+        <input id="adminPass" type="password" data-i18n-placeholder="admin.login_pass_ph" placeholder="Password">
+        <button onclick="adminLogin()" data-i18n="admin.login_btn">Sign In</button>
+        <p class="login-footer" data-i18n="admin.login_footer">Admin Panel</p>
       </div>
     </div>
 
-    <h2 style="margin:32px 0 16px;text-align:center;width:100%;" data-i18n="settings.flash_heading">ফ্ল্যাশ সেল</h2>
-    <div class="settings-card">
-      <div class="form-group">
-        <label data-i18n="settings.flash_end_time">শেষ হওয়ার সময়</label>
-        <input type="datetime-local" id="settingFlashEnd" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);">
+    <div class="settings-layout">
+      <div class="settings-sidebar">
+        <button class="settings-tab" data-tab="site" onclick="switchSettingsTab('site')">
+          <span class="settings-tab-icon">🏪</span>
+          <span data-i18n="settings.tab_site">সাইট নাম</span>
+        </button>
+        <button class="settings-tab" data-tab="header" onclick="switchSettingsTab('header')">
+          <span class="settings-tab-icon">📌</span>
+          <span data-i18n="settings.tab_header">হেডার</span>
+        </button>
+        <button class="settings-tab" data-tab="banners" onclick="switchSettingsTab('banners')">
+          <span class="settings-tab-icon">🖼️</span>
+          <span data-i18n="settings.tab_banners">হিরো ব্যানার</span>
+        </button>
+        <button class="settings-tab" data-tab="flash" onclick="switchSettingsTab('flash')">
+          <span class="settings-tab-icon">⚡</span>
+          <span data-i18n="settings.tab_flash">ফ্ল্যাশ সেল</span>
+        </button>
+        <button class="settings-tab" data-tab="texts" onclick="switchSettingsTab('texts')">
+          <span class="settings-tab-icon">✏️</span>
+          <span data-i18n="settings.tab_texts">কাস্টম টেক্সট</span>
+        </button>
+        <button class="settings-tab" data-tab="theme" onclick="switchSettingsTab('theme')">
+          <span class="settings-tab-icon">🎨</span>
+          <span data-i18n="settings.tab_theme">থিম কাস্টমাইজ</span>
+        </button>
+        <button class="settings-tab" data-tab="footer" onclick="switchSettingsTab('footer')">
+          <span class="settings-tab-icon">📝</span>
+          <span data-i18n="settings.tab_footer">ফুটার এডিটর</span>
+        </button>
+        <button class="settings-tab" data-tab="payment" onclick="switchSettingsTab('payment')">
+          <span class="settings-tab-icon">💳</span>
+          <span data-i18n="settings.tab_payment">SSL Commerz</span>
+        </button>
+        <button class="settings-tab" data-tab="delivery" onclick="switchSettingsTab('delivery')">
+          <span class="settings-tab-icon">🚚</span>
+          <span data-i18n="settings.tab_delivery">ডেলিভারি চার্জ</span>
+        </button>
+        <button class="settings-tab" data-tab="trust" onclick="switchSettingsTab('trust')">
+          <span class="settings-tab-icon">🛡️</span>
+          <span data-i18n="settings.tab_trust">ট্রাস্ট ব্যাজ</span>
+        </button>
       </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label data-i18n="settings.flash_font_color">ফন্টের রং</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input type="color" id="settingFlashColor" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
-          <input type="text" id="settingFlashColorText" placeholder="#e74c3c" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+      <div class="settings-content">
+
+    <!-- TAB: Site Name -->
+    <div class="settings-panel active" id="settingsTab_site">
+      <h3 class="settings-panel-title" data-i18n="settings.site_name">সাইটের নাম</h3>
+      <div class="settings-card">
+        <div class="form-group"><label data-i18n="settings.site_name">সাইটের নাম</label><input type="text" id="settingSiteName"></div>
+        <div class="form-group">
+          <label data-i18n="settings.logo">লোগো</label>
+          <input type="file" id="logoUpload" accept="image/*" style="display:none" onchange="uploadLogo(this)">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="btn btn-outline" onclick="document.getElementById('logoUpload').click()" data-i18n="settings.upload_logo">লোগো আপলোড</button>
+            <button class="btn btn-outline" style="color:var(--danger);border-color:var(--danger);" onclick="removeLogo()" data-i18n="settings.remove_logo">লোগো সরান</button>
+          </div>
+          <div id="logoPreviewWrap" style="display:none;margin-top:8px;"><img id="logoPreview" class="logo-preview"></div>
+        </div>
+        <div class="form-group"><label data-i18n="settings.logo_url">লোগো URL</label><input type="text" id="settingLogoUrl" placeholder="/uploads/logo.png"></div>
+        <button class="btn btn-primary" onclick="saveSettings()" data-i18n="settings.save">সেটিংস সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Header -->
+    <div class="settings-panel" id="settingsTab_header">
+      <h3 class="settings-panel-title">📌 হেডার সেটিংস</h3>
+      <div class="settings-card">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🔍 সার্চ বক্স</h4>
+        <div class="form-group"><label>সার্চ প্লেসহোল্ডার (বাংলা)</label><input type="text" id="settingHeaderSearchBn" placeholder="পণ্য খুঁজুন..."></div>
+        <div class="form-group"><label>সার্চ প্লেসহোল্ডার (English)</label><input type="text" id="settingHeaderSearchEn" placeholder="Search products..."></div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowSearch" checked> সার্চ বক্স দেখান
+          </label>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🔗 নেভিগেশন লিংক</h4>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowHome" checked> হোম লিংক দেখান
+          </label>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowProducts" checked> পণ্য লিংক দেখান
+          </label>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowCart" checked> কার্ট লিংক দেখান
+          </label>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowOrders"> অর্ডার লিংক দেখান
+          </label>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowAdmin" checked> অ্যাডমিন লিংক দেখান
+          </label>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🌐 ভাষা ও অন্যান্য</h4>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowLang" checked> ভাষা টগল দেখান
+          </label>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="settingHeaderShowAuth" checked> লগইন/প্রোফাইল দেখান
+          </label>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🎨 হেডার সাইজ</h4>
+        <div class="form-group"><label>হেডার প্যাডিং (উপর/নিচ)</label><input type="text" id="settingHeaderPadding" placeholder="10px 16px"></div>
+        <button class="btn btn-primary" onclick="saveHeaderSettings()">💾 সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Hero Banners -->
+    <div class="settings-panel" id="settingsTab_banners">
+      <h3 class="settings-panel-title" data-i18n="settings.banners_heading">হিরো ব্যানার</h3>
+      <div class="settings-card">
+        <div class="form-group" style="max-width:300px;margin-bottom:16px;">
+          <label data-i18n="settings.default_banner_height">ডিফল্ট ব্যানার উচ্চতা (px)</label>
+          <input type="number" id="settingBannerHeight" placeholder="340" min="0" step="10">
+        </div>
+        <div id="bannerEditorList"></div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-outline btn-sm" onclick="addBannerSlide()" data-i18n="settings.add_slide">+ স্লাইড যোগ করুন</button>
+          <button class="btn btn-primary" onclick="saveBanners()" data-i18n="settings.save_banners">ব্যানার সংরক্ষণ</button>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveFlashEnd()" data-i18n="settings.save_flash">ফ্ল্যাশ সেল সংরক্ষণ</button>
     </div>
+
+    <!-- TAB: Flash Sale -->
+    <div class="settings-panel" id="settingsTab_flash">
+      <h3 class="settings-panel-title" data-i18n="settings.flash_heading">ফ্ল্যাশ সেল</h3>
+      <div class="settings-card">
+        <div class="form-group">
+          <label data-i18n="settings.flash_end_time">শেষ হওয়ার সময়</label>
+          <input type="datetime-local" id="settingFlashEnd" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);">
+        </div>
+        <button class="btn btn-primary" onclick="saveFlashEnd()" data-i18n="settings.save_flash">ফ্ল্যাশ সেল সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Custom Texts -->
+    <div class="settings-panel" id="settingsTab_texts">
+      <h3 class="settings-panel-title" data-i18n="settings.text_heading">কাস্টম টেক্সট</h3>
+      <div class="settings-card">
+        <div class="bn-en-row">
+          <div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> <span data-i18n="settings.text_flash_title">ফ্ল্যাশ সেল শিরোনাম (বাংলা)</span></label>
+            <input type="text" id="settingTextFlashTitleBn" placeholder="⚡ ফ্ল্যাশ সেল" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+          <div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> <span data-i18n="settings.text_flash_title_en">Flash Sale Title (English)</span></label>
+            <input type="text" id="settingTextFlashTitleEn" placeholder="⚡ Flash Sale" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> <span data-i18n="settings.text_flash_all">ফ্ল্যাশ সেল "সব পণ্য" লিংক (বাংলা)</span></label>
+            <input type="text" id="settingTextFlashAllBn" placeholder="সব পণ্য কিনুন" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+          <div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> Flash Sale All Link (English)</label>
+            <input type="text" id="settingTextFlashAllEn" placeholder="Buy All Products" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+        </div>
+        <div class="form-group"><label data-i18n="settings.text_flash_all_link">লিংক URL</label>
+          <input type="text" id="settingTextFlashAllLink" placeholder="/products.html" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> <span data-i18n="settings.text_categories_title">বিভাগ সেকশন শিরোনাম (বাংলা)</span></label>
+            <input type="text" id="settingTextCategoriesTitleBn" placeholder="বিভাগসমূহ" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+          <div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> Categories Section Title (English)</label>
+            <input type="text" id="settingTextCategoriesTitleEn" placeholder="Categories" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> <span data-i18n="settings.text_jfy_title">"শুধুমাত্র আপনার জন্য" শিরোনাম (বাংলা)</span></label>
+            <input type="text" id="settingTextJfyTitleBn" placeholder="শুধুমাত্র আপনার জন্য" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+          <div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> "Just for You" Title (English)</label>
+            <input type="text" id="settingTextJfyTitleEn" placeholder="Just for You" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;"></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveTexts()" data-i18n="settings.save_texts">টেক্সট সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Theme -->
+    <div class="settings-panel" id="settingsTab_theme">
+      <h3 class="settings-panel-title" data-i18n="settings.theme_heading">থিম কাস্টমাইজ</h3>
+      <div class="settings-card">
+        <div class="bn-en-row">
+          <div class="form-group"><label data-i18n="settings.header_bg">হেডার ব্যাকগ্রাউন্ড</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingHeaderBg" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingHeaderBgText" placeholder="#1a73e8" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+          <div class="form-group"><label data-i18n="settings.header_text_color">হেডার টেক্সটের রং</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingHeaderTextColor" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingHeaderTextColorText" placeholder="#ffffff" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group"><label data-i18n="settings.body_bg">পেজ ব্যাকগ্রাউন্ড</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingBodyBg" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingBodyBgText" placeholder="#f5f5f5" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+          <div class="form-group"><label data-i18n="settings.primary_color">প্রাইমারি রং</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingPrimaryColor" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingPrimaryColorText" placeholder="#1a73e8" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group"><label data-i18n="settings.footer_bg">ফুটার ব্যাকগ্রাউন্ড</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingFooterBg" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingFooterBgText" placeholder="#1f2937" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+          <div class="form-group"><label data-i18n="settings.footer_text_color">ফুটার টেক্সটের রং</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingFooterTextColor" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid var(--border);border-radius:4px;">
+              <input type="text" id="settingFooterTextColorText" placeholder="#9ca3af" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            </div>
+          </div>
+        </div>
+        <div class="form-group"><label data-i18n="settings.footer_copyright">কপিরাইট টেক্সট</label>
+          <input type="text" id="settingFooterCopyright" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <button class="btn btn-primary" onclick="saveTheme()" data-i18n="settings.save_theme">থিম সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Footer Editor -->
+    <div class="settings-panel" id="settingsTab_footer">
+      <h3 class="settings-panel-title" data-i18n="settings.footer_heading">ফুটার এডিটর</h3>
+      <div class="settings-card">
+        <div id="footerEditorList"></div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-outline btn-sm" onclick="addFooterCol()" data-i18n="settings.add_col">+ কলাম যোগ করুন</button>
+          <button class="btn btn-primary" onclick="saveFooter()" data-i18n="settings.save_footer">ফুটার সংরক্ষণ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: SSL Commerz Payment -->
+    <div class="settings-panel" id="settingsTab_payment">
+      <h3 class="settings-panel-title">💳 <span data-i18n="settings.ssl_heading">SSL Commerz — পেমেন্ট গেটওয়ে</span></h3>
+      <div class="settings-card">
+        <div class="form-group">
+          <label data-i18n="settings.ssl_store_id">Store ID</label>
+          <input type="text" id="settingSslStoreId" placeholder="testbox" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <div class="form-group">
+          <label data-i18n="settings.ssl_store_pass">Store Password</label>
+          <input type="password" id="settingSslStorePass" placeholder="••••••" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <div class="form-group">
+          <label data-i18n="settings.ssl_mode">মোড</label>
+          <select id="settingSslSandbox" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+            <option value="true" data-i18n="settings.ssl_sandbox">🧪 Sandbox (পরীক্ষামূলক)</option>
+            <option value="false" data-i18n="settings.ssl_live">🔴 Live (প্রোডাকশন)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="settings.ssl_base_url">Base URL <span style="font-weight:400;color:#888;font-size:12px;">— callback URLs এর জন্য</span></label>
+          <input type="text" id="settingSslBaseUrl" placeholder="https://yourdomain.com" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <div style="background:#f0f4ff;border:1px solid #c3dafe;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#1e40af;">
+          <strong data-i18n="settings.ssl_sandbox_info_title">ℹ️ Sandbox তথ্য:</strong> <span data-i18n="settings.ssl_sandbox_info">Sandbox mode এ <code>testbox</code> / <code>qwerty</code> ব্যবহার করুন। Sandbox এ আসল টাকা কাটবে না।</span>
+        </div>
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#9a3412;">
+          <strong data-i18n="settings.ssl_callback_title">📌 Callback URLs:</strong><br>
+          <code id="sslSuccessUrl" style="font-size:12px;background:#fff;padding:2px 6px;border-radius:4px;"></code> <span data-i18n="settings.ssl_success">সফল</span><br>
+          <code id="sslFailUrl" style="font-size:12px;background:#fff;padding:2px 6px;border-radius:4px;"></code> <span data-i18n="settings.ssl_fail">ব্যর্থ</span><br>
+          <code id="sslCancelUrl" style="font-size:12px;background:#fff;padding:2px 6px;border-radius:4px;"></code> <span data-i18n="settings.ssl_cancel">বাতিল</span><br>
+          <code id="sslIpnUrl" style="font-size:12px;background:#fff;padding:2px 6px;border-radius:4px;"></code> (IPN)
+        </div>
+        <button class="btn btn-primary" onclick="savePaymentSettings()" data-i18n="settings.save_payment">পেমেন্ট সেটিংস সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Delivery Charge -->
+    <div class="settings-panel" id="settingsTab_delivery">
+      <h3 class="settings-panel-title" data-i18n="settings.delivery_charge_title">🚚 ডেলিভারি চার্জ</h3>
+      <div class="settings-card">
+        <div class="form-group">
+          <label data-i18n="settings.inside_dhaka">ঢাকার ভিতরে</label>
+          <input type="number" id="settingDcInside" value="80" min="0" style="max-width:200px;">
+          <span style="margin-left:8px;color:#6b7280;">৳</span>
+        </div>
+        <div class="form-group">
+          <label data-i18n="settings.outside_dhaka">ঢাকার বাইরে</label>
+          <input type="number" id="settingDcOutside" value="160" min="0" style="max-width:200px;">
+          <span style="margin-left:8px;color:#6b7280;">৳</span>
+        </div>
+        <button class="btn btn-primary" onclick="saveDeliverySettings()" data-i18n="settings.save_delivery">ডেলিভারি চার্জ সংরক্ষণ</button>
+      </div>
+    </div>
+
+    <!-- TAB: Trust Badges -->
+    <div class="settings-panel" id="settingsTab_trust">
+      <h3 class="settings-panel-title" data-i18n="settings.trust_heading">🛡️ ট্রাস্ট ব্যাজ — পণ্য পেজে দেখানো হয়</h3>
+      <div class="settings-card">
+        <p style="margin-bottom:16px;color:#6b7280;font-size:13px;">পণ্যের বিবরণ পেজের ডান পাশে যে ব্যাজগুলো দেখানো হয়, সেগুলো এখানে যোগ/মুছে এডিট করুন।</p>
+
+        <div id="trustBadgeList"></div>
+
+        <button class="btn btn-outline" onclick="addTrustBadge()" style="margin-bottom:16px;">➕ নতুন ব্যাজ যোগ করুন</button>
+        <br>
+        <button class="btn btn-primary" onclick="saveTrustSettings()">💾 সংরক্ষণ</button>
+      </div>
+    </div>
+
+      </div><!-- end settings-content -->
+    </div><!-- end settings-layout -->
   </div>
 </div>
 
@@ -108,6 +378,16 @@
 <script src="../js/api.js"></script>
 <script src="../js/admin.js"></script>
 <script>
+window.switchSettingsTab = function(tab) {
+  document.querySelectorAll('.settings-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.settings-panel').forEach(function(p) { p.classList.remove('active'); });
+  var btn = document.querySelector('.settings-tab[data-tab="' + tab + '"]');
+  var panel = document.getElementById('settingsTab_' + tab);
+  if (btn) btn.classList.add('active');
+  if (panel) panel.classList.add('active');
+  if (tab === 'trust') loadTrustSettings();
+};
+
 window.uploadLogo = function(input) {
   if (!input.files || !input.files[0]) return;
   var fd = new FormData();
@@ -143,6 +423,7 @@ function bannerImageHtml(s) {
     '<div class="banner-img-placeholder">' +
       '<span class="banner-img-icon">&#128247;</span>' +
       '<span>' + (window.__ ? __('settings.bg_upload') : 'ছবি আপলোড করুন') + '</span>' +
+      '<span style="font-size:11px;color:#999;margin-top:4px;">সেরা সাইজ: 1200 × 340 px</span>' +
     '</div>' +
   '</div>';
 }
@@ -153,10 +434,15 @@ function renderBannerEditor() {
   bannerSlides.forEach(function(s, i) {
     var card = document.createElement('div');
     card.className = 'banner-slide-card';
-    var bgStyle = s.bgImage ? 'background-image:url(' + s.bgImage + ');background-size:cover;background-position:center;' : 'background:' + (s.bg || 'linear-gradient(135deg,#1a73e8,#7c3aed)');
+    var bgStyle = s.bgImage ? '' : 'background:' + (s.bg || 'linear-gradient(135deg,#1a73e8,#7c3aed)');
+    var imgTag = s.bgImage ? '<img src="' + esc(s.bgImage) + '" style="width:100%;height:100%;object-fit:cover;display:block;">' : '';
     card.innerHTML =
-      '<div class="banner-preview" style="' + bgStyle + '">' +
-        (s.bgImage ? '' : '<div class="overlay-text"><h4>' + esc(s.title || '') + '</h4><p>' + esc(s.desc || '') + '</p></div>') +
+      '<div class="banner-preview" style="' + bgStyle + '">' + imgTag +
+        '<div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:12px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.4);">' +
+          (s.title ? '<h2 style="margin:0;font-size:18px;font-weight:700;">' + esc(s.title) + '</h2>' : '') +
+          (s.desc ? '<p style="margin:4px 0;font-size:11px;opacity:0.9;">' + esc(s.desc) + '</p>' : '') +
+          (s.btnText ? '<span style="display:inline-block;margin-top:6px;padding:6px 16px;border-radius:4px;font-size:12px;font-weight:600;background:' + esc(s.btnColor || '#ffffff') + ';color:#000;">' + esc(s.btnText) + '</span>' : '') +
+        '</div>' +
       '</div>' +
       '<div style="display:flex;gap:8px;margin-bottom:8px;">' +
         '<button class="btn btn-sm btn-outline" onclick="moveBannerSlide(' + i + ',-1)" ' + (i === 0 ? 'disabled style="opacity:0.3"' : '') + '>' + (window.__ && __.settings && __.settings.up ? __('settings.up') : 'উপরে') + ' &uarr;</button>' +
@@ -171,16 +457,16 @@ function renderBannerEditor() {
         '<input type="text" id="banBg_' + i + '" value="' + esc(s.bg || 'linear-gradient(135deg,#1a73e8,#7c3aed)') + '" placeholder="linear-gradient(135deg,#color1,#color2)" style="font-size:12px;width:100%;">' +
       '</div>' +
       '<div class="bn-en-row">' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.title_bn') : 'শিরোনাম (বাংলা)') + '</label><input type="text" id="banTitleBn_' + i + '" value="' + esc(s.title || '') + '"></div>' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.title_en') : 'Title (English)') + '</label><input type="text" id="banTitleEn_' + i + '" value="' + esc(s.titleEn || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> ' + (window.__ ? __('settings.title_bn') : 'শিরোনাম (বাংলা)') + '</label><input type="text" id="banTitleBn_' + i + '" value="' + esc(s.title || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> ' + (window.__ ? __('settings.title_en') : 'Title (English)') + '</label><input type="text" id="banTitleEn_' + i + '" value="' + esc(s.titleEn || '') + '"></div>' +
       '</div>' +
       '<div class="bn-en-row">' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.desc_bn') : 'বিবরণ (বাংলা)') + '</label><input type="text" id="banDescBn_' + i + '" value="' + esc(s.desc || '') + '"></div>' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.desc_en') : 'Description (English)') + '</label><input type="text" id="banDescEn_' + i + '" value="' + esc(s.descEn || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> ' + (window.__ ? __('settings.desc_bn') : 'বিবরণ (বাংলা)') + '</label><input type="text" id="banDescBn_' + i + '" value="' + esc(s.desc || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> ' + (window.__ ? __('settings.desc_en') : 'Description (English)') + '</label><input type="text" id="banDescEn_' + i + '" value="' + esc(s.descEn || '') + '"></div>' +
       '</div>' +
       '<div class="bn-en-row">' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.btn_bn') : 'বাটন (বাংলা)') + '</label><input type="text" id="banBtnBn_' + i + '" value="' + esc(s.btnText || '') + '"></div>' +
-        '<div class="form-group"><label>' + (window.__ ? __('settings.btn_en') : 'Button (English)') + '</label><input type="text" id="banBtnEn_' + i + '" value="' + esc(s.btnTextEn || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> ' + (window.__ ? __('settings.btn_bn') : 'বাটন (বাংলা)') + '</label><input type="text" id="banBtnBn_' + i + '" value="' + esc(s.btnText || '') + '"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> ' + (window.__ ? __('settings.btn_en') : 'Button (English)') + '</label><input type="text" id="banBtnEn_' + i + '" value="' + esc(s.btnTextEn || '') + '"></div>' +
       '</div>' +
       '<div class="form-group"><label>' + (window.__ ? __('settings.btn_link') : 'বাটন লিংক') + '</label><input type="text" id="banLink_' + i + '" value="' + esc(s.btnLink || '/products.html') + '"></div>' +
       '<div class="form-group"><label>' + (window.__ ? __('settings.btn_color') : 'বাটন কালার') + '</label><input type="color" id="banBtnColor_' + i + '" value="' + esc(s.btnColor || '#ffffff') + '" style="height:40px;width:80px;padding:2px;cursor:pointer;"></div>';
@@ -189,7 +475,7 @@ function renderBannerEditor() {
 }
 
 window.addBannerSlide = function() {
-  bannerSlides.push({ bg: 'linear-gradient(135deg,#1a73e8,#7c3aed)', bgImage: '', title: '', titleEn: '', desc: '', descEn: '', btnText: '', btnTextEn: '', btnLink: '/products.html' });
+  bannerSlides.push({ bg: 'linear-gradient(135deg,#1a73e8,#7c3aed)', bgImage: '', title: '', titleEn: '', desc: '', descEn: '', btnText: '', btnTextEn: '', btnLink: '/products.html', btnColor: '#ffffff', width: '', height: '' });
   renderBannerEditor();
 };
 
@@ -211,7 +497,7 @@ window.uploadBannerBg = function(i, input) {
   if (!input.files || !input.files[0]) return;
   var fd = new FormData();
   fd.append('image', input.files[0]);
-  apiAdmin('POST', '/upload', fd).then(function(data) {
+  apiAdmin('POST', '/upload?type=banner', fd).then(function(data) {
     if (data.error) { toast(data.error, 'error'); return; }
     bannerSlides[i].bgImage = data.url;
     bannerSlides[i].bg = '';
@@ -244,7 +530,11 @@ function collectBanners() {
 }
 
 window.saveBanners = function() {
-  var data = { banners: JSON.stringify(collectBanners()) };
+  bannerSlides = collectBanners();
+  var data = {
+    banners: JSON.stringify(bannerSlides),
+    banner_height: document.getElementById('settingBannerHeight').value || ''
+  };
   apiAdmin('PUT', '/settings', data).then(function(res) {
     if (res.error) { toast(res.error, 'error'); return; }
     toast(__('admin.saved'));
@@ -253,25 +543,291 @@ window.saveBanners = function() {
 
 window.saveFlashEnd = function() {
   var val = document.getElementById('settingFlashEnd').value;
-  if (!val) { toast('সময় নির্বাচন করুন', 'error'); return; }
+  if (!val) { toast(window.__ ? __('settings.select_time') : 'সময় নির্বাচন করুন', 'error'); return; }
   var endDate = new Date(val);
-  if (isNaN(endDate.getTime())) { toast('অবৈধ সময়', 'error'); return; }
+  if (isNaN(endDate.getTime())) { toast(window.__ ? __('settings.invalid_time') : 'অবৈধ সময়', 'error'); return; }
   var data = { flash_sale_end: endDate.toISOString() };
-  var color = document.getElementById('settingFlashColorText').value.trim();
-  if (color) data.flash_sale_color = color;
   apiAdmin('PUT', '/settings', data).then(function(res) {
     if (res.error) { toast(res.error, 'error'); return; }
     toast(__('admin.saved'));
   });
 };
 
-document.getElementById('settingFlashColor').addEventListener('input', function() {
-  document.getElementById('settingFlashColorText').value = this.value;
+window.saveHeaderSettings = function() {
+  var data = {
+    header_search_placeholder_bn: document.getElementById('settingHeaderSearchBn').value.trim(),
+    header_search_placeholder_en: document.getElementById('settingHeaderSearchEn').value.trim(),
+    header_show_search: document.getElementById('settingHeaderShowSearch').checked ? '1' : '0',
+    header_show_home: document.getElementById('settingHeaderShowHome').checked ? '1' : '0',
+    header_show_products: document.getElementById('settingHeaderShowProducts').checked ? '1' : '0',
+    header_show_cart: document.getElementById('settingHeaderShowCart').checked ? '1' : '0',
+    header_show_orders: document.getElementById('settingHeaderShowOrders').checked ? '1' : '0',
+    header_show_admin: document.getElementById('settingHeaderShowAdmin').checked ? '1' : '0',
+    header_show_lang: document.getElementById('settingHeaderShowLang').checked ? '1' : '0',
+    header_show_auth: document.getElementById('settingHeaderShowAuth').checked ? '1' : '0',
+    header_padding: document.getElementById('settingHeaderPadding').value.trim()
+  };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+/* ---- Theme color sync ---- */
+var themePairs = [
+  ['settingHeaderBg', 'settingHeaderBgText'],
+  ['settingHeaderTextColor', 'settingHeaderTextColorText'],
+  ['settingBodyBg', 'settingBodyBgText'],
+  ['settingPrimaryColor', 'settingPrimaryColorText'],
+  ['settingFooterBg', 'settingFooterBgText'],
+  ['settingFooterTextColor', 'settingFooterTextColorText']
+];
+themePairs.forEach(function(pair) {
+  document.getElementById(pair[0]).addEventListener('input', function() {
+    document.getElementById(pair[1]).value = this.value;
+  });
+  document.getElementById(pair[1]).addEventListener('input', function() {
+    var c = this.value.trim();
+    if (/^#[0-9a-f]{6}$/i.test(c)) document.getElementById(pair[0]).value = c;
+  });
 });
-document.getElementById('settingFlashColorText').addEventListener('input', function() {
-  var c = this.value.trim();
-  if (/^#[0-9a-f]{6}$/i.test(c)) document.getElementById('settingFlashColor').value = c;
-});
+
+window.saveTheme = function() {
+  var keyMap = {
+    settingHeaderBg: 'header_bg',
+    settingHeaderTextColor: 'header_text_color',
+    settingBodyBg: 'body_bg',
+    settingPrimaryColor: 'primary_color',
+    settingFooterBg: 'footer_bg',
+    settingFooterTextColor: 'footer_text_color'
+  };
+  var data = {};
+  themePairs.forEach(function(pair) {
+    var v = document.getElementById(pair[1]).value.trim();
+    if (v) data[keyMap[pair[0]]] = v;
+  });
+  var copyright = document.getElementById('settingFooterCopyright').value.trim();
+  if (copyright) data.footer_copyright = copyright;
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+window.saveTexts = function() {
+  var data = {
+    text_flash_title_bn: document.getElementById('settingTextFlashTitleBn').value.trim(),
+    text_flash_title_en: document.getElementById('settingTextFlashTitleEn').value.trim(),
+    text_flash_all_bn: document.getElementById('settingTextFlashAllBn').value.trim(),
+    text_flash_all_en: document.getElementById('settingTextFlashAllEn').value.trim(),
+    text_flash_all_link: document.getElementById('settingTextFlashAllLink').value.trim(),
+    text_categories_title_bn: document.getElementById('settingTextCategoriesTitleBn').value.trim(),
+    text_categories_title_en: document.getElementById('settingTextCategoriesTitleEn').value.trim(),
+    text_jfy_title_bn: document.getElementById('settingTextJfyTitleBn').value.trim(),
+    text_jfy_title_en: document.getElementById('settingTextJfyTitleEn').value.trim()
+  };
+  var clean = {};
+  for (var k in data) { if (data[k]) clean[k] = data[k]; }
+  apiAdmin('PUT', '/settings', clean).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+/* ---- Footer Editor ---- */
+var footerCols = [];
+
+function renderFooterEditor() {
+  var list = document.getElementById('footerEditorList');
+  list.innerHTML = '';
+  footerCols.forEach(function(col, i) {
+    var card = document.createElement('div');
+    card.className = 'banner-slide-card';
+    var linksHtml = '';
+    col.links.forEach(function(link, j) {
+      linksHtml += '<div style="display:flex;gap:6px;margin-bottom:4px;align-items:center;">' +
+        '<span class="lang-badge lang-badge-bn" style="flex-shrink:0;">BN</span>' +
+        '<input type="text" class="footer-link-text" value="' + esc(link.text) + '" placeholder="' + (window.__ ? __('settings.link_text_bn_plh') : 'লিংক টেক্সট (বাংলা)') + '" style="flex:2;padding:6px;border:1px solid var(--border);border-radius:4px;font-size:12px;">' +
+        '<span class="lang-badge lang-badge-en" style="flex-shrink:0;">EN</span>' +
+        '<input type="text" class="footer-link-text-en" value="' + esc(link.textEn || '') + '" placeholder="' + (window.__ ? __('settings.link_text_en_plh') : 'Link text (English)') + '" style="flex:2;padding:6px;border:1px solid var(--border);border-radius:4px;font-size:12px;">' +
+        '<input type="text" class="footer-link-url" value="' + esc(link.url || '#') + '" placeholder="' + (window.__ ? __('settings.link_url_plh') : 'URL') + '" style="flex:1;padding:6px;border:1px solid var(--border);border-radius:4px;font-size:12px;">' +
+        '<button class="btn btn-sm btn-outline" onclick="removeFooterLink(' + i + ',' + j + ')" style="padding:2px 6px;font-size:14px;">&times;</button>' +
+      '</div>';
+    });
+    card.innerHTML =
+      '<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">' +
+        '<button class="btn btn-sm btn-outline" onclick="moveFooterCol(' + i + ',-1)" ' + (i === 0 ? 'disabled style="opacity:0.3"' : '') + '>&uarr;</button>' +
+        '<button class="btn btn-sm btn-outline" onclick="moveFooterCol(' + i + ',1)" ' + (i === footerCols.length-1 ? 'disabled style="opacity:0.3"' : '') + '>&darr;</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="removeFooterCol(' + i + ')" style="margin-left:auto;">&times; ' + (window.__ ? __('settings.remove_col') : 'সরান') + '</button>' +
+      '</div>' +
+      '<div class="bn-en-row">' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-bn">BN</span> ' + (window.__ ? __('settings.col_title_bn') : 'কলাম শিরোনাম (বাংলা)') + '</label><input type="text" id="footerColTitleBn_' + i + '" value="' + esc(col.title || '') + '" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:13px;"></div>' +
+        '<div class="form-group"><label><span class="lang-badge lang-badge-en">EN</span> ' + (window.__ ? __('settings.col_title_en') : 'Column Title (English)') + '</label><input type="text" id="footerColTitleEn_' + i + '" value="' + esc(col.titleEn || '') + '" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:13px;"></div>' +
+      '</div>' +
+      '<div class="form-group"><label>' + (window.__ ? __('settings.links') : 'লিংক সমূহ') + '</label>' +
+        '<div id="footerLinks_' + i + '">' + linksHtml + '</div>' +
+        '<button class="btn btn-sm btn-outline" onclick="addFooterLink(' + i + ')" style="margin-top:4px;">' + (window.__ ? __('settings.add_link') : '+ লিংক যোগ করুন') + '</button>' +
+      '</div>';
+    list.appendChild(card);
+  });
+}
+
+window.addFooterCol = function() {
+  footerCols.push({ title: '', titleEn: '', links: [] });
+  renderFooterEditor();
+};
+
+window.removeFooterCol = function(i) {
+  footerCols.splice(i, 1);
+  renderFooterEditor();
+};
+
+window.moveFooterCol = function(i, dir) {
+  var j = i + dir;
+  if (j < 0 || j >= footerCols.length) return;
+  var tmp = footerCols[i];
+  footerCols[i] = footerCols[j];
+  footerCols[j] = tmp;
+  renderFooterEditor();
+};
+
+window.addFooterLink = function(colIdx) {
+  footerCols[colIdx].links.push({ text: '', textEn: '', url: '#' });
+  renderFooterEditor();
+};
+
+window.removeFooterLink = function(colIdx, linkIdx) {
+  footerCols[colIdx].links.splice(linkIdx, 1);
+  renderFooterEditor();
+};
+
+function collectFooter() {
+  return footerCols.map(function(col, i) {
+    var linkEls = document.querySelectorAll('#footerLinks_' + i + ' .footer-link-text');
+    var linkEnEls = document.querySelectorAll('#footerLinks_' + i + ' .footer-link-text-en');
+    var linkUrlEls = document.querySelectorAll('#footerLinks_' + i + ' .footer-link-url');
+    var links = [];
+    linkEls.forEach(function(el, j) {
+      links.push({ text: el.value, textEn: linkEnEls[j] ? linkEnEls[j].value : '', url: linkUrlEls[j] ? linkUrlEls[j].value : '#' });
+    });
+    return {
+      title: document.getElementById('footerColTitleBn_' + i).value,
+      titleEn: document.getElementById('footerColTitleEn_' + i).value,
+      type: col.type || '',
+      links: links
+    };
+  });
+}
+
+window.saveFooter = function() {
+  var data = { footer_content: JSON.stringify(collectFooter()) };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+/* ---- Payment Gateway Settings ---- */
+window.savePaymentSettings = function() {
+  var baseUrl = document.getElementById('settingSslBaseUrl').value.trim();
+  if (baseUrl) {
+    document.getElementById('sslSuccessUrl').textContent = baseUrl + '/api/payment/success';
+    document.getElementById('sslFailUrl').textContent = baseUrl + '/api/payment/fail';
+    document.getElementById('sslCancelUrl').textContent = baseUrl + '/api/payment/cancel';
+    document.getElementById('sslIpnUrl').textContent = baseUrl + '/api/payment/ipn';
+  }
+  var data = {
+    sslcommerz_store_id: document.getElementById('settingSslStoreId').value.trim(),
+    sslcommerz_store_pass: document.getElementById('settingSslStorePass').value.trim(),
+    sslcommerz_sandbox: document.getElementById('settingSslSandbox').value,
+    sslcommerz_base_url: baseUrl
+  };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+/* ---- Delivery Charge Settings ---- */
+window.saveDeliverySettings = function() {
+  var data = {
+    delivery_inside_dhaka: document.getElementById('settingDcInside').value || '80',
+    delivery_outside_dhaka: document.getElementById('settingDcOutside').value || '160'
+  };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+function loadDeliverySettings() {
+  apiAdmin('GET', '/settings').then(function(s) {
+    if (s.delivery_inside_dhaka) document.getElementById('settingDcInside').value = s.delivery_inside_dhaka;
+    if (s.delivery_outside_dhaka) document.getElementById('settingDcOutside').value = s.delivery_outside_dhaka;
+  });
+}
+
+/* ---- Trust Badge Settings ---- */
+var trustBadges = [];
+
+function renderTrustBadgeList() {
+  var el = document.getElementById('trustBadgeList');
+  if (!el) return;
+  el.innerHTML = trustBadges.map(function(b, i) {
+    return '<div class="form-group" style="border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:10px;background:#fafafa;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+      '<label style="font-weight:600;margin:0;">🏷️ ব্যাজ ' + (i + 1) + '</label>' +
+      '<button class="btn-icon btn-icon-danger" onclick="removeTrustBadge(' + i + ')" title="মুছুন">🗑️</button>' +
+      '</div>' +
+      '<div class="bn-en-row">' +
+      '<div class="form-group" style="flex:1;margin:0;"><label><span class="lang-badge lang-badge-bn">BN</span></label><input type="text" class="trust-bn" data-idx="' + i + '" value="' + esc(b.bn || '') + '" style="width:100%;"></div>' +
+      '<div class="form-group" style="flex:1;margin:0;"><label><span class="lang-badge lang-badge-en">EN</span></label><input type="text" class="trust-en" data-idx="' + i + '" value="' + esc(b.en || '') + '" style="width:100%;"></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+window.addTrustBadge = function() {
+  trustBadges.push({ bn: '', en: '' });
+  renderTrustBadgeList();
+};
+
+window.removeTrustBadge = function(idx) {
+  trustBadges.splice(idx, 1);
+  renderTrustBadgeList();
+};
+
+window.saveTrustSettings = function() {
+  document.querySelectorAll('.trust-bn').forEach(function(inp) {
+    var i = Number(inp.dataset.idx);
+    if (trustBadges[i]) trustBadges[i].bn = inp.value.trim();
+  });
+  document.querySelectorAll('.trust-en').forEach(function(inp) {
+    var i = Number(inp.dataset.idx);
+    if (trustBadges[i]) trustBadges[i].en = inp.value.trim();
+  });
+  apiAdmin('PUT', '/settings', { trust_badges: JSON.stringify(trustBadges) }).then(function(r) {
+    if (r.error) { toast(r.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+function loadTrustSettings() {
+  var defaults = [
+    { bn: 'পণ্য হাতে পেয়ে মূল্য পরিশোধ করুন', en: 'Pay on Delivery' },
+    { bn: '৭ দিনের রিটার্ন পলিসি', en: '7 Day Return Policy' },
+    { bn: 'ঘটত সময়ের মধ্যে সারা বাংলাদেশে "হোম ডেলিভারি"', en: 'Fast Home Delivery Across Bangladesh' },
+    { bn: '২৪/৭ কাস্টমার সাপোর্ট: অর্ডার ট্র্যাকিং', en: '24/7 Customer Support: Order Tracking' },
+    { bn: 'ট্রায়াল দিতে সরাসরি অফলাইনে ভিজিট করুন', en: 'Visit offline for trial' }
+  ];
+  apiAdmin('GET', '/settings').then(function(s) {
+    if (s.trust_badges) {
+      try { trustBadges = JSON.parse(s.trust_badges); } catch(e) { trustBadges = defaults; }
+    } else {
+      trustBadges = defaults;
+    }
+    renderTrustBadgeList();
+  });
+}
 </script>
 </body>
 </html>

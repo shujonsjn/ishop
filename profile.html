@@ -4,77 +4,608 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title data-i18n="profile.title">প্রোফাইল — ইশপ</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3.4">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<style>
+.pf-page { padding:0; }
+.pf-banner {
+  background:linear-gradient(135deg,var(--primary,#1a73e8) 0%,#0d47a1 100%);
+  border-radius:var(--radius-xl,16px);
+  padding:36px 40px 28px;
+  position:relative; overflow:hidden;
+  box-shadow:0 4px 24px rgba(26,115,232,0.18);
+  display:flex; align-items:center; gap:32px;
+  margin-bottom:28px;
+}
+.pf-banner::before {
+  content:''; position:absolute; top:-60px; right:-40px;
+  width:260px; height:260px;
+  background:rgba(255,255,255,0.05); border-radius:50%;
+}
+.pf-banner::after {
+  content:''; position:absolute; bottom:-80px; left:40px;
+  width:200px; height:200px;
+  background:rgba(255,255,255,0.03); border-radius:50%;
+}
+.pf-banner-left { position:relative; z-index:1; display:flex; align-items:center; gap:24px; flex:1; min-width:0; }
+.pf-avatar {
+  width:80px; height:80px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.1);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+}
+.pf-avatar svg { width:40px; height:40px; }
+.pf-avatar img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+.pf-user-info { min-width:0; }
+.pf-user-name { font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:2px; }
+.pf-user-email { font-size:0.88rem; color:rgba(255,255,255,0.7); }
+.pf-user-phone { font-size:0.82rem; color:rgba(255,255,255,0.55); margin-top:2px; }
+.pf-banner-right { position:relative; z-index:1; display:flex; gap:28px; flex-shrink:0; }
+.pf-stat-item { text-align:center; }
+.pf-stat-num { font-size:1.6rem; font-weight:800; color:#fff; line-height:1; }
+.pf-stat-label { font-size:0.72rem; color:rgba(255,255,255,0.65); margin-top:4px; font-weight:500; }
+.pf-banner-actions {
+  position:absolute; top:20px; right:24px; z-index:2;
+  display:flex; gap:8px;
+}
+.pf-icon-btn {
+  width:38px; height:38px; border-radius:10px;
+  background:rgba(255,255,255,0.12); border:none; color:#fff;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; backdrop-filter:blur(8px);
+}
+.pf-icon-btn:hover { background:rgba(255,255,255,0.25); }
+.pf-icon-btn svg { width:18px; height:18px; }
+
+.pf-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:28px; }
+.pf-card {
+  background:#fff; border-radius:var(--radius-lg,12px); padding:24px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.pf-card-header {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
+}
+.pf-card-title { font-size:1.05rem; font-weight:700; color:#222; }
+.pf-card-link {
+  font-size:0.82rem; color:var(--primary,#1a73e8); font-weight:600; text-decoration:none;
+  padding:5px 16px; border-radius:20px; background:var(--primary-light,rgba(26,115,232,0.08));
+  transition:all 0.2s;
+}
+.pf-card-link:hover { background:var(--primary,#1a73e8); color:#fff; text-decoration:none; }
+
+.pf-order-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+.pf-order-item {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:16px 8px; border-radius:var(--radius,8px); cursor:pointer;
+  transition:all 0.2s; text-decoration:none; color:inherit;
+  background:#f8f9fa;
+}
+.pf-order-item:hover { background:var(--primary-light,rgba(26,115,232,0.08)); transform:translateY(-2px); }
+.pf-order-icon {
+  width:48px; height:48px; border-radius:var(--radius-lg,12px);
+  display:flex; align-items:center; justify-content:center;
+}
+.pf-order-icon svg { width:22px; height:22px; }
+.pf-order-icon.c-pending { background:#fff3e0; color:#f57c00; }
+.pf-order-icon.c-processing { background:#e8f5e9; color:#43a047; }
+.pf-order-icon.c-shipped { background:#e3f2fd; color:#1e88e5; }
+.pf-order-icon.c-review { background:#fce4ec; color:#e91e63; }
+.pf-order-icon.c-reorder { background:#ede7f6; color:#7e57c2; }
+.pf-order-label { font-size:0.78rem; color:#555; font-weight:500; }
+
+.pf-service-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.pf-service-item {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:16px 8px; border-radius:var(--radius,8px); cursor:pointer;
+  transition:all 0.2s; text-decoration:none; color:inherit;
+  background:#f8f9fa;
+}
+.pf-service-item:hover { background:var(--primary-light,rgba(26,115,232,0.08)); transform:translateY(-2px); }
+.pf-service-icon {
+  width:48px; height:48px; border-radius:var(--radius-lg,12px);
+  display:flex; align-items:center; justify-content:center;
+}
+.pf-service-icon svg { width:22px; height:22px; }
+.pf-service-label { font-size:0.78rem; color:#555; font-weight:500; text-align:center; }
+
+/* Quick Links row below the grid */
+.pf-quick-row { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:28px; }
+.pf-quick-card {
+  background:#fff; border-radius:var(--radius-lg,12px); padding:20px 24px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+  display:flex; align-items:center; gap:16px; cursor:pointer;
+  transition:all 0.2s; text-decoration:none; color:inherit;
+}
+.pf-quick-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.pf-quick-icon {
+  width:44px; height:44px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.pf-quick-icon svg { width:20px; height:20px; }
+.pf-quick-text { font-size:0.9rem; font-weight:600; color:#333; }
+.pf-quick-sub { font-size:0.75rem; color:#999; margin-top:2px; }
+
+/* Settings */
+.pf-settings { display:none; min-height:60vh; }
+.pf-settings.active { display:block; }
+.pf-settings-header {
+  display:flex; align-items:center; gap:14px; margin-bottom:24px;
+}
+.pf-settings-back {
+  width:40px; height:40px; border-radius:10px; border:1.5px solid #e0e0e0;
+  background:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s; color:#555;
+}
+.pf-settings-back:hover { background:#f0f0f0; }
+.pf-settings-back svg { width:18px; height:18px; }
+.pf-settings-title { font-size:1.3rem; font-weight:700; color:#222; }
+.pf-settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.pf-settings-card {
+  background:#fff; border-radius:var(--radius-lg,12px); overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+}
+.pf-settings-card-header {
+  padding:20px 24px 12px; font-size:0.95rem; font-weight:700; color:#222;
+  border-bottom:1px solid #f0f0f0;
+}
+.pf-settings-card-body { padding:20px 24px; }
+.pf-settings-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0; cursor:pointer; transition:color 0.15s;
+  text-decoration:none; color:inherit;
+}
+.pf-settings-item + .pf-settings-item { border-top:1px solid #f5f5f5; }
+.pf-settings-item:hover { color:var(--primary); }
+.pf-settings-item-label { font-size:0.92rem; }
+.pf-settings-item-value { font-size:0.82rem; color:#999; display:flex; align-items:center; gap:6px; }
+.pf-settings-item-arrow { font-size:18px; color:#ccc; }
+.pf-settings-logout {
+  margin-top:24px; padding:14px 32px; background:none;
+  border:1.5px solid #ff4757; color:#ff4757;
+  border-radius:var(--radius,8px); font-size:0.95rem; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+}
+.pf-settings-logout:hover { background:#ff4757; color:#fff; }
+.pf-settings-form { }
+.pf-settings-form .form-group { margin-bottom:16px; }
+.pf-settings-form label { display:block; font-size:0.82rem; font-weight:600; color:#666; margin-bottom:6px; }
+.pf-settings-form input, .pf-settings-form textarea {
+  width:100%; padding:12px 16px; border:1.5px solid #e0e0e0;
+  border-radius:var(--radius,8px); font-size:0.95rem; background:#fafafa; transition:all 0.15s;
+}
+.pf-settings-form input:focus, .pf-settings-form textarea:focus {
+  border-color:var(--primary); outline:none; background:#fff;
+}
+.pf-settings-form .btn { margin-top:8px; }
+
+@media (max-width:768px) {
+  .pf-banner { flex-direction:column; text-align:center; padding:28px 20px 20px; }
+  .pf-banner-left { flex-direction:column; }
+  .pf-banner-right { gap:24px; justify-content:center; }
+  .pf-banner-actions { position:static; justify-content:center; margin-bottom:16px; }
+  .pf-grid { grid-template-columns:1fr; }
+  .pf-order-grid { grid-template-columns:repeat(3,1fr); }
+  .pf-service-grid { grid-template-columns:repeat(2,1fr); }
+  .pf-quick-row { grid-template-columns:1fr; }
+  .pf-settings-grid { grid-template-columns:1fr; }
+}
+</style>
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});}catch(e){}})();
+</script>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <a href="/" class="logo">ই<span>শপ</span></a>
+    <a href="/" class="logo" id="siteLogo">ই<span>শপ</span></a>
+    <script>(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var sn=s.site_name||'';var el=document.getElementById('siteLogo');if(el){if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>';}else if(sn.length>1){el.innerHTML=sn.charAt(0)+'<span>'+sn.slice(1)+'</span>';}else{el.textContent=sn;}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);if(s.header_show_search==='0'&&document.getElementById('searchBox'))document.getElementById('searchBox').style.display='none';if(s.header_show_home==='0'&&document.getElementById('navHome'))document.getElementById('navHome').style.display='none';if(s.header_show_products==='0'&&document.getElementById('navProducts'))document.getElementById('navProducts').style.display='none';if(s.header_show_cart==='0'&&document.getElementById('navCart'))document.getElementById('navCart').style.display='none';if(s.header_show_admin==='0'&&document.getElementById('navAdmin'))document.getElementById('navAdmin').style.display='none';if(s.header_show_lang==='0'&&document.getElementById('langToggle'))document.getElementById('langToggle').style.display='none';if(s.header_show_auth==='0'&&document.getElementById('authLink'))document.getElementById('authLink').style.display='none';if(s.header_padding){var hd=document.querySelector('header');if(hd)hd.style.padding=s.header_padding;}if(s.header_search_placeholder_bn){var si=document.getElementById('searchInput');if(si){var lg=localStorage.getItem('lang')||'bn';si.placeholder=lg==='en'&&s.header_search_placeholder_en?s.header_search_placeholder_en:s.header_search_placeholder_bn;}}if(s.header_show_orders==='0'&&document.getElementById('navOrders'))document.getElementById('navOrders').style.display='none';}catch(e){}})();
+    </script>
+    <div class="search-box" id="searchBox">
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="searchProducts()" data-i18n="nav.search_btn">খুঁজুন</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
     <nav>
-      <a href="/" data-i18n="nav.home">হোম</a>
-      <a href="/products.html" data-i18n="nav.products">পণ্য</a>
-      <a href="/orders.html" data-i18n="nav.orders">অর্ডার</a>
-      <a href="/admin/" data-i18n="nav.admin">অ্যাডমিন</a>
+      <a href="/" id="navHome" data-i18n="nav.home">হোম</a>
+      <a href="/products.html" id="navProducts" data-i18n="nav.products">পণ্য</a>
+      <a href="/cart.html" id="navCart"><span data-i18n="nav.cart">কার্ট</span> <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
+      <a href="/profile.html#orders" data-i18n="nav.orders" id="navOrders">অর্ডার</a>
+      <a href="/admin/" data-i18n="nav.admin" id="navAdmin" style="display:none">অ্যাডমিন</a>
       <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
-      <a href="#" id="logoutLink" onclick="doLogout()" data-no-i18n="1">লগআউট</a>
+      <a href="/auth.html" id="authLink" data-no-i18n="1">লগইন</a>
     </nav>
   </div>
 </header>
 
-<div class="container" style="padding-top:24px;">
-  <div class="card" style="max-width:600px;margin:0 auto;padding:24px;">
-    <h2 style="margin-bottom:20px;" data-i18n="profile.heading">আমার প্রোফাইল</h2>
-    <div class="form-group">
-<label data-i18n="profile.name">নাম</label>
-      <input type="text" id="profileName">
+<main class="container">
+
+<div class="pf-page">
+
+<!-- Profile Main View -->
+<div id="pfApp">
+  <!-- Banner -->
+  <div class="pf-banner">
+    <div class="pf-banner-actions">
+      <button class="pf-icon-btn" onclick="openSettings()" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
-    <div class="form-group">
-<label data-i18n="profile.email">ইমেইল</label>
-      <input type="email" id="profileEmail" readonly>
+    <div class="pf-banner-left">
+      <div class="pf-avatar" id="pfPhotoWrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+      </div>
+      <div class="pf-user-info">
+        <div class="pf-user-name" id="pfName"></div>
+        <div class="pf-user-email" id="pfEmail"></div>
+        <div class="pf-user-phone" id="pfPhoneDisplay"></div>
+      </div>
     </div>
-    <div class="form-group">
-<label data-i18n="profile.phone">ফোন</label>
-      <input type="text" id="profilePhone">
+    <div class="pf-banner-right">
+      <div class="pf-stat-item"><div class="pf-stat-num" id="pfWishlist">0</div><div class="pf-stat-label" data-i18n="profile.wishlist">উইশলিস্ট</div></div>
+      <div class="pf-stat-item"><div class="pf-stat-num" id="pfCoupons">0</div><div class="pf-stat-label" data-i18n="profile.coupons">কুপন</div></div>
+      <div class="pf-stat-item"><div class="pf-stat-num" id="pfPoints">0</div><div class="pf-stat-label" data-i18n="profile.points">পয়েন্ট</div></div>
     </div>
-    <div class="form-group">
-<label data-i18n="profile.address">ঠিকানা</label>
-      <textarea id="profileAddress" rows="3"></textarea>
+  </div>
+
+  <!-- Grid: Orders + Services -->
+  <div class="pf-grid">
+    <!-- Orders -->
+    <div class="pf-card">
+      <div class="pf-card-header">
+        <span class="pf-card-title" data-i18n="orders.my_orders">আমার অর্ডার</span>
+        <a href="/profile.html#orders" class="pf-card-link" data-i18n="orders.view_all">সব দেখুন</a>
+      </div>
+      <div class="pf-order-grid">
+        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span class="pf-order-label" data-i18n="orders.tab_pending">পেন্ডিং</span></a>
+        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-processing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg></div><span class="pf-order-label" data-i18n="orders.status_processing">প্রসেসিং</span></a>
+        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-shipped"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="pf-order-label" data-i18n="orders.status_shipped">শিপড</span></a>
+        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><span class="pf-order-label" data-i18n="profile.review">রিভিউ</span></a>
+        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div><span class="pf-order-label" data-i18n="profile.reorder">পুনরায়</span></a>
+      </div>
     </div>
-    <button class="btn btn-primary" onclick="updateProfile()" data-i18n="profile.update">আপডেট করুন</button>
+
+    <!-- Services -->
+    <div class="pf-card">
+      <div class="pf-card-header">
+        <span class="pf-card-title" data-i18n="profile.services">সেবাসমূহ</span>
+      </div>
+      <div class="pf-service-grid">
+        <a href="/profile.html#orders" class="pf-service-item"><div class="pf-service-icon" style="background:#e3f2fd;color:#1e88e5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><span class="pf-service-label" data-i18n="profile.browsing_history">ব্রাউজিং</span></a>
+        <a href="javascript:void(0)" class="pf-service-item" onclick="openSettings()"><div class="pf-service-icon" style="background:#fce4ec;color:#e91e63;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="pf-service-label" data-i18n="profile.address">ঠিকানা</span></a>
+        <a href="/help.html" class="pf-service-item"><div class="pf-service-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div><span class="pf-service-label" data-i18n="footer.help_center">সাপোর্ট</span></a>
+        <a href="/about.html" class="pf-service-item"><div class="pf-service-icon" style="background:#ede7f6;color:#7e57c2;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><span class="pf-service-label" data-i18n="footer.about">আমাদের</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="pf-quick-row">
+    <a href="/profile.html#settings" class="pf-quick-card">
+      <div class="pf-quick-icon" style="background:#e3f2fd;color:#1e88e5;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div>
+        <div class="pf-quick-text" data-i18n="profile.account_settings">অ্যাকাউন্ট সেটিংস</div>
+        <div class="pf-quick-sub" data-i18n="profile.settings">নাম, ফোন, ঠিকানা</div>
+      </div>
+    </a>
+    <a href="javascript:void(0)" class="pf-quick-card" onclick="openSettings()">
+      <div class="pf-quick-icon" style="background:#fff3e0;color:#f57c00;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="pf-quick-text" data-i18n="profile.address_book">ঠিকানা বই</div>
+        <div class="pf-quick-sub" data-i18n="profile.address">ডেলিভারি ঠিকানা পরিবর্তন</div>
+      </div>
+    </a>
+    <a href="javascript:void(0)" class="pf-quick-card" onclick="doLogout()">
+      <div class="pf-quick-icon" style="background:#fce4ec;color:#e91e63;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div>
+        <div class="pf-quick-text" data-i18n="nav.logout">লগআউট</div>
+        <div class="pf-quick-sub">Account</div>
+      </div>
+    </a>
   </div>
 </div>
 
+<!-- Settings View -->
+<div class="pf-settings" id="pfSettings">
+  <div class="pf-settings-header">
+    <button class="pf-settings-back" onclick="closeSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="pf-settings-title" data-i18n="profile.settings">সেটিংস</span>
+  </div>
+  <div class="pf-settings-grid">
+    <div class="pf-settings-card">
+      <div class="pf-settings-card-header" data-i18n="profile.account_settings">অ্যাকাউন্ট সেটিংস</div>
+      <div class="pf-settings-card-body">
+        <div class="pf-settings-item" onclick="openSettingsAccount()">
+          <span class="pf-settings-item-label" data-i18n="profile.account_settings">প্রোফাইল এডিট</span>
+          <span class="pf-settings-item-value"><span class="pf-settings-item-arrow">›</span></span>
+        </div>
+        <div class="pf-settings-item" onclick="openSettingsAccount()">
+          <span class="pf-settings-item-label" data-i18n="profile.address_book">ঠিকানা বই</span>
+          <span class="pf-settings-item-value"><span class="pf-settings-item-arrow">›</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="pf-settings-card">
+      <div class="pf-settings-card-header" data-i18n="profile.services">অন্যান্য</div>
+      <div class="pf-settings-card-body">
+        <div class="pf-settings-item" onclick="openSettingsAccount()">
+          <span class="pf-settings-item-label" data-i18n="profile.language">ভাষা</span>
+          <span class="pf-settings-item-value" id="pfLangValue">বাংলা <span class="pf-settings-item-arrow">›</span></span>
+        </div>
+        <a href="/privacy.html" class="pf-settings-item" style="text-decoration:none;">
+          <span class="pf-settings-item-label" data-i18n="footer.privacy">গোপনীয়তা নীতি</span>
+          <span class="pf-settings-item-value"><span class="pf-settings-item-arrow">›</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <button class="pf-settings-logout" onclick="doLogout()" data-i18n="nav.logout">লগআউট</button>
+</div>
+
+</div>
+</main>
+
+<!-- Orders View (full width, outside container) -->
+<div id="ordersContent" style="display:none;">
+  <div style="max-width:var(--max-width);margin:0 auto;padding:24px 16px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button class="pf-settings-back" onclick="pfTab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span style="font-size:1.3rem;font-weight:700;color:#222;" data-i18n="orders.my_orders">আমার অর্ডার</span>
+    </div>
+    <div class="order-tabs">
+      <button class="order-tab active" data-tab="all"><span data-i18n="orders.tab_all">সব</span> <span class="order-tab-count">0</span></button>
+      <button class="order-tab" data-tab="pending"><span data-i18n="orders.tab_pending">পেন্ডিং</span> <span class="order-tab-count">0</span></button>
+      <button class="order-tab" data-tab="delivered"><span data-i18n="orders.tab_delivered">ডেলিভারি</span> <span class="order-tab-count">0</span></button>
+      <button class="order-tab" data-tab="cancelled"><span data-i18n="orders.tab_cancelled">বাতিল</span> <span class="order-tab-count">0</span></button>
+    </div>
+    <div style="margin-bottom:16px;"><input type="text" id="orderSearch" placeholder="অর্ডার খুঁজুন..." data-i18n-placeholder="orders.search_placeholder" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:var(--fs-base);"></div>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- Order Detail (full width) -->
+<div id="orderDetail" style="display:none;"></div>
+
+<footer class="dz-footer" id="pfFooter">
+  <div class="dz-footer-inner">
+    <div class="dz-footer-col">
+      <h4 data-i18n="footer.customer_service">গ্রাহক সেবা</h4>
+      <a href="/help.html" data-i18n="footer.help_center">সাহায্য কেন্দ্র</a>
+      <a href="/how-to-buy.html" data-i18n="footer.how_to_buy">কিভাবে কিনবেন</a>
+      <a href="/refund-return.html" data-i18n="footer.returns">রিটার্ন ও রিফান্ড</a>
+      <a href="/help.html#contact" data-i18n="footer.contact">যোগাযোগ</a>
+      <a href="/terms.html" data-i18n="footer.terms">শর্তাবলী</a>
+    </div>
+    <div class="dz-footer-col">
+      <h4 data-i18n="footer.brand">ব্র্যান্ড</h4>
+      <a href="/about.html" data-i18n="footer.about">আমাদের সম্পর্কে</a>
+      <a href="/blog.html" data-i18n="footer.blog">ব্লগ</a>
+      <a href="/privacy.html" data-i18n="footer.privacy">গোপনীয়তা নীতি</a>
+      <a href="/app.html" data-i18n="footer.app">ইশপ অ্যাপ</a>
+      <a href="/seller.html" data-i18n="footer.seller">সেলার হন</a>
+    </div>
+    <div class="dz-footer-col">
+      <h4 data-i18n="footer.payment_methods">পেমেন্ট মেথড</h4>
+      <div class="dz-footer-payments">
+        <span class="dz-pay-badge">COD</span>
+        <span class="dz-pay-badge">VISA</span>
+        <span class="dz-pay-badge">MC</span>
+        <span class="dz-pay-badge">bKash</span>
+        <span class="dz-pay-badge">Nagad</span>
+        <span class="dz-pay-badge">Rocket</span>
+      </div>
+    </div>
+  </div>
+  <div class="dz-footer-bottom">
+    <p data-i18n="footer.copyright">&copy; 2026 — সকল অধিকার সংরক্ষিত</p>
+  </div>
+</footer>
+
+<script src="js/i18n-strings.js"></script>
+<script>
+(function(){
+  try {
+    var s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    var lang = localStorage.getItem('lang') || 'bn';
+    var t = function(bn,en){ return lang==='en'?(en||bn):bn; };
+    var d = document;
+    var i18nKeys = window.__i18nStrings || {};
+    d.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(i18nKeys[k]) el.textContent = t(i18nKeys[k].bn,i18nKeys[k].en);
+    });
+    var ph = d.getElementById('searchInput');
+    if(ph) ph.placeholder = t('পণ্য খুঁজুন...','Search products...');
+    var lt = d.getElementById('langToggle');
+    if(lt) lt.textContent = lang==='bn'?'EN':'বাংলা';
+    var fc = null;
+    try { fc = s.footer_content ? JSON.parse(s.footer_content) : null; } catch(e){}
+    var fwrap = d.querySelector('.dz-footer .dz-footer-inner');
+    if (fc && fc.length && fwrap) {
+      fwrap.innerHTML = fc.map(function(col){
+        var h = '<div class="dz-footer-col">';
+        if(col.type==='payments'){
+          h += '<h4>'+(lang==='en'?(col.titleEn||col.title):col.title)+'</h4>';
+          h += '<div class="dz-footer-payments">';
+          ['COD','VISA','MC','bKash','Nagad','Rocket'].forEach(function(b){h+='<span class="dz-pay-badge">'+b+'</span>';});
+          h += '</div>';
+        } else {
+          if(col.title||col.titleEn) h += '<h4>'+(lang==='en'?(col.titleEn||col.title):col.title)+'</h4>';
+          (col.links||[]).forEach(function(lnk){
+            var txt = lang==='en'?(lnk.textEn||lnk.text):lnk.text;
+            if(txt) h += '<a href="'+(lnk.url||'#')+'">'+txt+'</a>';
+          });
+        }
+        return h+'</div>';
+      }).join('');
+    }
+    var al = d.getElementById('authLink');
+    if(al){
+      var token = localStorage.getItem('token');
+      if(token){ al.style.display='none'; }
+      else { al.textContent=t('লগইন','Login'); al.href='/auth.html'; }
+    }
+    var adminLink = d.getElementById('navAdmin');
+    if(adminLink){
+      var tok = localStorage.getItem('token');
+      if(!tok){ adminLink.style.display='none'; }
+      else { try { var us=JSON.parse(localStorage.getItem('user')||'{}'); adminLink.style.display=us.role==='admin'?'':'none'; } catch(e){ adminLink.style.display='none'; } }
+    }
+  } catch(e){}
+})();
+</script>
 <script src="js/i18n.js"></script>
 <script src="js/api.js"></script>
 <script src="js/auth.js"></script>
 <script>
+loadCartCount();
+window.searchProducts = function() {
+  var q = document.getElementById("searchInput");
+  if (q && q.value) window.location = "/products.html?search=" + encodeURIComponent(q.value);
+};
+</script>
+<script src="js/orders.js"></script>
+<script>
+function openSettings() {
+  document.getElementById('pfApp').style.display = 'none';
+  var ps = document.getElementById('pfSettings');
+  ps.style.display = 'block';
+  ps.classList.add('active');
+  document.getElementById('pfFooter').style.display = 'none';
+  document.getElementById('ordersContent').style.display = 'none';
+  document.getElementById('orderDetail').style.display = 'none';
+  var lv = document.getElementById('pfLangValue');
+  if (lv) lv.textContent = (localStorage.getItem('lang') === 'en' ? 'English' : 'বাংলা') + ' ›';
+}
+function closeSettings() {
+  document.getElementById('pfApp').style.display = '';
+  var ps = document.getElementById('pfSettings');
+  ps.style.display = '';
+  ps.classList.remove('active');
+  document.getElementById('pfFooter').style.display = '';
+}
+function showSettingsTab(tab) {
+  if (tab === 'account') openSettingsAccount();
+  else if (tab === 'address') openSettingsAccount();
+}
+function openSettingsAccount() {
+  var el = document.getElementById('pfSettings');
+  var name = document.getElementById('pfName').textContent;
+  var email = document.getElementById('pfEmail').textContent;
+  var phone = document.getElementById('pfPhone') ? document.getElementById('pfPhone').value : '';
+  var address = document.getElementById('pfAddress') ? document.getElementById('pfAddress').value : '';
+  el.innerHTML = '<div class="pf-settings-header">' +
+    '<button class="pf-settings-back" onclick="closeSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polyline points="15 18 9 12 15 6"/></svg></button>' +
+    '<span class="pf-settings-title">' + __('header.manage_account') + '</span>' +
+    '</div>' +
+    '<div class="pf-settings-card"><div class="pf-settings-card-body">' +
+    '<div class="pf-settings-form">' +
+    '<div class="form-group"><label>' + __('profile.name') + '</label><input type="text" id="settingsName" value="' + (name || '').replace(/"/g, '&quot;') + '"></div>' +
+    '<div class="form-group"><label>' + __('profile.email') + '</label><input type="email" id="settingsEmail" value="' + (email || '').replace(/"/g, '&quot;') + '" readonly></div>' +
+    '<div class="form-group"><label>' + __('profile.phone') + '</label><input type="text" id="settingsPhone" value="' + (phone || '').replace(/"/g, '&quot;') + '"></div>' +
+    '<div class="form-group"><label>' + __('profile.address') + '</label><textarea id="settingsAddress" rows="3">' + (address || '') + '</textarea></div>' +
+    '<button class="btn btn-primary" onclick="saveSettings()">' + __('profile.update') + '</button>' +
+    '</div></div></div>';
+}
+function saveSettings() {
+  var token = localStorage.getItem('token');
+  if (!token) return;
+  var data = {
+    name: document.getElementById('settingsName').value.trim(),
+    phone: document.getElementById('settingsPhone').value.trim(),
+    address: document.getElementById('settingsAddress').value.trim()
+  };
+  fetch('/api/users/me', {
+    method: 'PUT',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    document.getElementById('pfName').textContent = data.name || '';
+    if (document.getElementById('pfPhoneDisplay')) document.getElementById('pfPhoneDisplay').textContent = data.phone || '';
+    toast(__('admin.saved'));
+    closeSettings();
+  }).catch(function() { toast(__('toast.server_error'), 'error'); });
+}
+function doLogout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location = '/';
+}
+function pfTab(tab) {
+  var pfApp = document.getElementById('pfApp');
+  var pfSettings = document.getElementById('pfSettings');
+  var pfFooter = document.getElementById('pfFooter');
+  var ordersContent = document.getElementById('ordersContent');
+  var orderDetail = document.getElementById('orderDetail');
+  if (tab === 'orders') {
+    pfApp.style.display = 'none';
+    pfSettings.style.display = 'none';
+    pfSettings.classList.remove('active');
+    pfFooter.style.display = 'none';
+    ordersContent.style.display = '';
+    orderDetail.style.display = 'none';
+  } else if (tab === 'detail') {
+    pfApp.style.display = 'none';
+    pfSettings.style.display = 'none';
+    pfSettings.classList.remove('active');
+    pfFooter.style.display = 'none';
+    ordersContent.style.display = 'none';
+    orderDetail.style.display = '';
+  } else {
+    pfApp.style.display = '';
+    pfSettings.style.display = 'none';
+    pfSettings.classList.remove('active');
+    pfFooter.style.display = '';
+    ordersContent.style.display = 'none';
+    orderDetail.style.display = 'none';
+  }
+}
+window.addEventListener('hashchange', function() {
+  var hash = window.location.hash;
+  if (hash === '#orders') pfTab('orders');
+  else if (hash === '#settings') openSettings();
+  else pfTab('profile');
+});
 (function(){
-  var pn = document.getElementById('profileName');
-  if (!pn) { document.write('DEBUG: profileName not found'); return; }
-  var t;
-  try { t = window._token || localStorage.getItem('token'); } catch(e) { t = null; }
-  if (!t) {
+  var token = localStorage.getItem('token');
+  if (!token) {
     document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#fff3cd;color:#856404;">🔒 Please <a href="/auth.html">login</a> to view your profile.</div>');
     return;
   }
-  fetch('/api/users/me', { headers: { 'Authorization': 'Bearer ' + t } })
+  fetch('/api/users/me', { headers: { 'Authorization': 'Bearer ' + token } })
     .then(function(r) { return r.json(); })
     .then(function(user) {
-      if (!user || user.error) {
-        document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#f8d7da;color:#721c24;">❌ Error: ' + (user ? JSON.stringify(user) : 'null response') + '</div>');
-        return;
-      }
-      document.getElementById('profileName').value = user.name || '';
-      document.getElementById('profileEmail').value = user.email || '';
-      document.getElementById('profilePhone').value = user.phone || '';
-      document.getElementById('profileAddress').value = user.address || '';
-    })
-    .catch(function(err) {
-      document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center;padding:12px;background:#f8d7da;color:#721c24;">🌐 Network error: ' + err.message + '</div>');
+      if (!user || user.error) return;
+      document.getElementById('pfName').textContent = user.name || '';
+      document.getElementById('pfEmail').textContent = user.email || '';
+      document.getElementById('pfWishlist').textContent = '0';
+      document.getElementById('pfCoupons').textContent = '0';
+      document.getElementById('pfPoints').textContent = '0';
+      var phd = document.getElementById('pfPhoneDisplay');
+      if (phd && user.phone) phd.textContent = user.phone;
+      var h = document.getElementById('pfPhotoWrap');
+      if (h && user.avatar) h.innerHTML = '<img src="' + esc(user.avatar) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+      var h2 = document.createElement('input'); h2.type='hidden'; h2.id='pfPhone'; h2.value=user.phone||'';
+      document.body.appendChild(h2);
+      var h3 = document.createElement('input'); h3.type='hidden'; h3.id='pfAddress'; h3.value=user.address||'';
+      document.body.appendChild(h3);
     });
+  var hash = window.location.hash;
+  if (hash === '#orders') pfTab('orders');
+  else if (hash === '#settings') openSettings();
+  else pfTab('profile');
 })();
 </script>
 </body>
 </html>
+

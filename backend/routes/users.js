@@ -176,6 +176,17 @@ router.put('/me/password', authMiddleware, async (req, res) => {
 router.post('/me/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    try {
+      const sharp = (await import('sharp')).default;
+      const filePath = req.file.path;
+      await sharp(filePath)
+        .resize(400, 400, { fit: 'cover', position: 'centre' })
+        .jpeg({ quality: 85 })
+        .toFile(filePath + '.tmp');
+      const fs = await import('fs');
+      fs.unlinkSync(filePath);
+      fs.renameSync(filePath + '.tmp', filePath);
+    } catch (e) { /* keep original if resize fails */ }
     const url = '/uploads/' + req.file.filename;
     await db.prepare('UPDATE users SET avatar = ? WHERE id = ?').run(url, req.user.id);
     res.json({ avatar: url });

@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title data-i18n="admin.title_questions">Q&A</title>
+<link rel="stylesheet" href="../css/style.css?v=3.2">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo">iShop <span data-i18n="admin.brand_admin">Admin</span></a>
+    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">Go to Site</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">Logout</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+    <div class="admin-sidebar">
+      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">Dashboard</span></a>
+      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">Products</span></a>
+      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">Categories</span></a>
+      <a href="/admin/questions.html" class="active"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">Q&A</span></a>
+      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">Orders</span></a>
+<hr class="sidebar-divider">
+      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+      <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">Settings</span></a>
+      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">Profile</span></a>
+    </div>
+    <div class="admin-content">
+      <div class="page-header">
+        <h2 data-i18n="admin.questions">Q&A</h2>
+      </div>
+
+    <div id="loginPrompt" class="login-prompt">
+      <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2 data-i18n="admin.login_title">Admin Login</h2>
+        <p class="login-sub" data-i18n="admin.login_sub">Sign in to manage your store</p>
+        <input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com" autocomplete="off">
+        <input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="Password" autocomplete="off">
+        <button onclick="adminLogin()" data-i18n="admin.login_btn">Sign In</button>
+        <p class="login-footer" data-i18n="admin.login_footer">Admin Panel</p>
+      </div>
+    </div>
+
+    <div id="questionsWrap"></div>
+  </div>
+</div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

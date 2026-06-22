@@ -6,8 +6,8 @@ import { authMiddleware } from './users.js';
 const router = Router();
 
 function getCartQuery(userId, sessionId) {
-  if (userId) return db.prepare('SELECT c.*, p.name, p.price, p.images, p.stock, p.active FROM cart c JOIN products p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY c.id DESC').all(userId);
-  return db.prepare('SELECT c.*, p.name, p.price, p.images, p.stock, p.active FROM cart c JOIN products p ON p.id = c.product_id WHERE c.session_id = ? ORDER BY c.id DESC').all(sessionId);
+  if (userId) return db.prepare('SELECT c.*, p.name, p.price, p.images, p.color_images, p.stock, p.active FROM cart c JOIN products p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY c.id DESC').all(userId);
+  return db.prepare('SELECT c.*, p.name, p.price, p.images, p.color_images, p.stock, p.active FROM cart c JOIN products p ON p.id = c.product_id WHERE c.session_id = ? ORDER BY c.id DESC').all(sessionId);
 }
 
 router.get('/', async (req, res) => {
@@ -38,10 +38,11 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-  const { product_id, quantity, color } = req.body || {};
+  const { product_id, quantity, color, size } = req.body || {};
     if (!product_id) return res.status(400).json({ error: 'product_id required' });
     const qty = Math.max(1, parseInt(quantity) || 1);
     const selectedColor = color || '';
+    const selectedSize = size || '';
 
     const product = await db.prepare('SELECT id, stock, active FROM products WHERE id = ?').get(product_id);
     if (!product || !product.active) return res.status(404).json({ error: 'Product not found' });
@@ -60,17 +61,17 @@ router.post('/', async (req, res) => {
     if (!userId && !sessionId) { sessionId = uuidv4(); }
 
     const existing = userId
-      ? await db.prepare('SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND color = ?').get(userId, product_id, selectedColor)
-      : await db.prepare('SELECT * FROM cart WHERE session_id = ? AND product_id = ? AND color = ?').get(sessionId, product_id, selectedColor);
+      ? await db.prepare('SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND color = ? AND size = ?').get(userId, product_id, selectedColor, selectedSize)
+      : await db.prepare('SELECT * FROM cart WHERE session_id = ? AND product_id = ? AND color = ? AND size = ?').get(sessionId, product_id, selectedColor, selectedSize);
 
     if (existing) {
       const newQty = Math.min(existing.quantity + qty, product.stock || 99);
       await db.prepare('UPDATE cart SET quantity = ? WHERE id = ?').run(newQty, existing.id);
     } else {
       if (userId) {
-        await db.prepare('INSERT INTO cart (user_id, product_id, quantity, color) VALUES (?, ?, ?, ?)').run(userId, product_id, qty, selectedColor);
+        await db.prepare('INSERT INTO cart (user_id, product_id, quantity, color, size) VALUES (?, ?, ?, ?, ?)').run(userId, product_id, qty, selectedColor, selectedSize);
       } else {
-        await db.prepare('INSERT INTO cart (session_id, product_id, quantity, color) VALUES (?, ?, ?, ?)').run(sessionId, product_id, qty, selectedColor);
+        await db.prepare('INSERT INTO cart (session_id, product_id, quantity, color, size) VALUES (?, ?, ?, ?, ?)').run(sessionId, product_id, qty, selectedColor, selectedSize);
       }
     }
 
@@ -109,11 +110,11 @@ router.post('/merge', authMiddleware, async (req, res) => {
     if (!sessionId) return res.json({ ok: true });
     const guestItems = await db.prepare('SELECT * FROM cart WHERE session_id = ?').all(sessionId);
     for (const item of guestItems) {
-      const existing = await db.prepare('SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND color = ?').get(req.user.id, item.product_id, item.color || '');
+      const existing = await db.prepare('SELECT * FROM cart WHERE user_id = ? AND product_id = ? AND color = ? AND size = ?').get(req.user.id, item.product_id, item.color || '', item.size || '');
       if (existing) {
         await db.prepare('UPDATE cart SET quantity = quantity + ? WHERE id = ?').run(item.quantity, existing.id);
       } else {
-        await db.prepare('INSERT INTO cart (user_id, product_id, quantity, color) VALUES (?, ?, ?, ?)').run(req.user.id, item.product_id, item.quantity, item.color || '');
+        await db.prepare('INSERT INTO cart (user_id, product_id, quantity, color, size) VALUES (?, ?, ?, ?, ?)').run(req.user.id, item.product_id, item.quantity, item.color || '', item.size || '');
       }
       await db.prepare('DELETE FROM cart WHERE id = ?').run(item.id);
     }

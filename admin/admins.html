@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
+<title data-i18n="admin.team_heading">🛡️ অ্যাডমিন টিম v2.0</title>
+<link rel="stylesheet" href="../css/style.css?v=3.2">
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
+</script>
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/admin/" class="logo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
+    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
+  </div>
+</header>
+
+<div class="admin-layout">
+    <div class="admin-sidebar">
+      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+      <a href="/admin/admins.html" class="active"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+<hr class="sidebar-divider">
+      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+      <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+    </div>
+    <div class="admin-content">
+      <div class="page-header"><h2 data-i18n="admin.team_heading">🛡️ অ্যাডমিন টিম</h2></div>
+    <div id="loginPrompt" class="login-prompt">
+      <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2 data-i18n="admin.login_title">Admin Login</h2>
+        <p class="login-sub" data-i18n="admin.login_sub">Sign in to manage admins</p>
+        <input type="text" id="adminEmail" data-i18n-placeholder="admin.login_email_ph" placeholder="admin@email.com">
+        <input type="password" id="adminPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="Password">
+        <button onclick="adminLogin()" data-i18n="admin.login_btn">Sign In</button>
+        <p class="login-footer" data-i18n="admin.login_footer">Admin Panel</p>
+      </div>
+    </div>
+    <div id="adminsWrap" style="display:none;">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <span id="adminCount" class="product-count"></span>
+        <button class="btn btn-primary btn-sm" onclick="showCreateAdminForm()" data-i18n="admin.create_admin">➕ নতুন অ্যাডমিন যোগ করুন</button>
+      </div>
+
+      <div id="createAdminForm" style="display:none;background:var(--white);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px;box-shadow:var(--shadow);">
+        <h3 style="font-size:16px;margin-bottom:12px;" data-i18n="admin.create_admin_title">নতুন অ্যাডমিন তৈরি করুন</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:600px;">
+          <input type="text" id="caName" data-i18n-placeholder="admin.name" placeholder="নাম" style="padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <input type="email" id="caEmail" placeholder="ইমেইল" style="padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <input type="text" id="caPhone" data-i18n-placeholder="checkout.phone_placeholder" placeholder="০১XXXXXXXXX" style="padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <input type="password" id="caPass" data-i18n-placeholder="admin.login_pass_ph" placeholder="পাসওয়ার্ড" style="padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="createAdmin()" data-i18n="admin.create">তৈরি করুন</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('createAdminForm').style.display='none'" data-i18n="admin.cancel">বাতিল</button>
+        </div>
+      </div>
+
+      <div id="adminsTableWrap"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/admin.js"></script>
+<script>
+(function() {
+  var token = localStorage.getItem('adminToken');
+  if (!token) return;
+  document.getElementById('loginPrompt').style.display = 'none';
+  document.getElementById('adminsWrap').style.display = 'block';
+  loadAdminList();
+})();
+
+function loadAdminList() {
+  apiAdmin('GET', '/users?role=admin').then(function(admins) {
+    var el = document.getElementById('adminsTableWrap');
+    if (!el) return;
+    if (!admins || admins.length === 0) {
+      el.innerHTML = '<p style="color:var(--gray);">' + __('admin.no_admins') + '</p>';
+      return;
+    }
+    var countEl = document.getElementById('adminCount');
+    if (countEl) countEl.textContent = __('admin.admin_count', { count: admins.length });
+
+    var currentUserId = null;
+    try { var tk = localStorage.getItem('adminToken'); if (tk) { var payload = JSON.parse(atob(tk.split('.')[1])); currentUserId = payload.id; } } catch(e) {}
+
+    var html = '<table class="data-table"><thead><tr>' +
+      '<th>ID</th>' +
+      '<th>' + __('admin.name') + '</th>' +
+      '<th>Email</th>' +
+      '<th>' + __('checkout.phone_placeholder') + '</th>' +
+      '<th>' + __('admin.join_date') + '</th>' +
+      '<th>' + __('admin.actions') + '</th>' +
+      '</tr></thead><tbody>';
+    admins.forEach(function(u) {
+      var isMe = u.id === currentUserId;
+      var actions = '';
+      if (!isMe) {
+        actions = '<button class="btn btn-outline btn-sm" onclick="demoteAdmin(' + u.id + ')" style="font-size:12px;padding:4px 10px;">' + __('admin.demote') + '</button>';
+      } else {
+        actions = '<span style="color:var(--gray);font-size:12px;">' + __('admin.you') + '</span>';
+      }
+      html += '<tr>' +
+        '<td class="cell-id">' + u.id + '</td>' +
+        '<td><strong>' + esc(u.name || '') + '</strong></td>' +
+        '<td style="color:#4b5563;">' + esc(u.email || '') + '</td>' +
+        '<td style="color:#6b7280;">' + esc(u.phone || '') + '</td>' +
+        '<td style="color:#6b7280;font-size:13px;">' + (u.created_at || '') + '</td>' +
+        '<td>' + actions + '</td>' +
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  });
+}
+
+function showCreateAdminForm() {
+  document.getElementById('createAdminForm').style.display = 'block';
+  document.getElementById('caName').value = '';
+  document.getElementById('caEmail').value = '';
+  document.getElementById('caPhone').value = '';
+  document.getElementById('caPass').value = '';
+  document.getElementById('caName').focus();
+}
+
+function createAdmin() {
+  var name = document.getElementById('caName').value.trim();
+  var email = document.getElementById('caEmail').value.trim();
+  var phone = document.getElementById('caPhone').value.trim();
+  var pass = document.getElementById('caPass').value;
+  if (!name || !email || !pass) { toast(__('toast.name_email_password_required'), 'error'); return; }
+  if (pass.length < 4) { toast(__('toast.password_min_4'), 'error'); return; }
+  apiAdmin('POST', '/create-admin', { name: name, email: email, phone: phone, password: pass }).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('toast.admin_created'));
+    document.getElementById('createAdminForm').style.display = 'none';
+    loadAdminList();
+  });
+}
+
+function demoteAdmin(id) {
+  if (!confirm(__('confirm.demote_admin'))) return;
+  apiAdmin('PUT', '/users/' + id + '/role', { role: 'user' }).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('toast.admin_demoted'));
+    loadAdminList();
+  });
+}
+</script>
+</body>
+</html>

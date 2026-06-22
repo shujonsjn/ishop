@@ -48,21 +48,61 @@ let schemaReady = (async () => {
   await db.exec("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,slug TEXT UNIQUE NOT NULL,description TEXT DEFAULT '',price REAL NOT NULL,purchase_price REAL DEFAULT 0,compare_price REAL,category_id INTEGER REFERENCES categories(id),images TEXT DEFAULT '[]',stock INTEGER DEFAULT 0,featured INTEGER DEFAULT 0,active INTEGER DEFAULT 1,created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   try { await db.exec("ALTER TABLE products ADD COLUMN colors TEXT DEFAULT '[]'"); } catch {}
   try { await db.exec("ALTER TABLE products ADD COLUMN purchase_price REAL DEFAULT 0"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN brand TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN en_name TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN sku TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN sizes TEXT DEFAULT '[]'"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN has_sizes INTEGER DEFAULT 0"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN color_images TEXT DEFAULT '{}'"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN size_chart_image TEXT DEFAULT ''"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL REFERENCES products(id),user_id INTEGER NOT NULL REFERENCES users(id),rating INTEGER NOT NULL,comment TEXT DEFAULT '',created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   await db.exec("CREATE TABLE IF NOT EXISTS cart (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER REFERENCES users(id),session_id TEXT,product_id INTEGER NOT NULL REFERENCES products(id),quantity INTEGER DEFAULT 1,created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   try { await db.exec("ALTER TABLE cart ADD COLUMN color TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE cart ADD COLUMN size TEXT DEFAULT ''"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL REFERENCES users(id),total REAL NOT NULL,status TEXT DEFAULT 'pending',payment_method TEXT DEFAULT '',payment_status TEXT DEFAULT 'unpaid',shipping_address TEXT NOT NULL,phone TEXT,note TEXT DEFAULT '',created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+  try { await db.exec("ALTER TABLE orders ADD COLUMN customer_name TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN district TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN upazila TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN area TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN custom_fields TEXT DEFAULT '{}'"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN transaction_id TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE orders ADD COLUMN delivery_charge REAL DEFAULT 0"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY AUTOINCREMENT,order_id INTEGER NOT NULL REFERENCES orders(id),product_id INTEGER NOT NULL,name TEXT NOT NULL,price REAL NOT NULL,quantity INTEGER NOT NULL,image TEXT)");
   try { await db.exec("ALTER TABLE order_items ADD COLUMN color TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE order_items ADD COLUMN size TEXT DEFAULT ''"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY AUTOINCREMENT,order_id INTEGER NOT NULL REFERENCES orders(id),method TEXT NOT NULL,transaction_id TEXT,amount REAL NOT NULL,status TEXT DEFAULT 'pending',created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+  await db.exec("CREATE TABLE IF NOT EXISTS product_questions (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL REFERENCES products(id),user_id INTEGER REFERENCES users(id),question TEXT NOT NULL,answer TEXT DEFAULT '',created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   try { await db.exec("ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS otps (id INTEGER PRIMARY KEY AUTOINCREMENT,identifier TEXT NOT NULL,code TEXT NOT NULL,expires_at INTEGER NOT NULL,used INTEGER DEFAULT 0,created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
+  await db.exec("CREATE TABLE IF NOT EXISTS product_variants (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL REFERENCES products(id),color TEXT DEFAULT '',size TEXT DEFAULT '',stock INTEGER DEFAULT 0,UNIQUE(product_id,color,size))");
   await db.exec("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)");
   await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('site_name', 'ইশপ')").run();
   await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('logo_url', '')").run();
   var defaultEnd = new Date(Date.now() + 24 * 60 * 60 * 1000);
   await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('flash_sale_end', ?)").run(defaultEnd.toISOString());
-  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('flash_sale_color', '#e74c3c')").run();
+
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('header_bg', '#1a73e8')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('header_text_color', '#ffffff')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('body_bg', '#f5f5f5')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('primary_color', '#1a73e8')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('footer_bg', '#1f2937')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('footer_text_color', '#9ca3af')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('footer_copyright', '© 2026 ইশপ — সকল অধিকার সংরক্ষিত')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_flash_title_bn', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_flash_title_en', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_flash_all_bn', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_flash_all_link', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_flash_all_en', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_categories_title_bn', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_categories_title_en', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_jfy_title_bn', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('text_jfy_title_en', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('sslcommerz_store_id', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('sslcommerz_store_pass', '')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('sslcommerz_sandbox', 'true')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('sslcommerz_base_url', 'http://localhost:3001')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('delivery_inside_dhaka', '80')").run();
+  await db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('delivery_outside_dhaka', '160')").run();
   try {
     const existing = await db.prepare("SELECT value FROM settings WHERE key = 'banners'").get();
     if (!existing) {
@@ -72,6 +112,39 @@ let schemaReady = (async () => {
         { bg: 'linear-gradient(135deg,#00a86b,#0d9488)', bgImage: '', title: 'ফ্রি ডেলিভারি', titleEn: 'Free Delivery', desc: '৫০০ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি', descEn: 'Free delivery on orders above 500 Taka', btnText: 'পণ্য দেখুন', btnTextEn: 'See Products', btnLink: '/products.html', btnColor: '#ffffff' }
       ]);
       await db.prepare("INSERT INTO settings (key, value) VALUES ('banners', ?)").run(defaultBanners);
+    }
+  } catch(e) {}
+  try {
+    const existing = await db.prepare("SELECT value FROM settings WHERE key = 'footer_content'").get();
+    if (!existing) {
+      const defaultFooter = JSON.stringify([
+        {
+          title: 'গ্রাহক সেবা', titleEn: 'Customer Service',
+          links: [
+            { text: 'সাহায্য কেন্দ্র', textEn: 'Help Center', url: '#' },
+            { text: 'কিভাবে কিনবেন', textEn: 'How to Buy', url: '#' },
+            { text: 'রিটার্ন ও রিফান্ড', textEn: 'Returns & Refund', url: '#' },
+            { text: 'যোগাযোগ', textEn: 'Contact', url: '#' },
+            { text: 'শর্তাবলী', textEn: 'Terms & Conditions', url: '#' }
+          ]
+        },
+        {
+          title: 'ইশপ', titleEn: 'Brand',
+          links: [
+            { text: 'আমাদের সম্পর্কে', textEn: 'About Us', url: '#' },
+            { text: 'ব্লগ', textEn: 'Blog', url: '#' },
+            { text: 'গোপনীয়তা নীতি', textEn: 'Privacy Policy', url: '#' },
+            { text: 'ইশপ অ্যাপ', textEn: 'iShop App', url: '#' },
+            { text: 'সেলার হন', textEn: 'Become a Seller', url: '#' }
+          ]
+        },
+        {
+          title: 'পেমেন্ট মেথড', titleEn: 'Payment Methods',
+          type: 'payments',
+          links: []
+        }
+      ]);
+      await db.prepare("INSERT INTO settings (key, value) VALUES ('footer_content', ?)").run(defaultFooter);
     }
   } catch(e) {}
 })();

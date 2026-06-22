@@ -38,6 +38,22 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/payment', paymentRouter);
 app.use('/api/admin', adminRouter);
 
+app.get('/api/checkout-config', async (req, res) => {
+  try {
+    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('checkout_labels', 'checkout_custom_fields', 'delivery_inside_dhaka', 'delivery_outside_dhaka')").all();
+    const config = {};
+    rows.forEach(r => { config[r.key] = r.value; });
+    res.json({
+      labels: config.checkout_labels ? JSON.parse(config.checkout_labels) : {},
+      custom_fields: config.checkout_custom_fields ? JSON.parse(config.checkout_custom_fields) : [],
+      delivery_charge: {
+        inside_dhaka: Number(config.delivery_inside_dhaka) || 80,
+        outside_dhaka: Number(config.delivery_outside_dhaka) || 160
+      }
+    });
+  } catch (err) { res.json({ labels: {}, custom_fields: [], delivery_charge: { inside_dhaka: 80, outside_dhaka: 160 } }); }
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).json({ error: err.message || 'Server error' });

@@ -29,27 +29,29 @@
 
   window.timeAgo = function(dateStr) {
     if (!dateStr) return '';
-    var d = new Date(dateStr);
+    var d = new Date(dateStr.replace(' ', 'T'));
+    if (isNaN(d.getTime())) d = new Date(dateStr);
     if (isNaN(d.getTime())) return '';
-    var now = new Date();
-    var diffSec = Math.floor((now - d) / 1000);
-    if (diffSec < 0) diffSec = 0;
-    if (diffSec < 60) return __('timeago.seconds', {n: diffSec});
-    var diffMin = Math.floor(diffSec / 60);
-    if (diffMin < 60) return __('timeago.minutes', {n: diffMin});
-    var diffHour = Math.floor(diffMin / 60);
-    if (diffHour < 24) return __('timeago.hours', {n: diffHour});
-    var diffDay = Math.floor(diffHour / 24);
-    if (diffDay < 30) return __('timeago.days', {n: diffDay});
-    return d.toLocaleDateString(window.getLang && window.getLang() === 'en' ? 'en-US' : 'bn-BD');
+    return d.toLocaleDateString(window.getLang && window.getLang() === 'en' ? 'en-US' : 'bn-BD', { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString(window.getLang && window.getLang() === 'en' ? 'en-US' : 'bn-BD', { hour: '2-digit', minute: '2-digit' });
   };
 
   window.taka = function(amount) {
     try {
-      return '৳' + Number(amount || 0).toLocaleString('bn-BD');
+      return '৳' + Number(amount || 0).toLocaleString('en-US');
     } catch (e) {
       return '৳' + Number(amount || 0).toLocaleString();
     }
+  };
+
+  window.productImage = function(p) {
+    if (p.images && p.images.length) return p.images[0];
+    var ci = p.color_images || {};
+    if (typeof ci === 'string') { try { ci = JSON.parse(ci); } catch(e) { ci = {}; } }
+    var colors = Object.keys(ci);
+    for (var i = 0; i < colors.length; i++) {
+      if (ci[colors[i]] && ci[colors[i]].length) return ci[colors[i]][0];
+    }
+    return '';
   };
 
   window.toast = function(msg, type) {
@@ -65,9 +67,9 @@
   window.updateSiteHeader = function(settings) {
     var el = document.getElementById('siteLogo') || document.querySelector('.logo');
     if (!el) return;
-    var name = settings.site_name || 'iShop';
+    var name = settings.site_name || '';
     if (settings.logo_url) {
-      el.innerHTML = '<img src="' + esc(settings.logo_url) + '" alt="' + esc(name) + '" style="height:36px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">' +
+      el.innerHTML = '<img src="' + esc(settings.logo_url) + '" alt="' + esc(name) + '" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">' +
         '<span class="site-name">' + esc(name) + '</span>';
     } else {
       if (/^[^\w]/.test(name) || name.length <= 1) {
@@ -78,13 +80,60 @@
     }
   };
 
+  window.applySiteTheme = function(s) {
+    if (!s) return;
+    var root = document.documentElement;
+    var pairs = [
+      ['header_bg', '--header-bg'],
+      ['header_text_color', '--header-text'],
+      ['body_bg', '--body-bg'],
+      ['primary_color', '--primary'],
+      ['footer_bg', '--footer-bg'],
+      ['footer_text_color', '--footer-text']
+    ];
+    pairs.forEach(function(p) {
+      if (s[p[0]]) root.style.setProperty(p[1], s[p[0]]);
+    });
+    var cr = document.querySelector('.dz-footer-bottom');
+    if (cr && s.footer_copyright) cr.textContent = s.footer_copyright;
+  };
+
   window.loadSiteSettings = function() {
     fetch('/api/admin/settings?_=' + Date.now()).then(function(r) { return r.json(); }).then(function(s) {
-      if (s && !s.error && s.site_name) {
-        window.updateSiteHeader(s);
-        localStorage.setItem('siteSettings', JSON.stringify(s));
+      if (s && !s.error && s.site_name !== undefined) {
+        try { localStorage.setItem('siteSettings', JSON.stringify(s)); } catch(e) {}
+        if (typeof applySiteTheme === 'function') applySiteTheme(s);
+        if (typeof updateSiteHeader === 'function') updateSiteHeader(s);
+        if (typeof applyHeaderSettings === 'function') applyHeaderSettings(s);
       }
     }).catch(function(){});
+  };
+
+  window.applyHeaderSettings = function(s) {
+    if (!s) return;
+    var searchBox = document.getElementById('searchBox');
+    if (searchBox) searchBox.style.display = s.header_show_search === '0' ? 'none' : '';
+    var navHome = document.getElementById('navHome');
+    if (navHome) navHome.style.display = s.header_show_home === '0' ? 'none' : '';
+    var navProducts = document.getElementById('navProducts');
+    if (navProducts) navProducts.style.display = s.header_show_products === '0' ? 'none' : '';
+    var navCart = document.getElementById('navCart');
+    if (navCart) navCart.style.display = s.header_show_cart === '0' ? 'none' : '';
+    var navOrders = document.getElementById('navOrders');
+    if (navOrders) navOrders.style.display = s.header_show_orders === '0' ? 'none' : '';
+    var navAdmin = document.getElementById('navAdmin');
+    if (navAdmin) navAdmin.style.display = s.header_show_admin === '0' ? 'none' : '';
+    var langToggle = document.getElementById('langToggle');
+    if (langToggle) langToggle.style.display = s.header_show_lang === '0' ? 'none' : '';
+    var authLink = document.getElementById('authLink');
+    if (authLink) authLink.style.display = s.header_show_auth === '0' ? 'none' : '';
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput && s.header_search_placeholder_bn) {
+      var lang = localStorage.getItem('lang') || 'bn';
+      searchInput.placeholder = lang === 'en' && s.header_search_placeholder_en ? s.header_search_placeholder_en : s.header_search_placeholder_bn;
+    }
+    var header = document.querySelector('header') || document.querySelector('.header');
+    if (header && s.header_padding) header.style.padding = s.header_padding;
   };
 
   window.loadCartCount = function() {
@@ -185,10 +234,38 @@
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initSearchAutocomplete();
     loadSiteSettings();
+    hideAdminLinkForNonAdmins();
   } else {
     document.addEventListener('DOMContentLoaded', function() {
       initSearchAutocomplete();
       loadSiteSettings();
+      hideAdminLinkForNonAdmins();
+    });
+  }
+
+  function hideAdminLinkForNonAdmins() {
+    var adminLink = document.getElementById('adminLink');
+    if (!adminLink) return;
+    var token = localStorage.getItem('token');
+    if (!token) {
+      adminLink.style.display = 'none';
+      return;
+    }
+    try {
+      var u = JSON.parse(localStorage.getItem('user') || '{}');
+      if (u.role === 'admin') {
+        adminLink.style.display = '';
+        return;
+      }
+    } catch(e) {}
+    api('GET', '/users/me').then(function(user) {
+      if (user && !user.error && user.role === 'admin') {
+        adminLink.style.display = '';
+      } else {
+        adminLink.style.display = 'none';
+      }
+    }).catch(function() {
+      adminLink.style.display = 'none';
     });
   }
 })();
