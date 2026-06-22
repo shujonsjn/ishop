@@ -100,7 +100,9 @@ header {
   overflow: hidden;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
+  scrollbar-width: none;
 }
+header::-webkit-scrollbar { display: none; }
 :root { --header-bg: linear-gradient(135deg, #1a73e8 0%, #7c3aed 100%); }
 .header-inner {
   display: flex;
