@@ -98,6 +98,14 @@
     if (cr && s.footer_copyright) cr.textContent = s.footer_copyright;
   };
 
+  var _pendingReveals = 2;
+  function _checkReveal() {
+    _pendingReveals--;
+    if (_pendingReveals <= 0) {
+      document.body.style.opacity = '1';
+    }
+  }
+
   window.loadSiteSettings = function() {
     fetch('/api/admin/settings?_=' + Date.now()).then(function(r) { return r.json(); }).then(function(s) {
       if (s && !s.error && s.site_name !== undefined) {
@@ -106,8 +114,8 @@
         if (typeof updateSiteHeader === 'function') updateSiteHeader(s);
         if (typeof applyHeaderSettings === 'function') applyHeaderSettings(s);
       }
-      document.body.style.opacity = '1';
-    }).catch(function(){ document.body.style.opacity = '1'; });
+      _checkReveal();
+    }).catch(function(){ _checkReveal(); });
   };
 
   window.applyHeaderSettings = function(s) {
@@ -127,7 +135,14 @@
     var langToggle = document.getElementById('langToggle');
     if (langToggle) langToggle.style.display = s.header_show_lang === '0' ? 'none' : '';
     var authLink = document.getElementById('authLink');
-    if (authLink) authLink.style.display = s.header_show_auth === '0' ? 'none' : '';
+    var hasProfileDropdown = document.getElementById('headerProfileDropdown');
+    if (authLink) {
+      if (s.header_show_auth === '0' || hasProfileDropdown) {
+        authLink.style.display = 'none';
+      } else {
+        authLink.style.display = '';
+      }
+    }
     var searchInput = document.getElementById('searchInput');
     if (searchInput && s.header_search_placeholder_bn) {
       var lang = localStorage.getItem('lang') || 'bn';
@@ -246,16 +261,18 @@
 
   function hideAdminLinkForNonAdmins() {
     var adminLink = document.getElementById('adminLink');
-    if (!adminLink) return;
+    if (!adminLink) { _checkReveal(); return; }
     var token = localStorage.getItem('token');
     if (!token) {
       adminLink.style.display = 'none';
+      _checkReveal();
       return;
     }
     try {
       var u = JSON.parse(localStorage.getItem('user') || '{}');
       if (u.role === 'admin') {
         adminLink.style.display = '';
+        _checkReveal();
         return;
       }
     } catch(e) {}
@@ -267,6 +284,8 @@
       }
     }).catch(function() {
       adminLink.style.display = 'none';
+    }).finally(function() {
+      _checkReveal();
     });
   }
 
