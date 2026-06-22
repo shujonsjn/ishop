@@ -106,7 +106,8 @@
         if (typeof updateSiteHeader === 'function') updateSiteHeader(s);
         if (typeof applyHeaderSettings === 'function') applyHeaderSettings(s);
       }
-    }).catch(function(){});
+      document.body.style.opacity = '1';
+    }).catch(function(){ document.body.style.opacity = '1'; });
   };
 
   window.applyHeaderSettings = function(s) {
@@ -269,5 +270,4 @@
     });
   }
 
-  document.body.style.opacity = '1';
 })();
