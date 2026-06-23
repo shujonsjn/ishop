@@ -10,6 +10,59 @@
 <script>
 (function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});}catch(e){}})();
 </script>
+<style>
+.auth-page { min-height: calc(100vh - 60px); display: flex; align-items: center; justify-content: center; padding: 40px 16px; background: var(--body-bg, var(--light-gray)); }
+.auth-card { width: 100%; max-width: 440px; background: #fff; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); overflow: hidden; }
+.auth-header { background: var(--header-bg, linear-gradient(135deg, #1a73e8 0%, #7c3aed 100%)); padding: 36px 32px 28px; text-align: center; color: #fff; }
+.auth-header .auth-logo { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; backdrop-filter: blur(8px); }
+.auth-header .auth-logo img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.auth-header h2 { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+.auth-header p { font-size: 14px; opacity: 0.85; margin: 0; }
+.auth-body { padding: 28px 32px 32px; }
+.auth-tabs { display: flex; background: var(--light-gray, #f3f4f6); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
+.auth-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: 600; font-size: 15px; color: var(--gray, #6b7280); border-radius: 8px; transition: all 0.25s; font-family: var(--font-bn); }
+.auth-tab.active { background: #fff; color: var(--primary, #1a73e8); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.auth-body .form-group { margin-bottom: 16px; }
+.auth-body .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #374151; }
+.auth-body .form-group input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid #e5e7eb;
+  border-radius: 10px; font-family: var(--font-bn); font-size: 15px;
+  outline: none; transition: all 0.2s; background: #f9fafb;
+}
+.auth-body .form-group input:focus { border-color: var(--primary, #1a73e8); box-shadow: 0 0 0 3px rgba(26,115,232,0.1); background: #fff; }
+.auth-body .form-group input::placeholder { color: #9ca3af; }
+.auth-body .btn-primary {
+  width: 100%; padding: 13px; border: none; border-radius: 10px;
+  background: var(--header-bg, linear-gradient(135deg, #1a73e8 0%, #7c3aed 100%));
+  color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+  transition: all 0.25s; font-family: var(--font-bn); margin-top: 4px;
+}
+.auth-body .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,115,232,0.3); }
+.auth-body .btn-primary:active { transform: translateY(0); }
+.auth-body .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.auth-body .btn-outline {
+  width: 100%; padding: 13px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+  background: #fff; color: #374151; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.25s; font-family: var(--font-bn);
+}
+.auth-body .btn-outline:hover { border-color: var(--primary, #1a73e8); color: var(--primary, #1a73e8); background: var(--primary-light, #eff6ff); }
+.auth-body .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
+.otp-group { text-align: center; margin-bottom: 16px; }
+.otp-group input {
+  width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 10px;
+  font-size: 24px; font-weight: 700; letter-spacing: 8px; text-align: center;
+  font-family: var(--font-bn); outline: none; transition: all 0.2s; background: #f9fafb;
+}
+.otp-group input:focus { border-color: var(--primary, #1a73e8); box-shadow: 0 0 0 3px rgba(26,115,232,0.1); background: #fff; }
+.auth-error { background: #fef2f2; color: #dc2626; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; border: 1px solid #fecaca; }
+.auth-success { background: #f0fdf4; color: #16a34a; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; border: 1px solid #bbf7d0; }
+.auth-divider { display: flex; align-items: center; margin: 20px 0; color: #9ca3af; font-size: 13px; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; }
+.auth-divider span { padding: 0 12px; }
+.auth-footer { text-align: center; padding: 16px 32px 24px; font-size: 13px; color: #6b7280; }
+.auth-footer a { color: var(--primary, #1a73e8); text-decoration: none; font-weight: 600; }
+.auth-footer a:hover { text-decoration: underline; }
+</style>
 <style>body{opacity:0}</style>
 </head>
 <body>
@@ -17,76 +70,85 @@
 <header>
   <div class="header-inner">
     <a href="/" class="logo" id="siteLogo">ই<span>শপ</span></a>
-    <script>(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var sn=s.site_name||'';var el=document.getElementById('siteLogo');if(el){if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>';}else if(sn.length>1){el.innerHTML=sn.charAt(0)+'<span>'+sn.slice(1)+'</span>';}else{el.textContent=sn;}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);if(s.header_show_search==='0'&&document.getElementById('searchBox'))document.getElementById('searchBox').style.display='none';if(s.header_show_home==='0'&&document.getElementById('navHome'))document.getElementById('navHome').style.display='none';if(s.header_show_products==='0'&&document.getElementById('navProducts'))document.getElementById('navProducts').style.display='none';if(s.header_show_cart==='0'&&document.getElementById('navCart'))document.getElementById('navCart').style.display='none';if(s.header_show_admin==='0'&&document.getElementById('navAdmin'))document.getElementById('navAdmin').style.display='none';if(s.header_show_lang==='0'&&document.getElementById('langToggle'))document.getElementById('langToggle').style.display='none';if(s.header_show_auth==='0'&&document.getElementById('authLink'))document.getElementById('authLink').style.display='none';if(s.header_padding){var hd=document.querySelector('header');if(hd)hd.style.padding=s.header_padding;}if(s.header_search_placeholder_bn){var si=document.getElementById('searchInput');if(si){var lg=localStorage.getItem('lang')||'bn';si.placeholder=lg==='en'&&s.header_search_placeholder_en?s.header_search_placeholder_en:s.header_search_placeholder_bn;}}if(s.header_show_orders==='0'){document.querySelectorAll('a[href*="profile.html#orders"]').forEach(function(a){a.style.display='none';});}if(s.header_show_orders==='1'){document.querySelectorAll('a[href*="profile.html#orders"]').forEach(function(a){a.style.display='';});}}catch(e){}})();</script>
+    <script>(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var sn=s.site_name||'';var el=document.getElementById('siteLogo');if(el){if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>';}else if(sn.length>1){el.innerHTML=sn.charAt(0)+'<span>'+sn.slice(1)+'</span>';}else{el.textContent=sn;}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);if(s.header_show_search==='0'&&document.getElementById('searchBox'))document.getElementById('searchBox').style.display='none';if(s.header_show_home==='0'&&document.getElementById('navHome'))document.getElementById('navHome').style.display='none';if(s.header_show_products==='0'&&document.getElementById('navProducts'))document.getElementById('navProducts').style.display='none';if(s.header_show_cart==='0'&&document.getElementById('navCart'))document.getElementById('navCart').style.display='none';if(s.header_show_admin==='0'&&document.getElementById('navAdmin'))document.getElementById('navAdmin').style.display='none';if(s.header_show_lang==='0'&&document.getElementById('langToggle'))document.getElementById('langToggle').style.display='none';if(s.header_show_auth==='0'&&document.getElementById('authLink'))document.getElementById('authLink').style.display='none';if(s.header_padding){var hd=document.querySelector('header');if(hd)hd.style.padding=s.header_padding;}if(s.header_search_placeholder_bn){var si=document.getElementById('searchInput');if(si){var lg=localStorage.getItem('lang')||'bn';si.placeholder=lg==='en'&&s.header_search_placeholder_en?s.header_search_placeholder_en:s.header_search_placeholder_bn;}}if(s.header_show_orders==='0'&&document.getElementById('navOrders'))document.getElementById('navOrders').style.display='none';}catch(e){}})();
+    </script>
 
+    <div class="search-box" id="searchBox">
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." data-i18n-placeholder="nav.search_placeholder">
+      <button onclick="searchProducts()" data-i18n="nav.search_btn">খুঁজুন</button>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
     <nav>
       <a href="/" id="navHome" data-i18n="nav.home">হোম</a>
       <a href="/products.html" id="navProducts" data-i18n="nav.products">পণ্য</a>
       <a href="/cart.html" id="navCart"><span data-i18n="nav.cart">কার্ট</span> <span class="cart-icon">🛒<span class="cart-count" id="cartCount" style="display:none">0</span></span></a>
       <a href="/profile.html#orders" data-i18n="nav.orders" id="navOrders">অর্ডার</a>
-      <a href="/admin/" id="navAdmin" data-i18n="nav.admin">অ্যাডমিন</a>
+      <a href="/admin/" id="navAdmin" data-i18n="nav.admin" style="display:none">অ্যাডমিন</a>
        <button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button>
        <a href="/auth.html" id="authLink" data-no-i18n="1">লগইন</a>
     </nav>
   </div>
 </header>
 
-<div class="container">
-  <div class="auth-form card">
-    <h2 data-i18n="auth.welcome">স্বাগতম</h2>
-    <div class="auth-tabs">
-      <div class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_tab">লগইন</div>
-      <div class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_tab">রেজিস্টার</div>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo" id="authLogo">ই<span>শপ</span></div>
+      <h2 data-i18n="auth.welcome">স্বাগতম</h2>
+      <p data-i18n="auth.subtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন অথবা নতুন তৈরি করুন</p>
     </div>
-    <div id="loginForm">
-<div class="form-group">
-        <label data-i18n="auth.email_or_phone">ইমেইল / ফোন</label>
-        <input type="text" id="loginEmail" placeholder="your@email.com / ০১XXXXXXXXX" data-i18n-placeholder="auth.login_phone_hint">
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchTab('login')" data-i18n="auth.login_tab">লগইন</div>
+        <div class="auth-tab" onclick="switchTab('register')" data-i18n="auth.register_tab">রেজিস্টার</div>
       </div>
-<div class="form-group">
-        <label data-i18n="auth.password">পাসওয়ার্ড</label>
-        <input type="password" id="loginPassword" placeholder="********">
-      </div>
-      <button class="btn btn-primary btn-block" onclick="doLogin()" data-i18n="auth.login_btn">লগইন করুন</button>
-    </div>
-    <div id="registerForm" style="display:none;">
-<div class="form-group">
-        <label data-i18n="auth.name">নাম</label>
-        <input type="text" id="regName" placeholder="আপনার নাম" data-i18n-placeholder="auth.name_placeholder">
-      </div>
-<div class="form-group">
-        <label data-i18n="auth.email">ইমেইল</label>
-        <input type="email" id="regEmail" placeholder="your@email.com">
-      </div>
-<div class="form-group">
-        <label data-i18n="auth.phone">ফোন</label>
-        <input type="text" id="regPhone" placeholder="০১XXXXXXXXX" data-i18n-placeholder="auth.phone_placeholder">
-      </div>
-<div class="form-group">
-        <label data-i18n="auth.password">পাসওয়ার্ড</label>
-        <input type="password" id="regPassword" placeholder="********">
-      </div>
-      <button class="btn btn-primary btn-block" onclick="sendOtp()" id="sendOtpBtn" data-i18n="auth.send_otp">ওটিপি পাঠান</button>
-      <div id="otpSection" style="display:none;">
-        <div class="form-group" style="margin-top:12px;">
-          <label data-i18n="auth.otp">ওটিপি</label>
-          <input type="text" id="regOtp" placeholder="123456" maxlength="6" inputmode="numeric" pattern="[0-9]*" data-i18n-placeholder="auth.otp_placeholder" style="text-align:center;font-size:20px;letter-spacing:6px;font-weight:700;">
+
+      <div id="authError" class="auth-error"></div>
+      <div id="authSuccess" class="auth-success"></div>
+
+      <div id="loginForm">
+        <div class="form-group">
+          <label data-i18n="auth.email_or_phone">ইমেইল / ফোন</label>
+          <input type="text" id="loginEmail" placeholder="your@email.com / ০১XXXXXXXXX" data-i18n-placeholder="auth.login_phone_hint">
         </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-primary btn-block" onclick="doRegister()" id="registerBtn" data-i18n="auth.register_btn">রেজিস্টার করুন</button>
-          <button class="btn btn-outline" onclick="sendOtp()" id="resendOtpBtn" disabled data-i18n="auth.resend_otp">পুনরায় পাঠান</button>
+        <div class="form-group">
+          <label data-i18n="auth.password">পাসওয়ার্ড</label>
+          <input type="password" id="loginPassword" placeholder="********">
+        </div>
+        <button class="btn-primary" onclick="doLogin()" data-i18n="auth.login_btn">লগইন করুন</button>
+      </div>
+
+      <div id="registerForm" style="display:none;">
+        <div class="form-group">
+          <label data-i18n="auth.name">নাম</label>
+          <input type="text" id="regName" placeholder="আপনার নাম" data-i18n-placeholder="auth.name_placeholder">
+        </div>
+        <div class="form-group">
+          <label data-i18n="auth.email">ইমেইল</label>
+          <input type="email" id="regEmail" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label data-i18n="auth.phone">ফোন</label>
+          <input type="text" id="regPhone" placeholder="০১XXXXXXXXX" data-i18n-placeholder="auth.phone_placeholder">
+        </div>
+        <div class="form-group">
+          <label data-i18n="auth.password">পাসওয়ার্ড</label>
+          <input type="password" id="regPassword" placeholder="********">
+        </div>
+        <button class="btn-primary" onclick="sendOtp()" id="sendOtpBtn" data-i18n="auth.send_otp">ওটিপি পাঠান</button>
+        <div id="otpSection" style="display:none;">
+          <div class="otp-group">
+            <input type="text" id="regOtp" placeholder="• • • • • •" maxlength="6" inputmode="numeric" pattern="[0-9]*" data-i18n-placeholder="auth.otp_placeholder">
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-primary" onclick="doRegister()" id="registerBtn" data-i18n="auth.register_btn">রেজিস্টার করুন</button>
+            <button class="btn-outline" onclick="sendOtp()" id="resendOtpBtn" disabled data-i18n="auth.resend_otp">পুনরায় পাঠান</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<footer class="dz-footer">
-  <div class="dz-footer-inner"></div>
-  <div class="dz-footer-bottom">
-    <p data-i18n="footer.copyright">&copy; 2026 — সকল অধিকার সংরক্ষিত</p>
-  </div>
-</footer>
 
 <script src="js/i18n-strings.js"></script>
 <script>
@@ -132,11 +194,18 @@
       if(token){ al.style.display='none'; }
       else { al.textContent=t('লগইন','Login'); al.href='/auth.html'; }
     }
-    var adminLink = d.getElementById('adminLink');
+    var adminLink = d.getElementById('navAdmin');
     if(adminLink){
       var tok = localStorage.getItem('token');
       if(!tok){ adminLink.style.display='none'; }
       else { try { var us=JSON.parse(localStorage.getItem('user')||'{}'); adminLink.style.display=us.role==='admin'?'':'none'; } catch(e){ adminLink.style.display='none'; } }
+    }
+    var sn = s.site_name || '';
+    var logo = d.getElementById('authLogo');
+    if (logo && s.logo_url) {
+      logo.innerHTML = '<img src="'+s.logo_url+'" alt="'+sn+'">';
+    } else if (logo && sn) {
+      logo.textContent = sn;
     }
   } catch(e){}
 })();
@@ -146,4 +215,3 @@
 <script src="js/auth.js"></script>
 </body>
 </html>
-
