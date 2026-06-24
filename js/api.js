@@ -150,6 +150,35 @@
     }
     var header = document.querySelector('header') || document.querySelector('.header');
     if (header && s.header_padding) header.style.padding = s.header_padding;
+
+    // Custom navigation links dropdown
+    var existing = document.querySelector('.custom-nav-dropdown');
+    if (existing) existing.remove();
+    var customLinks = [];
+    try { customLinks = s.header_custom_links ? JSON.parse(s.header_custom_links) : []; } catch(e) { customLinks = []; }
+    var visibleLinks = customLinks.filter(function(l) { return l.show !== false && l.url && (l.labelBn || l.labelEn); });
+    if (visibleLinks.length > 0) {
+      var nav = document.querySelector('header nav');
+      if (nav) {
+        var lang2 = localStorage.getItem('lang') || 'bn';
+        var btnLabel = lang2 === 'en' ? (s.header_custom_nav_label_en || '📄 Pages ▾') : (s.header_custom_nav_label_bn || '📄 পেজ ▾');
+        var dropdown = document.createElement('div');
+        dropdown.className = 'custom-nav-dropdown';
+        dropdown.innerHTML = '<button class="custom-nav-dropdown-btn">' + btnLabel + '</button>' +
+          '<div class="custom-nav-dropdown-menu">' +
+          visibleLinks.map(function(l) {
+            var label = lang2 === 'en' ? (l.labelEn || l.labelBn) : (l.labelBn || l.labelEn);
+            return '<a class="custom-nav-dropdown-item" href="' + esc(l.url) + '"><span class="dropdown-icon">' + esc(l.icon || '📄') + '</span>' + esc(label) + '</a>';
+          }).join('') +
+          '</div>';
+        var firstLink = nav.querySelector('a');
+        if (firstLink) {
+          nav.insertBefore(dropdown, firstLink);
+        } else {
+          nav.appendChild(dropdown);
+        }
+      }
+    }
   };
 
   window.loadCartCount = function() {
