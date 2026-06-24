@@ -177,6 +177,15 @@
         } else {
           nav.appendChild(dropdown);
         }
+        dropdown.querySelector('.custom-nav-dropdown-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          var wasOpen = dropdown.classList.contains('open');
+          document.querySelectorAll('.custom-nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+          if (!wasOpen) dropdown.classList.add('open');
+        });
+        document.addEventListener('click', function(e) {
+          if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+        });
       }
     }
   };
