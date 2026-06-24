@@ -20,9 +20,9 @@
         return '<a class="custom-nav-dropdown-item" href="' + l.url + '"><span class="dropdown-icon">' + (l.icon || '📄') + '</span>' + label + '</a>';
       }).join('') +
       '</div>';
-    var firstLink = nav.querySelector('a');
-    if (firstLink) {
-      nav.insertBefore(dropdown, firstLink);
+    var ordersLink = document.getElementById('navOrders');
+    if (ordersLink && ordersLink.nextSibling) {
+      nav.insertBefore(dropdown, ordersLink.nextSibling);
     } else {
       nav.appendChild(dropdown);
     }
