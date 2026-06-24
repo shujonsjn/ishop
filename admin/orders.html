@@ -24,18 +24,27 @@
 
 <div class="admin-layout">
     <div class="admin-sidebar">
-      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
-      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
-      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
-      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
-      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
-      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
-      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
-      <a href="/admin/orders.html" class="active"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
-<hr class="sidebar-divider">
-      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
-      <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
-      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      <div class="sidebar-brand">🛡️ Admin Panel</div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="/admin/" data-nav="dashboard"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+        <a href="/admin/product-new.html" class="sidebar-new" data-nav="new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+        <a href="/admin/products.html" data-nav="products"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+        <a href="/admin/categories.html" data-nav="categories"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Manage</div>
+        <a href="/admin/orders.html" data-nav="orders" class="active"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+        <a href="/admin/users.html" data-nav="users"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+        <a href="/admin/admins.html" data-nav="admins"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+        <a href="/admin/questions.html" data-nav="questions"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Content</div>
+        <a href="/admin/pages.html" data-nav="pages"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+        <a href="/admin/settings.html" data-nav="settings"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+        <a href="/admin/profile.html" data-nav="profile"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      </div>
     </div>
     <div class="admin-content">
       <div class="page-header"><h2 data-i18n="admin.orders">অর্ডার</h2></div>

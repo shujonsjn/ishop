@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
-<title data-i18n="admin.title_dashboard">অ্যাডমিন ড্যাশবোর্ড v2.0</title>
+<title data-i18n="admin.title_dashboard">অ্যাডমিন ড্যাশবোর্ড</title>
 <link rel="stylesheet" href="../css/style.css?v=4.2">
-<script>
-(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
-</script>
 <link rel="stylesheet" href="admin.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});}catch(e){}})();
+</script>
 <style>body{opacity:0}</style>
 </head>
 <body>
@@ -25,21 +25,41 @@
 
 <div class="admin-layout">
     <div class="admin-sidebar">
-      <a href="/admin/" class="active"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
-      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
-      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
-      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
-      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
-      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
-      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
-      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
-<hr class="sidebar-divider">
-      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
-      <a href="/admin/settings.html"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
-      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      <div class="sidebar-brand">🛡️ Admin Panel</div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="/admin/" data-nav="dashboard" class="active"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+        <a href="/admin/product-new.html" class="sidebar-new" data-nav="new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+        <a href="/admin/products.html" data-nav="products"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+        <a href="/admin/categories.html" data-nav="categories"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Manage</div>
+        <a href="/admin/orders.html" data-nav="orders"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+        <a href="/admin/users.html" data-nav="users"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+        <a href="/admin/admins.html" data-nav="admins"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+        <a href="/admin/questions.html" data-nav="questions"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Content</div>
+        <a href="/admin/pages.html" data-nav="pages"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+        <a href="/admin/settings.html" data-nav="settings"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+        <a href="/admin/profile.html" data-nav="profile"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      </div>
     </div>
+
   <div class="admin-content">
-    <div class="page-header"><h2 data-i18n="admin.dashboard">ড্যাশবোর্ড</h2></div>
+    <div class="page-header">
+      <div>
+        <h2 data-i18n="admin.dashboard">ড্যাশবোর্ড</h2>
+        <p style="font-size:13px;color:#9ca3af;margin:4px 0 0;">Welcome back! Here's your store overview</p>
+      </div>
+      <div class="dash-date-actions">
+        <button onclick="applyDashFilter()" class="btn btn-primary" style="padding:8px 18px;font-size:13px;border-radius:10px;background:#111827;color:#fff;border:none;cursor:pointer;" data-i18n="admin.filter">ফিল্টার</button>
+        <button onclick="resetDashFilter()" class="btn btn-outline" style="padding:8px 18px;font-size:13px;border-radius:10px;background:transparent;border:1px solid #e5e7eb;color:#6b7280;cursor:pointer;" data-i18n="admin.reset">রিসেট</button>
+      </div>
+    </div>
+
     <div class="dash-date-bar">
       <div class="dash-date-display">
         <span class="dash-date-label" data-i18n="admin.date_from">তারিখ থেকে:</span>
@@ -48,11 +68,7 @@
         <span class="dash-date-label" data-i18n="admin.date_to">তারিখ পর্যন্ত:</span>
         <span class="dash-date-val" id="dashDateToDisp">-</span>
       </div>
-      <div class="dash-date-actions">
-        <button onclick="dashCalOpen()" class="dash-cal-open-btn">📅 <span data-i18n="admin.cal_pick">তারিখ বাছাই</span></button>
-        <button onclick="applyDashFilter()" class="btn btn-primary" style="padding:8px 18px;font-size:13px;border-radius:8px;" data-i18n="admin.filter">ফিল্টার</button>
-        <button onclick="resetDashFilter()" class="btn btn-outline" style="padding:8px 18px;font-size:13px;border-radius:8px;" data-i18n="admin.reset">রিসেট</button>
-      </div>
+      <button onclick="dashCalOpen()" class="dash-cal-open-btn">📅 <span data-i18n="admin.cal_pick">তারিখ বাছাই</span></button>
       <input type="hidden" id="dashDateFrom">
       <input type="hidden" id="dashDateTo">
     </div>
@@ -78,11 +94,12 @@
           </div>
         </div>
         <div class="dash-cal-popup-footer">
-          <button onclick="dashCalClose()" class="btn btn-outline" style="padding:8px 18px;font-size:13px;border-radius:8px;" data-i18n="admin.cal_cancel">বাতিল</button>
-          <button onclick="dashCalApply()" class="btn btn-primary" style="padding:8px 18px;font-size:13px;border-radius:8px;" data-i18n="admin.cal_apply">প্রয়োগ করুন</button>
+          <button onclick="dashCalClose()" class="btn btn-outline" style="padding:8px 18px;font-size:13px;border-radius:10px;background:transparent;border:1px solid #e5e7eb;color:#6b7280;cursor:pointer;" data-i18n="admin.cal_cancel">বাতিল</button>
+          <button onclick="dashCalApply()" class="btn btn-primary" style="padding:8px 18px;font-size:13px;border-radius:10px;background:#111827;color:#fff;border:none;cursor:pointer;" data-i18n="admin.cal_apply">প্রয়োগ করুন</button>
         </div>
       </div>
     </div>
+
     <div id="loginPrompt" class="login-prompt">
       <div class="login-box">
         <div class="login-icon">🔐</div>
@@ -94,25 +111,58 @@
         <p class="login-footer" data-i18n="admin.login_footer">Admin Panel</p>
       </div>
     </div>
+
+    <!-- Stats Grid -->
     <div class="stats-grid" id="statsGrid"></div>
-    <div class="dash-charts" id="dashCharts" style="display:none;">
-      <div class="dash-chart-row">
-        <div class="dash-chart-card">
-          <div class="dash-chart-title" data-i18n="admin.chart_revenue">রেভিনিউ ও অর্ডার</div>
-          <canvas id="dashLineChart"></canvas>
+
+    <!-- Analytics Row: Line + Bar Charts -->
+    <div class="dash-grid" style="margin-bottom:16px;">
+      <div class="dash-chart-card">
+        <div class="card-title">
+          <span data-i18n="admin.chart_revenue">রেভিনিউ ও অর্ডার</span>
+          <span class="menu-dots">⋯</span>
         </div>
-        <div class="dash-chart-card">
-          <div class="dash-chart-title" data-i18n="admin.chart_status">অর্ডার স্ট্যাটাস</div>
-          <canvas id="dashPieChart"></canvas>
+        <div class="dash-chart-tabs">
+          <button class="dash-chart-tab active" data-period="daily">Daily</button>
+          <button class="dash-chart-tab" data-period="weekly">Weekly</button>
+          <button class="dash-chart-tab" data-period="monthly">Monthly</button>
         </div>
+        <canvas id="dashLineChart" style="max-height:280px;"></canvas>
       </div>
-      <div class="dash-chart-row">
-        <div class="dash-chart-card dash-chart-wide">
-          <div class="dash-chart-title" data-i18n="admin.chart_top">সর্বাধিক বিক্রি</div>
-          <canvas id="dashBarChart"></canvas>
+      <div class="dash-chart-card">
+        <div class="card-title">
+          <span data-i18n="admin.chart_top">সর্বাধিক বিক্রি</span>
+          <span class="menu-dots">⋯</span>
         </div>
+        <canvas id="dashBarChart" style="max-height:320px;"></canvas>
       </div>
     </div>
+
+    <!-- Bottom Row: Table + Donut -->
+    <div class="dash-grid">
+      <div class="dash-list-card">
+        <div class="card-title">
+          <span data-i18n="admin.chart_status">অর্ডার ইতিহাস</span>
+          <span class="menu-dots">⋯</span>
+        </div>
+        <div id="dashRevenueHistory" style="overflow-x:auto;"></div>
+      </div>
+      <div class="dash-donut-card">
+        <div class="card-title">
+          <span>Browser Usage</span>
+          <span class="menu-dots">⋯</span>
+        </div>
+        <div class="dash-donut-wrap">
+          <canvas id="dashDonutChart"></canvas>
+          <div class="dash-donut-center">
+            <div class="donut-label">Status</div>
+            <div class="donut-value" id="donutPercent">0%</div>
+          </div>
+        </div>
+        <div class="dash-donut-stats" id="donutStats"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 

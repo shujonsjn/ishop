@@ -76,6 +76,12 @@
     if (page.indexOf('/admin/index.html') !== -1 || page === '/admin/') {
       initDashDates();
       loadDashboard();
+      document.querySelectorAll('.dash-chart-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          this.parentElement.querySelectorAll('.dash-chart-tab').forEach(function(t) { t.classList.remove('active'); });
+          this.classList.add('active');
+        });
+      });
     } else if (page.indexOf('/admin/products.html') !== -1) {
       loadAdminProducts();
       if (window.location.search.indexOf('new=1') !== -1) showProductForm();
@@ -310,176 +316,172 @@
     apiAdmin('GET', '/dashboard' + qs).then(function(d) {
       var grid = document.getElementById('statsGrid');
       if (!grid) return;
-      if (d.error) { grid.innerHTML = '<p style=\"color:var(--danger);\">' + esc(d.error) + '</p>'; return; }
+      if (d.error) { grid.innerHTML = '<p style="color:#dc2626;">' + esc(d.error) + '</p>'; return; }
       var lang = window.getLang ? window.getLang() : 'bn';
-      var gradients = [
-        'linear-gradient(135deg,#4f46e5,#7c3aed)',
-        'linear-gradient(135deg,#059669,#10b981)',
-        'linear-gradient(135deg,#dc2626,#ef4444)',
-        'linear-gradient(135deg,#d97706,#f59e0b)',
-        'linear-gradient(135deg,#0369a1,#0284c7)',
-        'linear-gradient(135deg,#15803d,#22c55e)',
-        'linear-gradient(135deg,#c2410c,#f97316)',
-        'linear-gradient(135deg,#7c3aed,#a78bfa)',
-        'linear-gradient(135deg,#ea580c,#f97316)'
-      ];
+      var accents = ['#6366f1', '#16a34a', '#f97316', '#dc2626'];
       var stats = [
-        { icon: '📦', value: d.products || 0, label: __('admin.products') },
-        { icon: '🛒', value: d.orders || 0, label: __('admin.orders') },
-        { icon: '👥', value: d.users || 0, label: __('admin.users') },
-        { icon: '💰', value: taka(d.revenue || 0), label: __('admin.revenue') },
-        { icon: '📥', value: taka(d.totalPurchase || 0), label: (lang === 'en' ? 'Total Purchase' : 'মোট ক্রয়') },
-        { icon: '📤', value: taka(d.totalSales || 0), label: (lang === 'en' ? 'Total Sales' : 'মোট বিক্রি') },
-        { icon: '🚚', value: taka(d.pendingDelivery || 0), label: (lang === 'en' ? 'Pending Delivery' : 'পেন্ডিং ডেলিভারি') },
-        { icon: '⏳', value: d.pendingOrders || 0, label: __('admin.pending_orders') },
-        { icon: '⚠️', value: (d.lowStock || 0) + '/' + (d.outOfStock || 0), label: (lang === 'en' ? 'Low / Out Stock' : 'স্টক কম/শেষ') }
+        { icon: '💰', value: taka(d.revenue || 0), label: (lang === 'en' ? 'Total Revenue' : 'মোট রেভিনিউ') },
+        { icon: '📤', value: taka(d.totalSales || 0), label: (lang === 'en' ? "Today's Sales" : 'আজকের বিক্রি') },
+        { icon: '📈', value: d.orders > 0 && d.users > 0 ? ((d.orders / d.users * 100).toFixed(1) + '%') : '0%', label: (lang === 'en' ? 'Conversion' : 'রূপান্তর') },
+        { icon: '👥', value: d.users || 0, label: (lang === 'en' ? 'Total Users' : 'মোট ব্যবহারকারী') }
       ];
       grid.innerHTML = stats.map(function(s, i) {
-        var g = gradients[i % gradients.length];
-        return '<div class="stat-card"><div class="stat-icon" style="background:' + g + ';box-shadow:0 4px 12px rgba(0,0,0,0.1);color:#fff;">' + s.icon + '</div><div class="stat-info"><div class="stat-value">' + s.value + '</div><div class="stat-label">' + s.label + '</div></div></div>';
+        return '<div class="stat-card" style="--stat-accent:' + accents[i % accents.length] + ';"><div class="stat-icon">' + s.icon + '</div><div class="stat-info"><div class="stat-value">' + s.value + '</div><div class="stat-label">' + s.label + '</div></div></div>';
       }).join('');
-      var existingRecent = document.getElementById('dashRecentOrders');
-      if (existingRecent) existingRecent.remove();
-      if (d.recentOrders && d.recentOrders.length) {
-        var recentHtml = '<div id="dashRecentOrders" class="admin-card" style="margin-top:24px;"><div class="card-header"><h3>' + (lang === 'en' ? 'Recent Orders' : 'সাম্প্রতিক অর্ডার') + '</h3><a href="/admin/orders.html" class="btn btn-sm btn-outline">' + (lang === 'en' ? 'View All' : 'সব দেখুন') + '</a></div><div class="product-count" style="margin-left:0;">' + (d.recentOrders.length || 0) + ' ' + (lang === 'en' ? 'orders' : 'টি অর্ডার') + '</div><table class="data-table"><thead><tr><th>#</th><th>' + __('admin.customer') + '</th><th>' + __('admin.items') + '</th><th>' + __('orders.total') + '</th><th>' + __('admin.status') + '</th><th>' + __('admin.date') + '</th></tr></thead><tbody>';
-        d.recentOrders.forEach(function(o) {
-          var names = (o.items || []).map(function(i) { return esc(i.name); }).join(', ');
-          var statusCls = (o.status || 'pending').replace(/\s+/g, '');
-          recentHtml += '<tr><td class="cell-id">#' + o.id + '</td><td>' + esc(o.user_name || '') + '</td><td style="font-size:13px;max-width:200px;color:#4b5563;">' + names + '</td><td class="cell-price">' + taka(o.total) + '</td><td><span class="stock-badge ' + statusCls + '-badge" style="display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;">' + __('orders.status_' + (o.status || 'pending')) + '</span></td><td style="color:#6b7280;font-size:13px;">' + timeAgo(o.created_at) + '</td></tr>';
-        });
-        recentHtml += '</tbody></table></div>';
-        grid.insertAdjacentHTML('afterend', recentHtml);
-      }
 
       renderDashCharts(d, lang);
+      renderRevenueHistory(d, lang);
     });
   }
 
-  var dashChartInstances = { line: null, pie: null, bar: null };
+  var dashChartInstances = { donut: null, bar: null, line: null };
 
   function renderDashCharts(d, lang) {
-    var chartsEl = document.getElementById('dashCharts');
-    if (!chartsEl) return;
-    if (!d.dailyData || !d.dailyData.length) { chartsEl.style.display = 'none'; return; }
-    chartsEl.style.display = '';
-
-    if (dashChartInstances.line) dashChartInstances.line.destroy();
-    if (dashChartInstances.pie) dashChartInstances.pie.destroy();
+    if (dashChartInstances.donut) dashChartInstances.donut.destroy();
     if (dashChartInstances.bar) dashChartInstances.bar.destroy();
+    if (dashChartInstances.line) dashChartInstances.line.destroy();
 
-    var days = d.dailyData.map(function(r){ return r.day; });
-    var revenueData = d.dailyData.map(function(r){ return r.revenue; });
-    var orderData = d.dailyData.map(function(r){ return r.orders; });
+    var totalRevenue = d.revenue || 0;
+    var totalSales = d.totalSales || 0;
+    var totalOrders = d.orders || 0;
+    var targetRevenue = Math.max(totalRevenue * 1.3, 100000);
+    var revenuePercent = Math.round((totalRevenue / targetRevenue) * 100);
 
-    var lineCtx = document.getElementById('dashLineChart');
-    if (lineCtx) {
-      dashChartInstances.line = new Chart(lineCtx, {
+    /* ── Line Chart (Analytics) ── */
+    var lineEl = document.getElementById('dashLineChart');
+    if (lineEl) {
+      var days = (d.dailyData || []).map(function(r){ return r.day ? r.day.slice(5) : ''; });
+      var revData = (d.dailyData || []).map(function(r){ return r.revenue; });
+      var ordData = (d.dailyData || []).map(function(r){ return r.orders; });
+      dashChartInstances.line = new Chart(lineEl, {
         type: 'line',
         data: {
           labels: days,
           datasets: [
-            {
-              label: lang === 'en' ? 'Revenue (৳)' : 'রেভিনিউ (৳)',
-              data: revenueData,
-              borderColor: '#4f46e5',
-              backgroundColor: 'rgba(79,70,229,0.08)',
-              fill: true,
-              tension: 0.4,
-              borderWidth: 2.5,
-              pointRadius: 3,
-              pointBackgroundColor: '#4f46e5',
-              yAxisID: 'y'
-            },
-            {
-              label: lang === 'en' ? 'Orders' : 'অর্ডার',
-              data: orderData,
-              borderColor: '#10b981',
-              backgroundColor: 'rgba(16,185,129,0.08)',
-              fill: true,
-              tension: 0.4,
-              borderWidth: 2.5,
-              pointRadius: 3,
-              pointBackgroundColor: '#10b981',
-              yAxisID: 'y1'
-            }
+            { label: lang === 'en' ? 'Revenue' : 'রেভিনিউ', data: revData, borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, yAxisID: 'y' },
+            { label: lang === 'en' ? 'Orders' : 'অর্ডার', data: ordData, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.08)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, yAxisID: 'y1' }
           ]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          aspectRatio: 3,
+          responsive: true, maintainAspectRatio: true,
           interaction: { mode: 'index', intersect: false },
-          plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } } },
+          plugins: { legend: { position: 'top', align: 'end', labels: { color: '#6b7280', usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 12, family: 'Inter' } } } },
           scales: {
-            x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 45 } },
-            y: { position: 'left', grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 }, callback: function(v){ return taka(v); } } },
-            y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { font: { size: 11 }, stepSize: 1 } }
+            x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' } } },
+            y: { position: 'left', grid: { color: '#f3f4f6' }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' }, callback: function(v){ return taka(v); } } },
+            y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' }, stepSize: 1 } }
           }
         }
       });
     }
 
-    var statusData = d.statusBreakdown || [];
-    var statusLabels = statusData.map(function(s){ return __('orders.status_' + s.status); });
-    var statusCounts = statusData.map(function(s){ return s.count; });
-    var statusColors = ['#f59e0b','#10b981','#3b82f6','#8b5cf6','#22c55e','#ef4444'];
-    var pieCtx = document.getElementById('dashPieChart');
-    if (pieCtx && statusData.length) {
-      dashChartInstances.pie = new Chart(pieCtx, {
+    /* ── Donut Chart (Status) ── */
+    var donutEl = document.getElementById('dashDonutChart');
+    if (donutEl) {
+      var statusData = d.statusBreakdown || [];
+      var donutColors = ['#22c55e', '#f97316', '#3b82f6', '#8b5cf6', '#06b6d4', '#ef4444'];
+      var donutLabels = statusData.map(function(s){ return __('orders.status_' + s.status); });
+      var donutValues = statusData.map(function(s){ return s.count; });
+      var total = donutValues.reduce(function(a,b){ return a + b; }, 0);
+      dashChartInstances.donut = new Chart(donutEl, {
         type: 'doughnut',
         data: {
-          labels: statusLabels,
-          datasets: [{ data: statusCounts, backgroundColor: statusColors.slice(0, statusData.length), borderWidth: 2, borderColor: '#fff' }]
+          labels: donutLabels,
+          datasets: [{ data: donutValues, backgroundColor: donutColors.slice(0, donutValues.length), borderWidth: 0, borderRadius: 4 }]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          aspectRatio: 1.8,
-          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 10, font: { size: 11 } } } },
-          cutout: '55%'
+          responsive: true, maintainAspectRatio: true,
+          cutout: '72%',
+          plugins: { legend: { display: false }, tooltip: { enabled: true } }
         }
       });
+      var paidCount = 0;
+      statusData.forEach(function(s){ if (s.status === 'paid' || s.status === 'delivered') paidCount += s.count; });
+      var pct = total > 0 ? Math.round(paidCount / total * 100) : 0;
+      var center = document.getElementById('donutPercent');
+      if (center) center.textContent = pct + '%';
     }
 
-    var topData = d.topProducts || [];
-    var topLabels = topData.map(function(p){ return p.en_name || p.name || ''; });
-    var topSold = topData.map(function(p){ return p.sold; });
-    var topRevenue = topData.map(function(p){ return p.revenue; });
-    var barCtx = document.getElementById('dashBarChart');
-    if (barCtx && topData.length) {
-      dashChartInstances.bar = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: topLabels,
-          datasets: [
-            {
-              label: lang === 'en' ? 'Sold Qty' : 'বিক্রি পরিমাণ',
-              data: topSold,
-              backgroundColor: 'rgba(79,70,229,0.8)',
-              borderRadius: 6,
-              barPercentage: 0.5
-            },
-            {
-              label: lang === 'en' ? 'Revenue (৳)' : 'রেভিনিউ (৳)',
-              data: topRevenue,
-              backgroundColor: 'rgba(16,185,129,0.8)',
-              borderRadius: 6,
-              barPercentage: 0.5
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          aspectRatio: 4.5,
-          plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 12 } } } },
-          scales: {
-            x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 30 } },
-            y: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 } } }
-          }
-        }
-      });
+    var donutStats = document.getElementById('donutStats');
+    if (donutStats) {
+      var rows = statusData.slice(0, 4).map(function(s, i) {
+        return '<div class="dash-donut-stat-row"><span class="stat-name" style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:' + donutColors[i] + ';display:inline-block;"></span>' + __('orders.status_' + s.status) + '</span><span class="stat-val">' + s.count + '</span></div>';
+      }).join('');
+      donutStats.innerHTML = rows || '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:20px 0;">No data</p>';
     }
+
+    /* ── Bar Chart (Top Products) ── */
+    var topData = d.topProducts || [];
+    var barEl = document.getElementById('dashBarChart');
+    if (barEl) {
+      if (topData.length) {
+        var barLabels = topData.map(function(p){ return p.en_name || p.name || ''; });
+        var barSold = topData.map(function(p){ return p.sold; });
+        dashChartInstances.bar = new Chart(barEl, {
+          type: 'bar',
+          data: {
+            labels: barLabels,
+            datasets: [{
+              label: lang === 'en' ? 'Sold' : 'বিক্রি',
+              data: barSold,
+              backgroundColor: '#3b82f6',
+              borderRadius: 6, barPercentage: 0.55
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: true,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: '#f3f4f6' }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' } } },
+              y: { grid: { display: false }, ticks: { color: '#374151', font: { size: 12, family: 'Inter', weight: 500 } } }
+            }
+          }
+        });
+      } else {
+        var days2 = (d.dailyData || []).map(function(r){ return r.day ? r.day.slice(5) : ''; });
+        var revData2 = (d.dailyData || []).map(function(r){ return r.revenue; });
+        if (days2.length) {
+          dashChartInstances.bar = new Chart(barEl, {
+            type: 'bar',
+            data: {
+              labels: days2,
+              datasets: [{ label: lang === 'en' ? 'Revenue' : 'রেভিনিউ', data: revData2, backgroundColor: '#3b82f6', borderRadius: 6, barPercentage: 0.55 }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: true,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' } } },
+                y: { grid: { color: '#f3f4f6' }, ticks: { color: '#9ca3af', font: { size: 11, family: 'Inter' }, callback: function(v){ return taka(v); } } }
+              }
+            }
+          });
+        }
+      }
+    }
+  }
+
+  function renderRevenueHistory(d, lang) {
+    var el = document.getElementById('dashRevenueHistory');
+    if (!el) return;
+    var orders = d.recentOrders || [];
+    if (!orders.length) {
+      el.innerHTML = '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:20px 0;">' + (lang === 'en' ? 'No recent orders' : 'সাম্প্রতিক অর্ডার নেই') + '</p>';
+      return;
+    }
+    var statusMap = { pending: 'pending', paid: 'completed', processing: 'pending', shipped: 'completed', delivered: 'completed', cancelled: 'failed' };
+    var html = '<table class="dash-rev-table"><thead><tr><th>' + (lang === 'en' ? 'Order ID' : 'অর্ডার আইডি') + '</th><th>' + (lang === 'en' ? 'Customer' : 'গ্রাহক') + '</th><th>' + (lang === 'en' ? 'Total' : 'মোট') + '</th><th>' + (lang === 'en' ? 'Status' : 'অবস্থা') + '</th><th>' + (lang === 'en' ? 'Time' : 'সময়') + '</th></tr></thead><tbody>';
+    orders.slice(0, 6).forEach(function(o) {
+      var sCls = statusMap[(o.status || 'pending')] || 'pending';
+      html += '<tr><td style="font-weight:600;color:#6366f1;">#' + o.id + '</td>' +
+        '<td>' + esc(o.user_name || '') + '</td>' +
+        '<td style="font-weight:600;color:#16a34a;">' + taka(o.total) + '</td>' +
+        '<td><span class="dash-rev-status ' + sCls + '">' + __('orders.status_' + (o.status || 'pending')) + '</span></td>' +
+        '<td style="color:#9ca3af;font-size:12px;">' + timeAgo(o.created_at) + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
   }
 
   window.showProductForm = function(data) {
@@ -1647,8 +1649,108 @@
       document.getElementById('settingHeaderShowLang').checked = s.header_show_lang !== '0';
       document.getElementById('settingHeaderShowAuth').checked = s.header_show_auth !== '0';
       document.getElementById('settingHeaderPadding').value = s.header_padding || '';
+      document.getElementById('settingHeaderCustomNavLabelBn').value = s.header_custom_nav_label_bn || '📄 পেজ ▾';
+      document.getElementById('settingHeaderCustomNavLabelEn').value = s.header_custom_nav_label_en || '📄 Pages ▾';
+      if (typeof customLinks !== 'undefined') {
+        try {
+          customLinks = s.header_custom_links ? JSON.parse(s.header_custom_links) : [];
+        } catch(e) { customLinks = []; }
+        if (typeof renderCustomLinksEditor === 'function') renderCustomLinksEditor();
+      }
     }
   }
+
+  var customLinks = [];
+  var pageOptions = [
+    { value: '/about.html', label: 'আমাদের সম্পর্কে / About' },
+    { value: '/blog.html', label: 'ব্লগ / Blog' },
+    { value: '/privacy.html', label: 'প্রাইভেসি / Privacy' },
+    { value: '/terms.html', label: 'শর্তাবলী / Terms' },
+    { value: '/refund.html', label: 'রিফান্ড / Refund' },
+    { value: '/how-to-buy.html', label: 'কিনবেন কিভাবে / How to Buy' },
+    { value: '/help.html', label: 'সাহায্য / Help' },
+    { value: '/seller.html', label: 'সেলার / Seller' },
+    { value: '/app.html', label: 'অ্যাপ / App' }
+  ];
+
+  window.renderCustomLinksEditor = function() {
+    var el = document.getElementById('customLinksEditor');
+    if (!el) return;
+    if (!customLinks.length) {
+      el.innerHTML = '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:12px;">কোনো কাস্টম লিংক নেই</p>';
+      return;
+    }
+    el.innerHTML = customLinks.map(function(link, i) {
+      var opts = pageOptions.map(function(p) {
+        return '<option value="' + p.value + '" ' + (link.url === p.value ? 'selected' : '') + '>' + p.label + '</option>';
+      }).join('');
+      return '<div style="display:flex;gap:8px;align-items:center;padding:10px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:8px;">' +
+        '<input type="text" value="' + esc(link.icon || '') + '" placeholder="📱" style="width:48px;padding:8px;border:1px solid #e5e7eb;border-radius:8px;font-size:16px;text-align:center;background:#fff;">' +
+        '<input type="text" value="' + esc(link.labelBn || '') + '" placeholder="বাংলা লেবেল" style="flex:1;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;">' +
+        '<input type="text" value="' + esc(link.labelEn || '') + '" placeholder="English label" style="flex:1;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;">' +
+        '<select style="flex:1;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;background:#fff;">' +
+        '<option value="">লিংক বাছাই</option>' + opts + '</select>' +
+        '<label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#6b7280;cursor:pointer;">' +
+        '<input type="checkbox" ' + (link.show !== false ? 'checked' : '') + ' style="width:16px;height:16px;"> দেখান</label>' +
+        '<button onclick="removeCustomLink(' + i + ')" style="padding:6px 10px;border:none;background:#fee2e2;color:#dc2626;border-radius:6px;cursor:pointer;font-size:14px;">✕</button>' +
+        '</div>';
+    }).join('');
+  };
+
+  window.addCustomLink = function() {
+    customLinks.push({ icon: '📄', labelBn: '', labelEn: '', url: '', show: true });
+    renderCustomLinksEditor();
+  };
+
+  window.removeCustomLink = function(i) {
+    customLinks.splice(i, 1);
+    renderCustomLinksEditor();
+  };
+
+  function collectCustomLinks() {
+    var el = document.getElementById('customLinksEditor');
+    if (!el) return customLinks;
+    var rows = el.children;
+    var result = [];
+    for (var i = 0; i < rows.length; i++) {
+      var inputs = rows[i].querySelectorAll('input, select');
+      if (inputs.length >= 5) {
+        result.push({
+          icon: inputs[0].value || '📄',
+          labelBn: inputs[1].value || '',
+          labelEn: inputs[2].value || '',
+          url: inputs[3].value || '',
+          show: inputs[4].checked
+        });
+      }
+    }
+    customLinks = result;
+    return result;
+  }
+
+  window.saveHeaderSettings = function() {
+    var links = collectCustomLinks();
+    var data = {
+      header_search_placeholder_bn: document.getElementById('settingHeaderSearchBn').value.trim(),
+      header_search_placeholder_en: document.getElementById('settingHeaderSearchEn').value.trim(),
+      header_show_search: document.getElementById('settingHeaderShowSearch').checked ? '1' : '0',
+      header_show_home: document.getElementById('settingHeaderShowHome').checked ? '1' : '0',
+      header_show_products: document.getElementById('settingHeaderShowProducts').checked ? '1' : '0',
+      header_show_cart: document.getElementById('settingHeaderShowCart').checked ? '1' : '0',
+      header_show_orders: document.getElementById('settingHeaderShowOrders').checked ? '1' : '0',
+      header_show_admin: document.getElementById('settingHeaderShowAdmin').checked ? '1' : '0',
+      header_show_lang: document.getElementById('settingHeaderShowLang').checked ? '1' : '0',
+      header_show_auth: document.getElementById('settingHeaderShowAuth').checked ? '1' : '0',
+      header_padding: document.getElementById('settingHeaderPadding').value.trim(),
+      header_custom_links: JSON.stringify(links),
+      header_custom_nav_label_bn: document.getElementById('settingHeaderCustomNavLabelBn').value.trim(),
+      header_custom_nav_label_en: document.getElementById('settingHeaderCustomNavLabelEn').value.trim()
+    };
+    apiAdmin('PUT', '/settings', data).then(function(res) {
+      if (res.error) { toast(res.error, 'error'); return; }
+      toast(__('admin.saved'));
+    });
+  };
 
   window.saveSettings = function() {
     var data = {
@@ -1740,6 +1842,7 @@
   }
 
   initAdmin();
+  document.body.style.opacity = '1';
 })();
 
 window.adminLogout = function() {

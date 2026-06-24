@@ -24,18 +24,27 @@
 
 <div class="admin-layout">
     <div class="admin-sidebar">
-      <a href="/admin/"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
-      <a href="/admin/product-new.html" class="sidebar-new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
-      <a href="/admin/products.html"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
-      <a href="/admin/categories.html"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
-      <a href="/admin/questions.html"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
-      <a href="/admin/users.html"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
-      <a href="/admin/admins.html"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
-      <a href="/admin/orders.html"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
-<hr class="sidebar-divider">
-      <a href="/admin/pages.html"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
-      <a href="/admin/settings.html" class="active"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
-      <a href="/admin/profile.html"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      <div class="sidebar-brand">🛡️ Admin Panel</div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Main</div>
+        <a href="/admin/" data-nav="dashboard"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
+        <a href="/admin/product-new.html" class="sidebar-new" data-nav="new"><span class="sidebar-icon">➕</span> <span data-i18n="admin.new_product">নতুন পণ্য</span></a>
+        <a href="/admin/products.html" data-nav="products"><span class="sidebar-icon">📦</span> <span data-i18n="admin.products">পণ্য</span></a>
+        <a href="/admin/categories.html" data-nav="categories"><span class="sidebar-icon">🏷️</span> <span data-i18n="admin.categories">ক্যাটাগরি</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Manage</div>
+        <a href="/admin/orders.html" data-nav="orders"><span class="sidebar-icon">🛒</span> <span data-i18n="admin.orders">অর্ডার</span></a>
+        <a href="/admin/users.html" data-nav="users"><span class="sidebar-icon">👥</span> <span data-i18n="admin.customers_sidebar">গ্রাহক</span></a>
+        <a href="/admin/admins.html" data-nav="admins"><span class="sidebar-icon">🛡️</span> <span data-i18n="admin.team_sidebar">অ্যাডমিন টিম</span></a>
+        <a href="/admin/questions.html" data-nav="questions"><span class="sidebar-icon">❓</span> <span data-i18n="admin.questions">প্রশ্ন ও উত্তর</span></a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Content</div>
+        <a href="/admin/pages.html" data-nav="pages"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
+        <a href="/admin/settings.html" data-nav="settings" class="active"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
+        <a href="/admin/profile.html" data-nav="profile"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      </div>
     </div>
   <div class="admin-content">
     <div class="page-header"><h2 data-i18n="admin.settings">সেটিংস</h2></div>
@@ -118,59 +127,149 @@
     <!-- TAB: Header -->
     <div class="settings-panel" id="settingsTab_header">
       <h3 class="settings-panel-title">📌 হেডার সেটিংস</h3>
-      <div class="settings-card">
-        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🔍 সার্চ বক্স</h4>
-        <div class="form-group"><label>সার্চ প্লেসহোল্ডার (বাংলা)</label><input type="text" id="settingHeaderSearchBn" placeholder="পণ্য খুঁজুন..."></div>
-        <div class="form-group"><label>সার্চ প্লেসহোল্ডার (English)</label><input type="text" id="settingHeaderSearchEn" placeholder="Search products..."></div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowSearch" checked> সার্চ বক্স দেখান
-          </label>
+
+      <!-- Search Box Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:16px;">🔍</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">সার্চ বক্স</div>
+            <div style="font-size:12px;color:#9ca3af;">Search box configuration</div>
+          </div>
         </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🔗 নেভিগেশন লিংক</h4>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowHome" checked> হোম লিংক দেখান
-          </label>
+        <div class="bn-en-row" style="margin-bottom:16px;">
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">সার্চ প্লেসহোল্ডার (বাংলা)</label>
+            <input type="text" id="settingHeaderSearchBn" placeholder="পণ্য খুঁজুন..." style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">সার্চ প্লেসহোল্ডার (English)</label>
+            <input type="text" id="settingHeaderSearchEn" placeholder="Search products..." style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+          </div>
         </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowProducts" checked> পণ্য লিংক দেখান
-          </label>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border-radius:10px;border:1px solid #f3f4f6;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;">🔎</span>
+            <span style="font-weight:600;font-size:14px;color:#374151;">সার্চ বক্স দেখান</span>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowSearch" checked><span class="slider"></span></label>
         </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowCart" checked> কার্ট লিংক দেখান
-          </label>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowOrders"> অর্ডার লিংক দেখান
-          </label>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowAdmin" checked> অ্যাডমিন লিংক দেখান
-          </label>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🌐 ভাষা ও অন্যান্য</h4>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowLang" checked> ভাষা টগল দেখান
-          </label>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" id="settingHeaderShowAuth" checked> লগইন/প্রোফাইল দেখান
-          </label>
-        </div>
-        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-        <h4 style="margin:0 0 12px;font-size:14px;color:var(--primary);">🎨 হেডার সাইজ</h4>
-        <div class="form-group"><label>হেডার প্যাডিং (উপর/নিচ)</label><input type="text" id="settingHeaderPadding" placeholder="10px 16px"></div>
-        <button class="btn btn-primary" onclick="saveHeaderSettings()">💾 সংরক্ষণ</button>
       </div>
+
+      <!-- Navigation Links Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:16px;">🔗</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">নেভিগেশন লিংক</div>
+            <div style="font-size:12px;color:#9ca3af;">Show/hide navigation links</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">🏠</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">হোম লিংক দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowHome" checked><span class="slider"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">📦</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">পণ্য লিংক দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowProducts" checked><span class="slider"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">🛒</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">কার্ট লিংক দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowCart" checked><span class="slider"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">📋</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">অর্ডার লিংক দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowOrders"><span class="slider"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">🛡️</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">অ্যাডমিন লিংক দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowAdmin" checked><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language & Other Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:16px;">🌐</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">ভাষা ও অন্যান্য</div>
+            <div style="font-size:12px;color:#9ca3af;">Language and other settings</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">🌏</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">ভাষা টগল দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowLang" checked><span class="slider"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;transition:background 0.15s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:14px;">👤</span>
+              <span style="font-weight:600;font-size:14px;color:#374151;">লগইন/প্রোফাইল দেখান</span>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowAuth" checked><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header Size Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#fce7f3;display:flex;align-items:center;justify-content:center;font-size:16px;">🎨</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">হেডার সাইজ</div>
+            <div style="font-size:12px;color:#9ca3af;">Header padding configuration</div>
+          </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">হেডার প্যাডিং (উপর/নিচ)</label>
+          <input type="text" id="settingHeaderPadding" placeholder="10px 16px" style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+        </div>
+      </div>
+
+      <!-- Custom Navigation Links Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#e0e7ff;display:flex;align-items:center;justify-content:center;font-size:16px;">📄</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">কাস্টম নেভিগেশন লিংক</div>
+            <div style="font-size:12px;color:#9ca3af;">Custom dropdown menu links</div>
+          </div>
+        </div>
+        <div class="bn-en-row" style="margin-bottom:16px;">
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">ড্রপডাউন বাটন (বাংলা)</label>
+            <input type="text" id="settingHeaderCustomNavLabelBn" placeholder="📄 পেজ ▾" style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">ড্রপডাউন বাটন (English)</label>
+            <input type="text" id="settingHeaderCustomNavLabelEn" placeholder="📄 Pages ▾" style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+          </div>
+        </div>
+        <div id="customLinksEditor"></div>
+        <button onclick="addCustomLink()" style="padding:8px 16px;border:1px dashed #d1d5db;border-radius:8px;background:transparent;color:#6b7280;font-size:13px;font-weight:500;cursor:pointer;margin-top:12px;transition:all 0.15s;" onmouseover="this.style.borderColor='#f97316';this.style.color='#f97316'" onmouseout="this.style.borderColor='#d1d5db';this.style.color='#6b7280'">+ লিংক যোগ করুন</button>
+      </div>
+
+      <button onclick="saveHeaderSettings()" style="width:100%;padding:12px;border:none;border-radius:12px;background:#111827;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='#000'" onmouseout="this.style.background='#111827'">💾 সংরক্ষণ করুন</button>
     </div>
 
     <!-- TAB: Hero Banners -->

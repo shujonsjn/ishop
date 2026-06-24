@@ -277,29 +277,32 @@
   function applyTextOverrides(s) {
     var lang = getLang();
     var key = function(bn, en) { return lang === 'en' ? (en || bn) : bn; };
-    if (s.text_flash_title_bn || s.text_flash_title_en) {
+    var ph = {};
+    try { ph = s.page_home ? JSON.parse(s.page_home) : {}; } catch(e) { ph = {}; }
+    if (ph.flashTitle || s.text_flash_title_bn) {
       var el = document.querySelector('.dz-flash-title');
-      if (el) el.textContent = key(s.text_flash_title_bn, s.text_flash_title_en);
+      if (el) el.textContent = key(ph.flashTitle || s.text_flash_title_bn, ph.flashTitleEn || s.text_flash_title_en);
     }
-    if (s.text_flash_all_bn || s.text_flash_all_en) {
+    if (ph.flashAll || s.text_flash_all_bn) {
       var link = document.getElementById('flashAllLink');
       if (link) {
-        link.textContent = key(s.text_flash_all_bn, s.text_flash_all_en);
-        if (s.text_flash_all_link) link.href = s.text_flash_all_link;
+        link.textContent = key(ph.flashAll || s.text_flash_all_bn, ph.flashAllEn || s.text_flash_all_en);
+        var allLink = ph.jfySeeAll || s.text_flash_all_link;
+        if (allLink) link.href = allLink;
       }
     }
-    if (s.text_categories_title_bn || s.text_categories_title_en) {
+    if (ph.catTitle || s.text_categories_title_bn) {
       var cat = document.querySelector('#categoryGrid') && document.querySelector('#categoryGrid').closest('.section');
       if (cat) {
         var title = cat.querySelector('.section-title span');
-        if (title) title.textContent = key(s.text_categories_title_bn, s.text_categories_title_en);
+        if (title) title.textContent = key(ph.catTitle || s.text_categories_title_bn, ph.catTitleEn || s.text_categories_title_en);
       }
     }
-    if (s.text_jfy_title_bn || s.text_jfy_title_en) {
+    if (ph.jfyTitle || s.text_jfy_title_bn) {
       var jfy = document.querySelector('#featuredGrid') && document.querySelector('#featuredGrid').closest('.section');
       if (jfy) {
         var jfyTitle = jfy.querySelector('.section-title span');
-        if (jfyTitle) jfyTitle.textContent = key(s.text_jfy_title_bn, s.text_jfy_title_en);
+        if (jfyTitle) jfyTitle.textContent = key(ph.jfyTitle || s.text_jfy_title_bn, ph.jfyTitleEn || s.text_jfy_title_en);
       }
     }
   }
