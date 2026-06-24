@@ -26,15 +26,24 @@
     } else {
       nav.appendChild(dropdown);
     }
-    // Click toggle
-    dropdown.querySelector('.custom-nav-dropdown-btn').addEventListener('click', function(e) {
-      e.stopPropagation();
-      var wasOpen = dropdown.classList.contains('open');
-      document.querySelectorAll('.custom-nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
-      if (!wasOpen) dropdown.classList.add('open');
-    });
-    document.addEventListener('click', function(e) {
-      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
-    });
   } catch(e) {}
 })();
+
+/* Single delegated click handler for all dropdowns */
+if (!window._customDropdownInit) {
+  window._customDropdownInit = true;
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.custom-nav-dropdown-btn');
+    if (btn) {
+      e.stopPropagation();
+      var dd = btn.closest('.custom-nav-dropdown');
+      var wasOpen = dd.classList.contains('open');
+      document.querySelectorAll('.custom-nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+      if (!wasOpen) dd.classList.add('open');
+      return;
+    }
+    if (!e.target.closest('.custom-nav-dropdown')) {
+      document.querySelectorAll('.custom-nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+    }
+  });
+}
