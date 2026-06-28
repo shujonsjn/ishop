@@ -151,7 +151,7 @@
       if(token){ al.style.display='none'; }
       else { al.textContent=t('লগইন','Login'); al.href='/auth.html'; }
     }
-    var adminLink = d.getElementById('adminLink');
+    var adminLink = d.getElementById('navAdmin');
     if(adminLink){
       var tok = localStorage.getItem('token');
       if(!tok){ adminLink.style.display='none'; }

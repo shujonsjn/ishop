@@ -13,6 +13,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
     loadProducts(false);
+    applyProductsPageOverrides();
     if (searchQuery) {
       var inp = document.getElementById('searchInput');
       if (inp) inp.value = searchQuery;
@@ -183,5 +184,55 @@
       });
       sidebar.innerHTML = html;
     });
+  }
+
+  function applyProductsPageOverrides() {
+    fetch('/api/admin/settings').then(function(r){return r.json()}).then(function(s){
+      var pp;
+      try { pp = typeof s.page_products === 'string' ? JSON.parse(s.page_products) : (s.page_products || {}); } catch(e) { pp = {}; }
+      var lang = localStorage.getItem('lang') || 'bn';
+
+      var h1 = document.getElementById('catTitle');
+      if (h1 && !searchQuery && !categorySlug) {
+        var t = lang === 'en' ? (pp.titleEn || pp.title) : pp.title;
+        if (t) h1.textContent = t;
+      }
+
+      var sortLabel = document.querySelector('.dz-sort-label');
+      if (sortLabel) {
+        var sl = lang === 'en' ? (pp.sortLabelEn || pp.sortLabel) : pp.sortLabel;
+        if (sl) sortLabel.textContent = sl;
+      }
+
+      var sidebarTitle = document.querySelector('#catSidebar h3');
+      if (sidebarTitle) {
+        var st = lang === 'en' ? (pp.sidebarTitleEn || pp.sidebarTitle) : pp.sidebarTitle;
+        if (st) sidebarTitle.textContent = st;
+      }
+
+      var aiTitle = document.querySelector('.dz-ai-recs-header');
+      if (aiTitle) {
+        var at = lang === 'en' ? (pp.aiTitleEn || pp.aiTitle) : pp.aiTitle;
+        if (at) aiTitle.innerHTML = '<span class="dz-ai-recs-icon">🤖</span> ' + at;
+      }
+
+      var emptyTitle = document.querySelector('#emptyState h3');
+      if (emptyTitle) {
+        var et = lang === 'en' ? (pp.emptyTitleEn || pp.emptyTitle) : pp.emptyTitle;
+        if (et) emptyTitle.textContent = et;
+      }
+
+      var emptyHint = document.querySelector('#emptyState p');
+      if (emptyHint) {
+        var eh = lang === 'en' ? (pp.emptyHintEn || pp.emptyHint) : pp.emptyHint;
+        if (eh) emptyHint.textContent = eh;
+      }
+
+      var breadHome = document.querySelector('.dz-breadcrumb a:first-child');
+      if (breadHome) {
+        var bh = lang === 'en' ? (pp.breadHomeEn || pp.breadHome) : pp.breadHome;
+        if (bh) breadHome.textContent = bh;
+      }
+    }).catch(function(){});
   }
 })();

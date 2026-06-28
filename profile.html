@@ -8,134 +8,201 @@
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
 <style>
+/* ── Profile Page ─────────────────────────────────── */
 .pf-page { padding:0; }
+
+/* Banner */
 .pf-banner {
-  background:linear-gradient(135deg,var(--primary,#1a73e8) 0%,#0d47a1 100%);
-  border-radius:var(--radius-xl,16px);
-  padding:36px 40px 28px;
   position:relative; overflow:hidden;
-  box-shadow:0 4px 24px rgba(26,115,232,0.18);
-  display:flex; align-items:center; gap:32px;
-  margin-bottom:28px;
+  background:linear-gradient(135deg,var(--primary,#4a148c) 0%,#7b1fa2 50%,#9c27b0 100%);
+  padding:0; margin-bottom:0;
+}
+.pf-banner-inner {
+  max-width:var(--max-width); margin:0 auto; padding:40px 24px 32px;
+  display:flex; align-items:center; gap:28px; position:relative; z-index:1;
 }
 .pf-banner::before {
-  content:''; position:absolute; top:-60px; right:-40px;
-  width:260px; height:260px;
-  background:rgba(255,255,255,0.05); border-radius:50%;
+  content:''; position:absolute; top:-80px; right:-60px;
+  width:300px; height:300px;
+  background:rgba(255,255,255,0.06); border-radius:50%;
 }
 .pf-banner::after {
-  content:''; position:absolute; bottom:-80px; left:40px;
-  width:200px; height:200px;
-  background:rgba(255,255,255,0.03); border-radius:50%;
+  content:''; position:absolute; bottom:-100px; left:60px;
+  width:240px; height:240px;
+  background:rgba(255,255,255,0.04); border-radius:50%;
 }
-.pf-banner-left { position:relative; z-index:1; display:flex; align-items:center; gap:24px; flex:1; min-width:0; }
+.pf-avatar-wrap {
+  position:relative; flex-shrink:0;
+}
 .pf-avatar {
-  width:80px; height:80px; border-radius:50%;
-  border:3px solid rgba(255,255,255,0.25);
-  background:rgba(255,255,255,0.1);
+  width:88px; height:88px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.3);
+  background:rgba(255,255,255,0.12);
   display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; overflow:hidden;
-  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+  overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  transition:transform 0.2s;
 }
-.pf-avatar svg { width:40px; height:40px; }
+.pf-avatar:hover { transform:scale(1.05); }
+.pf-avatar svg { width:44px; height:44px; }
 .pf-avatar img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
-.pf-user-info { min-width:0; }
-.pf-user-name { font-size:1.5rem; font-weight:700; color:#fff; margin-bottom:2px; }
-.pf-user-email { font-size:0.88rem; color:rgba(255,255,255,0.7); }
-.pf-user-phone { font-size:0.82rem; color:rgba(255,255,255,0.55); margin-top:2px; }
-.pf-banner-right { position:relative; z-index:1; display:flex; gap:28px; flex-shrink:0; }
-.pf-stat-item { text-align:center; }
-.pf-stat-num { font-size:1.6rem; font-weight:800; color:#fff; line-height:1; }
-.pf-stat-label { font-size:0.72rem; color:rgba(255,255,255,0.65); margin-top:4px; font-weight:500; }
-.pf-banner-actions {
-  position:absolute; top:20px; right:24px; z-index:2;
-  display:flex; gap:8px;
-}
-.pf-icon-btn {
-  width:38px; height:38px; border-radius:10px;
-  background:rgba(255,255,255,0.12); border:none; color:#fff;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  transition:all 0.2s; backdrop-filter:blur(8px);
-}
-.pf-icon-btn:hover { background:rgba(255,255,255,0.25); }
-.pf-icon-btn svg { width:18px; height:18px; }
-
-.pf-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:28px; }
-.pf-card {
-  background:#fff; border-radius:var(--radius-lg,12px); padding:24px;
-  box-shadow:0 1px 4px rgba(0,0,0,0.05);
-}
-.pf-card-header {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
-}
-.pf-card-title { font-size:1.05rem; font-weight:700; color:#222; }
-.pf-card-link {
-  font-size:0.82rem; color:var(--primary,#1a73e8); font-weight:600; text-decoration:none;
-  padding:5px 16px; border-radius:20px; background:var(--primary-light,rgba(26,115,232,0.08));
-  transition:all 0.2s;
-}
-.pf-card-link:hover { background:var(--primary,#1a73e8); color:#fff; text-decoration:none; }
-
-.pf-order-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
-.pf-order-item {
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-  padding:16px 8px; border-radius:var(--radius,8px); cursor:pointer;
-  transition:all 0.2s; text-decoration:none; color:inherit;
-  background:#f8f9fa;
-}
-.pf-order-item:hover { background:var(--primary-light,rgba(26,115,232,0.08)); transform:translateY(-2px); }
-.pf-order-icon {
-  width:48px; height:48px; border-radius:var(--radius-lg,12px);
+.pf-avatar-edit {
+  position:absolute; bottom:2px; right:2px;
+  width:28px; height:28px; border-radius:50%;
+  background:#fff; border:none; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  transition:all 0.2s; color:#7b1fa2;
 }
-.pf-order-icon svg { width:22px; height:22px; }
-.pf-order-icon.c-pending { background:#fff3e0; color:#f57c00; }
-.pf-order-icon.c-processing { background:#e8f5e9; color:#43a047; }
-.pf-order-icon.c-shipped { background:#e3f2fd; color:#1e88e5; }
-.pf-order-icon.c-review { background:#fce4ec; color:#e91e63; }
-.pf-order-icon.c-reorder { background:#ede7f6; color:#7e57c2; }
-.pf-order-label { font-size:0.78rem; color:#555; font-weight:500; }
+.pf-avatar-edit:hover { background:var(--primary); color:#fff; }
+.pf-avatar-edit svg { width:14px; height:14px; }
 
-.pf-service-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-.pf-service-item {
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-  padding:16px 8px; border-radius:var(--radius,8px); cursor:pointer;
-  transition:all 0.2s; text-decoration:none; color:inherit;
-  background:#f8f9fa;
-}
-.pf-service-item:hover { background:var(--primary-light,rgba(26,115,232,0.08)); transform:translateY(-2px); }
-.pf-service-icon {
-  width:48px; height:48px; border-radius:var(--radius-lg,12px);
-  display:flex; align-items:center; justify-content:center;
-}
-.pf-service-icon svg { width:22px; height:22px; }
-.pf-service-label { font-size:0.78rem; color:#555; font-weight:500; text-align:center; }
+.pf-user-info { min-width:0; flex:1; }
+.pf-user-name { font-size:1.4rem; font-weight:700; color:#fff; margin-bottom:4px; line-height:1.2; }
+.pf-user-email { font-size:0.85rem; color:rgba(255,255,255,0.7); margin-bottom:2px; }
+.pf-user-phone { font-size:0.82rem; color:rgba(255,255,255,0.55); }
 
-/* Quick Links row below the grid */
-.pf-quick-row { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:28px; }
-.pf-quick-card {
-  background:#fff; border-radius:var(--radius-lg,12px); padding:20px 24px;
-  box-shadow:0 1px 4px rgba(0,0,0,0.05);
-  display:flex; align-items:center; gap:16px; cursor:pointer;
-  transition:all 0.2s; text-decoration:none; color:inherit;
+.pf-banner-stats {
+  display:flex; gap:0; flex-shrink:0;
+  background:rgba(255,255,255,0.1);
+  border-radius:14px; overflow:hidden;
+  backdrop-filter:blur(8px);
 }
-.pf-quick-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.pf-stat-item {
+  text-align:center; padding:14px 22px;
+  border-right:1px solid rgba(255,255,255,0.12);
+  transition:background 0.2s; cursor:default;
+}
+.pf-stat-item:last-child { border-right:none; }
+.pf-stat-item:hover { background:rgba(255,255,255,0.08); }
+.pf-stat-num { font-size:1.3rem; font-weight:800; color:#fff; line-height:1; }
+.pf-stat-label { font-size:0.68rem; color:rgba(255,255,255,0.6); margin-top:4px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* Quick Actions Bar */
+.pf-quick-bar {
+  background:#fff; border-bottom:1px solid #f0f0f0;
+}
+.pf-quick-bar-inner {
+  max-width:var(--max-width); margin:0 auto; padding:0 24px;
+  display:flex; gap:0;
+}
+.pf-quick-action {
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;
+  padding:16px 8px; cursor:pointer; transition:all 0.2s;
+  text-decoration:none; color:inherit; position:relative;
+}
+.pf-quick-action:hover { background:#f8f9fa; }
+.pf-quick-action::after {
+  content:''; position:absolute; right:0; top:20%; height:60%;
+  width:1px; background:#f0f0f0;
+}
+.pf-quick-action:last-child::after { display:none; }
 .pf-quick-icon {
-  width:44px; height:44px; border-radius:12px;
+  width:42px; height:42px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform 0.2s;
+}
+.pf-quick-action:hover .pf-quick-icon { transform:translateY(-2px); }
+.pf-quick-icon svg { width:20px; height:20px; }
+.pf-quick-label { font-size:0.75rem; color:#555; font-weight:600; }
+
+/* Content Area */
+.pf-content {
+  max-width:var(--max-width); margin:0 auto; padding:24px 24px 0;
+}
+.pf-section-title {
+  font-size:1rem; font-weight:700; color:#222; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.pf-section-title a {
+  font-size:0.78rem; color:var(--primary); font-weight:600; text-decoration:none;
+  transition:opacity 0.2s;
+}
+.pf-section-title a:hover { opacity:0.7; }
+
+/* Order Status Cards */
+.pf-order-cards {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+  margin-bottom:28px;
+}
+.pf-order-card {
+  background:#fff; border-radius:14px; padding:20px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  cursor:pointer; transition:all 0.2s; text-decoration:none; color:inherit;
+  border:1px solid #f0f0f0;
+}
+.pf-order-card:hover {
+  border-color:var(--primary,#7b1fa2);
+  box-shadow:0 4px 16px rgba(123,31,162,0.1);
+  transform:translateY(-2px);
+}
+.pf-order-card-icon {
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+}
+.pf-order-card-icon svg { width:22px; height:22px; }
+.pf-order-card-icon.c-pending { background:#fff3e0; color:#f57c00; }
+.pf-order-card-icon.c-processing { background:#e8f5e9; color:#43a047; }
+.pf-order-card-icon.c-shipped { background:#e3f2fd; color:#1e88e5; }
+.pf-order-card-icon.c-review { background:#fce4ec; color:#e91e63; }
+.pf-order-card-icon.c-reorder { background:#ede7f6; color:#7e57c2; }
+.pf-order-card-label { font-size:0.78rem; color:#555; font-weight:600; }
+.pf-order-card-count {
+  font-size:0.7rem; color:#999; font-weight:500;
+  background:#f5f5f5; padding:2px 8px; border-radius:10px;
+}
+
+/* Service Grid */
+.pf-services {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+  margin-bottom:28px;
+}
+.pf-service-card {
+  background:#fff; border-radius:14px; padding:20px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  cursor:pointer; transition:all 0.2s; text-decoration:none; color:inherit;
+  border:1px solid #f0f0f0;
+}
+.pf-service-card:hover {
+  border-color:var(--primary,#7b1fa2);
+  box-shadow:0 4px 16px rgba(123,31,162,0.1);
+  transform:translateY(-2px);
+}
+.pf-service-card-icon {
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+}
+.pf-service-card-icon svg { width:22px; height:22px; }
+.pf-service-card-label { font-size:0.78rem; color:#555; font-weight:600; text-align:center; }
+
+/* Menu List */
+.pf-menu {
+  background:#fff; border-radius:14px; overflow:hidden;
+  border:1px solid #f0f0f0; margin-bottom:28px;
+}
+.pf-menu-item {
+  display:flex; align-items:center; gap:14px;
+  padding:16px 20px; cursor:pointer; transition:all 0.15s;
+  text-decoration:none; color:inherit;
+  border-bottom:1px solid #f8f8f8;
+}
+.pf-menu-item:last-child { border-bottom:none; }
+.pf-menu-item:hover { background:#fafafa; }
+.pf-menu-icon {
+  width:40px; height:40px; border-radius:10px;
   display:flex; align-items:center; justify-content:center; flex-shrink:0;
 }
-.pf-quick-icon svg { width:20px; height:20px; }
-.pf-quick-text { font-size:0.9rem; font-weight:600; color:#333; }
-.pf-quick-sub { font-size:0.75rem; color:#999; margin-top:2px; }
+.pf-menu-icon svg { width:18px; height:18px; }
+.pf-menu-text { flex:1; font-size:0.92rem; font-weight:500; color:#333; }
+.pf-menu-arrow { color:#ccc; font-size:18px; }
 
-/* Settings */
-.pf-settings { display:none; min-height:60vh; }
+/* ── Settings View ── */
+.pf-settings { display:none; max-width:var(--max-width); margin:0 auto; padding:24px; }
 .pf-settings.active { display:block; }
 .pf-settings-header {
-  display:flex; align-items:center; gap:14px; margin-bottom:24px;
+  display:flex; align-items:center; gap:14px; margin-bottom:28px;
 }
 .pf-settings-back {
-  width:40px; height:40px; border-radius:10px; border:1.5px solid #e0e0e0;
+  width:40px; height:40px; border-radius:12px; border:1.5px solid #e0e0e0;
   background:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
   transition:all 0.15s; color:#555;
 }
@@ -144,28 +211,27 @@
 .pf-settings-title { font-size:1.3rem; font-weight:700; color:#222; }
 .pf-settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
 .pf-settings-card {
-  background:#fff; border-radius:var(--radius-lg,12px); overflow:hidden;
-  box-shadow:0 1px 4px rgba(0,0,0,0.05);
+  background:#fff; border-radius:14px; overflow:hidden;
+  border:1px solid #f0f0f0;
 }
 .pf-settings-card-header {
   padding:20px 24px 12px; font-size:0.95rem; font-weight:700; color:#222;
   border-bottom:1px solid #f0f0f0;
 }
-.pf-settings-card-body { padding:20px 24px; }
+.pf-settings-card-body { padding:8px 0; }
 .pf-settings-item {
   display:flex; align-items:center; justify-content:space-between;
-  padding:14px 0; cursor:pointer; transition:color 0.15s;
+  padding:14px 24px; cursor:pointer; transition:color 0.15s;
   text-decoration:none; color:inherit;
 }
-.pf-settings-item + .pf-settings-item { border-top:1px solid #f5f5f5; }
-.pf-settings-item:hover { color:var(--primary); }
+.pf-settings-item:hover { background:#fafafa; }
 .pf-settings-item-label { font-size:0.92rem; }
 .pf-settings-item-value { font-size:0.82rem; color:#999; display:flex; align-items:center; gap:6px; }
 .pf-settings-item-arrow { font-size:18px; color:#ccc; }
 .pf-settings-logout {
-  margin-top:24px; padding:14px 32px; background:none;
-  border:1.5px solid #ff4757; color:#ff4757;
-  border-radius:var(--radius,8px); font-size:0.95rem; font-weight:600;
+  margin-top:24px; padding:14px 32px; width:100%;
+  background:none; border:1.5px solid #ff4757; color:#ff4757;
+  border-radius:12px; font-size:0.95rem; font-weight:600;
   cursor:pointer; transition:all 0.2s;
 }
 .pf-settings-logout:hover { background:#ff4757; color:#fff; }
@@ -174,23 +240,34 @@
 .pf-settings-form label { display:block; font-size:0.82rem; font-weight:600; color:#666; margin-bottom:6px; }
 .pf-settings-form input, .pf-settings-form textarea {
   width:100%; padding:12px 16px; border:1.5px solid #e0e0e0;
-  border-radius:var(--radius,8px); font-size:0.95rem; background:#fafafa; transition:all 0.15s;
+  border-radius:10px; font-size:0.95rem; background:#fafafa; transition:all 0.15s;
 }
 .pf-settings-form input:focus, .pf-settings-form textarea:focus {
   border-color:var(--primary); outline:none; background:#fff;
 }
 .pf-settings-form .btn { margin-top:8px; }
 
+/* ── Orders View ── */
+.pf-orders-wrap { display:none; max-width:var(--max-width); margin:0 auto; padding:24px; }
+.pf-orders-wrap.active { display:block; }
+.pf-orders-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:20px;
+}
+
+/* ── Responsive ── */
 @media (max-width:768px) {
-  .pf-banner { flex-direction:column; text-align:center; padding:28px 20px 20px; }
-  .pf-banner-left { flex-direction:column; }
-  .pf-banner-right { gap:24px; justify-content:center; }
-  .pf-banner-actions { position:static; justify-content:center; margin-bottom:16px; }
-  .pf-grid { grid-template-columns:1fr; }
-  .pf-order-grid { grid-template-columns:repeat(3,1fr); }
-  .pf-service-grid { grid-template-columns:repeat(2,1fr); }
-  .pf-quick-row { grid-template-columns:1fr; }
+  .pf-banner-inner { flex-direction:column; text-align:center; padding:28px 20px 24px; gap:16px; }
+  .pf-banner-stats { border-radius:12px; }
+  .pf-stat-item { padding:10px 16px; }
+  .pf-quick-bar-inner { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .pf-quick-action { min-width:80px; padding:14px 8px; }
+  .pf-quick-action::after { display:none; }
+  .pf-order-cards { grid-template-columns:repeat(3,1fr); }
+  .pf-services { grid-template-columns:repeat(2,1fr); }
   .pf-settings-grid { grid-template-columns:1fr; }
+}
+@media (max-width:480px) {
+  .pf-order-cards { grid-template-columns:repeat(2,1fr); }
 }
 </style>
 <script>
@@ -227,96 +304,144 @@
 
 <div class="pf-page">
 
-<!-- Profile Main View -->
+<!-- ═══ Profile Main View ═══ -->
 <div id="pfApp">
+
   <!-- Banner -->
   <div class="pf-banner">
-    <div class="pf-banner-actions">
-      <button class="pf-icon-btn" onclick="openSettings()" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-    </div>
-    <div class="pf-banner-left">
-      <div class="pf-avatar" id="pfPhotoWrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+    <div class="pf-banner-inner">
+      <div class="pf-avatar-wrap">
+        <div class="pf-avatar" id="pfPhotoWrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.418 3.582-8 8-8s8 3.582 8 8"/></svg>
+        </div>
+        <button class="pf-avatar-edit" onclick="document.getElementById('avatarUpload').click()" title="Change Photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
       </div>
       <div class="pf-user-info">
         <div class="pf-user-name" id="pfName"></div>
         <div class="pf-user-email" id="pfEmail"></div>
         <div class="pf-user-phone" id="pfPhoneDisplay"></div>
       </div>
-    </div>
-    <div class="pf-banner-right">
-      <div class="pf-stat-item"><div class="pf-stat-num" id="pfWishlist">0</div><div class="pf-stat-label" data-i18n="profile.wishlist">উইশলিস্ট</div></div>
-      <div class="pf-stat-item"><div class="pf-stat-num" id="pfCoupons">0</div><div class="pf-stat-label" data-i18n="profile.coupons">কুপন</div></div>
-      <div class="pf-stat-item"><div class="pf-stat-num" id="pfPoints">0</div><div class="pf-stat-label" data-i18n="profile.points">পয়েন্ট</div></div>
+      <div class="pf-banner-stats">
+        <div class="pf-stat-item"><div class="pf-stat-num" id="pfWishlist">0</div><div class="pf-stat-label" data-i18n="profile.wishlist">উইশলিস্ট</div></div>
+        <div class="pf-stat-item"><div class="pf-stat-num" id="pfCoupons">0</div><div class="pf-stat-label" data-i18n="profile.coupons">কুপন</div></div>
+        <div class="pf-stat-item"><div class="pf-stat-num" id="pfPoints">0</div><div class="pf-stat-label" data-i18n="profile.points">পয়েন্ট</div></div>
+      </div>
     </div>
   </div>
 
-  <!-- Grid: Orders + Services -->
-  <div class="pf-grid">
-    <!-- Orders -->
-    <div class="pf-card">
-      <div class="pf-card-header">
-        <span class="pf-card-title" data-i18n="orders.my_orders">আমার অর্ডার</span>
-        <a href="/profile.html#orders" class="pf-card-link" data-i18n="orders.view_all">সব দেখুন</a>
-      </div>
-      <div class="pf-order-grid">
-        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span class="pf-order-label" data-i18n="orders.tab_pending">পেন্ডিং</span></a>
-        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-processing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg></div><span class="pf-order-label" data-i18n="orders.status_processing">প্রসেসিং</span></a>
-        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-shipped"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="pf-order-label" data-i18n="orders.status_shipped">শিপড</span></a>
-        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><span class="pf-order-label" data-i18n="profile.review">রিভিউ</span></a>
-        <a href="/profile.html#orders" class="pf-order-item"><div class="pf-order-icon c-reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div><span class="pf-order-label" data-i18n="profile.reorder">পুনরায়</span></a>
-      </div>
+  <!-- Quick Actions Bar -->
+  <div class="pf-quick-bar">
+    <div class="pf-quick-bar-inner">
+      <a href="/profile.html#orders" class="pf-quick-action">
+        <div class="pf-quick-icon" style="background:#fff3e0;color:#f57c00;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+        <span class="pf-quick-label" data-i18n="orders.my_orders">আমার অর্ডার</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-quick-action">
+        <div class="pf-quick-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span class="pf-quick-label" data-i18n="orders.tab_pending">পেন্ডিং</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-quick-action">
+        <div class="pf-quick-icon" style="background:#e3f2fd;color:#1e88e5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <span class="pf-quick-label" data-i18n="orders.status_shipped">শিপড</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-quick-action">
+        <div class="pf-quick-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="pf-quick-label" data-i18n="orders.tab_delivered">ডেলিভারি</span>
+      </a>
+      <a href="/cart.html" class="pf-quick-action">
+        <div class="pf-quick-icon" style="background:#ede7f6;color:#7e57c2;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <span class="pf-quick-label" data-i18n="nav.cart">কার্ট</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="pf-content">
+
+    <!-- Order Status -->
+    <div class="pf-section-title">
+      <span data-i18n="orders.my_orders">আমার অর্ডার</span>
+      <a href="/profile.html#orders" data-i18n="orders.view_all">সব দেখুন →</a>
+    </div>
+    <div class="pf-order-cards">
+      <a href="/profile.html#orders" class="pf-order-card">
+        <div class="pf-order-card-icon c-pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <span class="pf-order-card-label" data-i18n="orders.tab_pending">পেন্ডিং</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-order-card">
+        <div class="pf-order-card-icon c-processing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg></div>
+        <span class="pf-order-card-label" data-i18n="orders.status_processing">প্রসেসিং</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-order-card">
+        <div class="pf-order-card-icon c-shipped"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7V10z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <span class="pf-order-card-label" data-i18n="orders.status_shipped">শিপড</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-order-card">
+        <div class="pf-order-card-icon c-review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="pf-order-card-label" data-i18n="profile.review">রিভিউ</span>
+      </a>
+      <a href="/profile.html#orders" class="pf-order-card">
+        <div class="pf-order-card-icon c-reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+        <span class="pf-order-card-label" data-i18n="profile.reorder">পুনরায়</span>
+      </a>
     </div>
 
     <!-- Services -->
-    <div class="pf-card">
-      <div class="pf-card-header">
-        <span class="pf-card-title" data-i18n="profile.services">সেবাসমূহ</span>
-      </div>
-      <div class="pf-service-grid">
-        <a href="/profile.html#orders" class="pf-service-item"><div class="pf-service-icon" style="background:#e3f2fd;color:#1e88e5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><span class="pf-service-label" data-i18n="profile.browsing_history">ব্রাউজিং</span></a>
-        <a href="javascript:void(0)" class="pf-service-item" onclick="openSettings()"><div class="pf-service-icon" style="background:#fce4ec;color:#e91e63;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><span class="pf-service-label" data-i18n="profile.address">ঠিকানা</span></a>
-        <a href="/help.html" class="pf-service-item"><div class="pf-service-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div><span class="pf-service-label" data-i18n="footer.help_center">সাপোর্ট</span></a>
-        <a href="/about.html" class="pf-service-item"><div class="pf-service-icon" style="background:#ede7f6;color:#7e57c2;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><span class="pf-service-label" data-i18n="footer.about">আমাদের</span></a>
-      </div>
+    <div class="pf-section-title">
+      <span data-i18n="profile.services">সেবাসমূহ</span>
     </div>
-  </div>
+    <div class="pf-services">
+      <a href="/profile.html#orders" class="pf-service-card">
+        <div class="pf-service-card-icon" style="background:#e3f2fd;color:#1e88e5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <span class="pf-service-card-label" data-i18n="profile.browsing_history">ব্রাউজিং</span>
+      </a>
+      <a href="javascript:void(0)" class="pf-service-card" onclick="openSettings()">
+        <div class="pf-service-card-icon" style="background:#fce4ec;color:#e91e63;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <span class="pf-service-card-label" data-i18n="profile.address">ঠিকানা</span>
+      </a>
+      <a href="/help.html" class="pf-service-card">
+        <div class="pf-service-card-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+        <span class="pf-service-card-label" data-i18n="footer.help_center">সাপোর্ট</span>
+      </a>
+      <a href="/about.html" class="pf-service-card">
+        <div class="pf-service-card-icon" style="background:#ede7f6;color:#7e57c2;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+        <span class="pf-service-card-label" data-i18n="footer.about">আমাদের</span>
+      </a>
+    </div>
 
-  <!-- Quick Links -->
-  <div class="pf-quick-row">
-    <a href="/profile.html#settings" class="pf-quick-card">
-      <div class="pf-quick-icon" style="background:#e3f2fd;color:#1e88e5;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <!-- Menu List -->
+    <div class="pf-menu">
+      <div class="pf-menu-item" onclick="openSettingsAccount()">
+        <div class="pf-menu-icon" style="background:#e3f2fd;color:#1e88e5;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <span class="pf-menu-text" data-i18n="profile.account_settings">অ্যাকাউন্ট সেটিংস</span>
+        <span class="pf-menu-arrow">›</span>
       </div>
-      <div>
-        <div class="pf-quick-text" data-i18n="profile.account_settings">অ্যাকাউন্ট সেটিংস</div>
-        <div class="pf-quick-sub" data-i18n="profile.settings">নাম, ফোন, ঠিকানা</div>
+      <div class="pf-menu-item" onclick="openSettingsAccount()">
+        <div class="pf-menu-icon" style="background:#fff3e0;color:#f57c00;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <span class="pf-menu-text" data-i18n="profile.address_book">ঠিকানা বই</span>
+        <span class="pf-menu-arrow">›</span>
       </div>
-    </a>
-    <a href="javascript:void(0)" class="pf-quick-card" onclick="openSettings()">
-      <div class="pf-quick-icon" style="background:#fff3e0;color:#f57c00;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <div class="pf-menu-item" onclick="openSettingsAccount()">
+        <div class="pf-menu-icon" style="background:#e8f5e9;color:#43a047;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="pf-menu-text" data-i18n="profile.settings">সেটিংস</span>
+        <span class="pf-menu-arrow">›</span>
       </div>
-      <div>
-        <div class="pf-quick-text" data-i18n="profile.address_book">ঠিকানা বই</div>
-        <div class="pf-quick-sub" data-i18n="profile.address">ডেলিভারি ঠিকানা পরিবর্তন</div>
-      </div>
-    </a>
-    <a href="javascript:void(0)" class="pf-quick-card" onclick="doLogout()">
-      <div class="pf-quick-icon" style="background:#fce4ec;color:#e91e63;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      </div>
-      <div>
-        <div class="pf-quick-text" data-i18n="nav.logout">লগআউট</div>
-        <div class="pf-quick-sub">Account</div>
-      </div>
-    </a>
+      <a href="/privacy.html" class="pf-menu-item" style="text-decoration:none;">
+        <div class="pf-menu-icon" style="background:#fce4ec;color:#e91e63;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <span class="pf-menu-text" data-i18n="footer.privacy">গোপনীয়তা নীতি</span>
+        <span class="pf-menu-arrow">›</span>
+      </a>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="pf-settings-logout" onclick="doLogout()" data-i18n="nav.logout">লগআউট</button>
   </div>
 </div>
 
-<!-- Settings View -->
+<!-- ═══ Settings View ═══ -->
 <div class="pf-settings" id="pfSettings">
   <div class="pf-settings-header">
     <button class="pf-settings-back" onclick="closeSettings()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -356,7 +481,7 @@
 </div>
 </main>
 
-<!-- Orders View (full width, outside container) -->
+<!-- ═══ Orders View (full width) ═══ -->
 <div id="ordersContent" style="display:none;">
   <div style="max-width:var(--max-width);margin:0 auto;padding:24px 16px;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
@@ -572,6 +697,21 @@ function pfTab(tab) {
     orderDetail.style.display = 'none';
   }
 }
+function uploadAvatar(input) {
+  if (!input.files || !input.files[0]) return;
+  var token = localStorage.getItem('token');
+  if (!token) return;
+  var fd = new FormData();
+  fd.append('avatar', input.files[0]);
+  fetch('/api/users/avatar', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.error) { toast(res.error, 'error'); return; }
+      var h = document.getElementById('pfPhotoWrap');
+      if (h && res.avatar) h.innerHTML = '<img src="' + esc(res.avatar) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+      toast(__('admin.saved'));
+    }).catch(function() { toast(__('toast.server_error'), 'error'); });
+}
 window.addEventListener('hashchange', function() {
   var hash = window.location.hash;
   if (hash === '#orders') pfTab('orders');
@@ -610,4 +750,3 @@ window.addEventListener('hashchange', function() {
 </script>
 </body>
 </html>
-

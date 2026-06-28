@@ -69,6 +69,7 @@
       html += '</div>';
 
       html += '<div class="od-items">';
+      var orderDelivered = order.status === 'delivered' || order.status === 'paid' || order.status === 'processing' || order.status === 'shipped';
       (order.items || []).forEach(function(item) {
         var img = item.image || 'https://picsum.photos/seed/default/80/80';
         html += '<div class="od-item">';
@@ -80,6 +81,9 @@
         if (item.size) variantTags += '<span class="od-tag od-tag-size">📐 ' + esc(item.size) + '</span>';
         if (variantTags) html += '<div class="od-item-variant">' + variantTags + '</div>';
         html += '<div class="od-item-meta">x' + item.quantity + ' × ' + taka(item.price) + ' = ' + taka(item.price * item.quantity) + '</div>';
+        if (item.product_id && orderDelivered) {
+          html += '<a href="/product.html?id=' + item.product_id + '#reviews" class="od-item-review-btn" onclick="event.stopPropagation()">✍️ ' + __('orders.review') + '</a>';
+        }
         html += '</div>';
         html += '<div class="od-item-total">' + taka(item.price * item.quantity) + '</div>';
         html += '</div>';

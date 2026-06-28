@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "ishop",
+    "slug": "ishop-mobile",
+    "owner": "shujon",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#7c3aed"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ishop.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#7c3aed"
+      },
+      "package": "com.ishop.mobile"
+    },
+    "cli": {
+      "appVersionSource": "local"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b6c5ca6f-c615-47aa-8dd7-0cc85262c4b6"
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}

@@ -225,10 +225,51 @@
     var rating = parseInt(document.getElementById('reviewRating').value);
     var comment = document.getElementById('reviewComment').value.trim();
     if (!comment) { toast(__('detail.write_comment'), 'error'); return; }
-    api('POST', '/products/' + pid + '/reviews', { rating: rating, comment: comment }).then(function(r) {
-      if (r.error) { toast(r.error, 'error'); return; }
+    api('POST', '/products/' + pid + '/review', { rating: rating, comment: comment }).then(function(r) {
+      if (r.error) { toast(r.error === 'review.only_purchased' ? __('detail.review_purchase_hint') : r.error, 'error'); return; }
       toast(__('toast.review_submitted'), 'success');
       document.getElementById('reviewComment').value = '';
+      loadProductDetail();
+    }).catch(function() { toast(__('toast.server_error'), 'error'); });
+  };
+
+  window.editReview = function(pid, ri) {
+    var r = window._pdReviews[ri];
+    if (!r) return;
+    var card = document.getElementById('reviewCard_' + r.id);
+    if (!card) return;
+    var stars = '';
+    for (var i = 1; i <= 5; i++) stars += '<span class="pd-star' + (i <= r.rating ? ' active' : '') + '" data-val="' + i + '" onclick="setEditStars(' + r.id + ',' + i + ')">&#9733;</span>';
+    card.innerHTML = '<input type="hidden" id="editRating_' + r.id + '" value="' + r.rating + '">' +
+      '<textarea id="editComment_' + r.id + '" class="pd-review-textarea" rows="3">' + esc(r.comment || '') + '</textarea>' +
+      '<div class="pd-review-stars" id="editStars_' + r.id + '">' + stars + '</div>' +
+      '<div class="pd-review-actions"><button class="btn btn-primary pd-review-submit" onclick="saveReview(' + pid + ',' + r.id + ')">💾 ' + __('detail.review_save') + '</button>' +
+      '<button class="pd-review-edit-btn" onclick="loadProductDetail()">✖ ' + __('detail.review_cancel') + '</button></div>';
+  };
+
+  window.setEditStars = function(rid, val) {
+    var input = document.getElementById('editRating_' + rid);
+    if (input) input.value = val;
+    var stars = document.querySelectorAll('#editStars_' + rid + ' .pd-star');
+    stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.getAttribute('data-val')) <= val); });
+  };
+
+  window.saveReview = function(pid, rid) {
+    var rating = parseInt(document.getElementById('editRating_' + rid).value);
+    var comment = document.getElementById('editComment_' + rid).value.trim();
+    if (!comment) { toast(__('detail.write_comment'), 'error'); return; }
+    api('PUT', '/products/' + pid + '/reviews/' + rid, { rating: rating, comment: comment }).then(function(r) {
+      if (r.error) { toast(r.error, 'error'); return; }
+      toast(__('toast.review_updated'), 'success');
+      loadProductDetail();
+    }).catch(function() { toast(__('toast.server_error'), 'error'); });
+  };
+
+  window.deleteReview = function(pid, rid) {
+    if (!confirm(__('detail.review_delete_confirm'))) return;
+    api('DELETE', '/products/' + pid + '/reviews/' + rid).then(function(r) {
+      if (r.error) { toast(r.error, 'error'); return; }
+      toast(__('toast.review_deleted'), 'success');
       loadProductDetail();
     }).catch(function() { toast(__('toast.server_error'), 'error'); });
   };
@@ -329,14 +370,21 @@
 
       var reviewsContent = '';
       if (p.reviews && p.reviews.length) {
+        window._pdReviews = p.reviews;
         reviewsContent += '<div class="pd-review-list">';
-        reviewsContent += p.reviews.map(function(r) {
+        reviewsContent += p.reviews.map(function(r, ri) {
           var s = '';
           for (var j = 1; j <= 5; j++) s += '<span class="' + (j <= r.rating ? '' : 'empty') + '">&#9733;</span>';
-          return '<div class="pd-review-card">' +
+          var token = localStorage.getItem('token');
+          var userId = null;
+          if (token) { try { userId = JSON.parse(atob(token.split('.')[1])).id; } catch(e){} }
+          var isOwn = userId && r.user_id === userId;
+          var actions = isOwn ? '<div class="pd-review-actions"><button class="pd-review-edit-btn" onclick="editReview(' + p.id + ',' + ri + ')">✏️ ' + __('detail.review_edit') + '</button><button class="pd-review-delete-btn" onclick="deleteReview(' + p.id + ',' + r.id + ')">🗑️ ' + __('detail.review_delete') + '</button></div>' : '';
+          return '<div class="pd-review-card" id="reviewCard_' + r.id + '">' +
             '<div class="pd-review-header"><span class="stars">' + s + '</span><span class="pd-review-name">' + esc(r.user_name || '') + '</span></div>' +
             '<span class="pd-review-date">' + timeAgo(r.created_at) + '</span>' +
             (r.comment ? '<div class="pd-review-comment">' + esc(r.comment) + '</div>' : '') +
+            actions +
             '</div>';
         }).join('');
         reviewsContent += '</div>';
@@ -344,12 +392,7 @@
         reviewsContent += '<div class="pd-no-reviews"><span>&#128172;</span><p>' + __('detail.no_reviews') + '</p></div>';
       }
 
-      reviewsContent += '<div class="pd-review-form">' +
-        '<h4>&#9997; ' + __('detail.review_title') + '</h4>' +
-        '<select id="reviewRating" class="pd-review-select"><option value="5">&#11088; ' + __('detail.review_rating_5') + '</option><option value="4">&#11088; ' + __('detail.review_rating_4') + '</option><option value="3">&#11088; ' + __('detail.review_rating_3') + '</option><option value="2">&#11088; ' + __('detail.review_rating_2') + '</option><option value="1">&#11088; ' + __('detail.review_rating_1') + '</option></select>' +
-        '<textarea id="reviewComment" class="pd-review-textarea" placeholder="' + __('detail.review_placeholder') + '" rows="3"></textarea>' +
-        '<button class="btn btn-primary pd-review-submit" onclick="submitReview(' + p.id + ')">&#128228; ' + __('detail.review_submit') + '</button>' +
-        '</div>';
+      reviewsContent += '<div id="reviewFormArea"></div>';
 
       var specsRows = '';
       specsRows += '<tr><td>' + __('detail.spec_code') + '</td><td>' + esc(p.sku || p.id) + '</td></tr>';
@@ -361,11 +404,11 @@
       /* ======== BUILD HTML ======== */
       var html = '';
 
-      /* Breadcrumb */
-      html += '<div class="pd-breadcrumb"><a href="/">' + __('nav.home') + '</a><span class="pd-bc-sep"> › </span><a href="/products.html">' + __('nav.products') + '</a>' + (catName ? '<span class="pd-bc-sep"> › </span><a href="/products.html?category=' + esc(p.category_slug || '') + '">' + esc(catName) + '</a>' : '') + '<span class="pd-bc-sep"> › </span><span>' + esc(window.productName(p)) + '</span></div>';
-
       /* Main Layout: image on top + details below */
       html += '<div class="pd-layout">';
+
+      /* Breadcrumb */
+      html += '<div class="pd-breadcrumb" style="grid-column:1/-1;"><a href="/">' + __('nav.home') + '</a><span class="pd-bc-sep"> › </span><a href="/products.html">' + __('nav.products') + '</a>' + (catName ? '<span class="pd-bc-sep"> › </span><a href="/products.html?category=' + esc(p.category_slug || '') + '">' + esc(catName) + '</a>' : '') + '<span class="pd-bc-sep"> › </span><span>' + esc(window.productName(p)) + '</span></div>';
 
       /* === Gallery === */
       html += '<div class="pd-gallery">';
@@ -504,6 +547,11 @@
       window.pdImages = imgs;
       window.pdActiveTab = 'desc';
       loadAiRecs();
+      loadReviewForm(p.id);
+
+      if (location.hash === '#reviews') {
+        setTimeout(function() { switchPdTab('reviews'); }, 100);
+      }
 
       /* Auto-select first color if product has color_images */
       if (p.colors && p.colors.length && p.color_images) {
@@ -515,6 +563,44 @@
       }
     });
   }
+
+  function loadReviewForm(pid) {
+    var area = document.getElementById('reviewFormArea');
+    if (!area) return;
+    var token = localStorage.getItem('token');
+    if (!token) {
+      area.innerHTML = '<div class="pd-review-login-hint"><p>&#128274; ' + __('detail.review_login_hint') + ' <a href="/auth.html">' + __('nav.login') + '</a></p></div>';
+      return;
+    }
+    api('GET', '/products/' + pid + '/review-status').then(function(st) {
+      if (st.hasReviewed) {
+        area.innerHTML = '<div class="pd-review-done"><p>&#9989; ' + __('detail.review_already') + '</p></div>';
+      } else if (!st.hasPurchased) {
+        area.innerHTML = '<div class="pd-review-login-hint"><p>&#128722; ' + __('detail.review_purchase_hint') + '</p></div>';
+      } else {
+        area.innerHTML = '<div class="pd-review-form">' +
+          '<h4>&#9997; ' + __('detail.review_title') + '</h4>' +
+          '<div class="pd-review-stars" id="reviewStars">' +
+          [1,2,3,4,5].map(function(i){ return '<span class="pd-star" data-val="' + i + '" onclick="setReviewStars(' + i + ')">&#9733;</span>'; }).join('') +
+          '</div><input type="hidden" id="reviewRating" value="5">' +
+          '<textarea id="reviewComment" class="pd-review-textarea" placeholder="' + __('detail.review_placeholder') + '" rows="3"></textarea>' +
+          '<button class="btn btn-primary pd-review-submit" onclick="submitReview(' + pid + ')">&#128228; ' + __('detail.review_submit') + '</button>' +
+          '</div>';
+        setReviewStars(5);
+      }
+    }).catch(function() {
+      area.innerHTML = '';
+    });
+  }
+
+  window.setReviewStars = function(val) {
+    var input = document.getElementById('reviewRating');
+    if (input) input.value = val;
+    var stars = document.querySelectorAll('#reviewStars .pd-star');
+    stars.forEach(function(s) {
+      s.classList.toggle('active', parseInt(s.getAttribute('data-val')) <= val);
+    });
+  };
 
   function loadQuestions(pid) {
     var list = document.getElementById('pdQaList');

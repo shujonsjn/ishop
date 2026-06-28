@@ -94,8 +94,19 @@
 <script src="../js/auth.js"></script>
 <script>
 var token = localStorage.getItem('adminToken');
-if (!token) { document.getElementById('loginPrompt').style.display = 'block'; } 
-else { document.getElementById('pagesApp').style.display = 'block'; }
+if (!token) { document.getElementById('loginPrompt').style.display = 'block'; }
+else {
+  document.getElementById('pagesApp').style.display = 'block';
+  fetch('/api/admin/settings', { headers: { Authorization: 'Bearer ' + token } })
+  .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(function(){ loadPages(); })
+  .catch(function(){
+    document.getElementById('pagesApp').style.display = 'none';
+    document.getElementById('loginPrompt').style.display = 'block';
+    localStorage.removeItem('adminToken');
+    token = null;
+  });
+}
 
 function adminLogin() {
   var e = document.getElementById('adminEmail').value;
@@ -181,8 +192,7 @@ function renderEditor(key) {
     html += '<label style="margin-top:8px;">"সব দেখুন" লিংক (English)</label><input type="text" id="homeJfySeeAllEn" value="' + esc(data.jfySeeAllEn || '') + '">';
     html += '</div>';
     html += '<div class="section-editor">';
-    html += '<label>"আরও দেখুন" বাটন (বাংলা)</label><input type="text" id="homeMoreBtn" value="' + esc(data.moreBtn || '') + '">';
-    html += '<label style="margin-top:8px;">"আরও দেখুন" বাটন (English)</label><input type="text" id="homeMoreBtnEn" value="' + esc(data.moreBtnEn || '') + '">';
+    html += '<label>কলাম সংখ্যা (পণ্য গ্রিড)</label><input type="number" id="homeColumns" min="2" max="6" value="' + esc(data.columns || '4') + '" style="width:100px;">';
     html += '</div>';
   }
   else if (def.type === 'products_page') {
@@ -275,6 +285,11 @@ function renderEditor(key) {
 
   html += '<button class="btn-save" onclick="savePage()">💾 সংরক্ষণ করুন</button>';
   el.innerHTML = html;
+  if (def.type === 'home') {
+    loadCategoriesForSections();
+    var cs = allData[key].customSections || [];
+    cs.forEach(function(_, i) { if (document.getElementById('hsType_' + i)) toggleHomeSectionFields(i); });
+  }
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -300,6 +315,7 @@ function savePage() {
     data.jfySeeAllEn = document.getElementById('homeJfySeeAllEn') ? document.getElementById('homeJfySeeAllEn').value : '';
     data.moreBtn = document.getElementById('homeMoreBtn') ? document.getElementById('homeMoreBtn').value : '';
     data.moreBtnEn = document.getElementById('homeMoreBtnEn') ? document.getElementById('homeMoreBtnEn').value : '';
+    data.columns = document.getElementById('homeColumns') ? document.getElementById('homeColumns').value : '4';
   }
   else if (def.type === 'products_page') {
     data.title = document.getElementById('prodTitle') ? document.getElementById('prodTitle').value : '';
@@ -363,10 +379,11 @@ function savePage() {
   allData[currentPage] = data;
   var body = {};
   body[currentPage] = data;
-  fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) })
-  .then(function(r){return r.json()}).then(function(){
+  var curToken = localStorage.getItem('adminToken') || token;
+  fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + curToken }, body: JSON.stringify(body) })
+  .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); }).then(function(){
     toast('সংরক্ষিত হয়েছে!', 'success');
-  }).catch(function(){ toast('সংরক্ষণ ব্যর্থ', 'error'); });
+  }).catch(function(){ toast('সংরক্ষণ ব্যর্থ। আবার লগইন করুন।', 'error'); });
 }
 
 function addSection() {
@@ -423,6 +440,64 @@ function addBenefit() {
 function removeBenefit(i) {
   var d = allData[currentPage]; if(d.benefits) d.benefits.splice(i,1);
   renderEditor(currentPage);
+}
+function addHomeSection(type) {
+  var d = allData['page_home'] || {};
+  if (!d.customSections) d.customSections = [];
+  d.customSections.push({ type: type || 'text', title: '', titleEn: '', image: '', link: '', text: '', textEn: '' });
+  allData['page_home'] = d;
+  renderEditor('page_home');
+}
+function removeHomeSection(i) {
+  var d = allData['page_home'] || {};
+  if (d.customSections) d.customSections.splice(i, 1);
+  allData['page_home'] = d;
+  renderEditor('page_home');
+}
+function moveHomeSection(i, dir) {
+  var d = allData['page_home'] || {};
+  var arr = d.customSections || [];
+  var ni = i + dir;
+  if (ni < 0 || ni >= arr.length) return;
+  var tmp = arr[i]; arr[i] = arr[ni]; arr[ni] = tmp;
+  d.customSections = arr;
+  allData['page_home'] = d;
+  renderEditor('page_home');
+}
+function toggleHomeSectionFields(i) {
+  var type = document.getElementById('hsType_' + i).value;
+  var extra = document.getElementById('hsExtra_' + i);
+  if (!extra) return;
+  extra.querySelectorAll('[class*="hs-type-"]').forEach(function(el) {
+    var classes = el.className.split(' ');
+    var show = false;
+    classes.forEach(function(c) { if (c === 'hs-type-' + type) show = true; });
+    el.style.display = show ? '' : 'none';
+  });
+}
+function loadCategoriesForSections() {
+  fetch('/api/categories').then(function(r){return r.json()}).then(function(cats){
+    var selects = document.querySelectorAll('[id^="hsCat_"]');
+    selects.forEach(function(sel) {
+      var val = sel.value;
+      sel.innerHTML = '<option value="">-- ক্যাটাগরি বাছাই করুন --</option>' +
+        cats.map(function(c){ return '<option value="' + c.slug + '"' + (val === c.slug ? ' selected' : '') + '>' + (c.name || c.en_name || c.slug) + '</option>'; }).join('');
+    });
+  });
+}
+function uploadHomeBanner(input, idx) {
+  if (!input.files || !input.files[0]) return;
+  var tk = localStorage.getItem('adminToken');
+  if (!tk) return;
+  var fd = new FormData();
+  fd.append('image', input.files[0]);
+  fetch('/api/admin/upload?type=banner', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tk }, body: fd })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.error) { toast(res.error, 'error'); return; }
+      var field = document.getElementById('hsImage_' + idx);
+      if (field && res.url) { field.value = res.url; toast('আপলোড হয়েছে!', 'success'); }
+    }).catch(function() { toast('আপলোড ব্যর্থ', 'error'); });
 }
 
 if (token) loadPages();

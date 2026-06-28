@@ -110,6 +110,16 @@ router.get('/:id/reviews', async (req, res) => {
   }
 });
 
+router.get('/:id/review-status', authMiddleware, async (req, res) => {
+  try {
+    const existing = await db.prepare('SELECT 1 FROM reviews WHERE product_id = ? AND user_id = ?').get(req.params.id, req.user.id);
+    const purchase = await db.prepare("SELECT 1 FROM orders o JOIN order_items oi ON oi.order_id = o.id WHERE o.user_id = ? AND oi.product_id = ? AND o.status IN ('delivered','paid','processing','shipped') LIMIT 1").get(req.user.id, req.params.id);
+    res.json({ hasReviewed: !!existing, hasPurchased: !!purchase });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.post('/:id/review', authMiddleware, async (req, res) => {
   try {
     const { rating, comment } = req.body || {};
@@ -122,8 +132,41 @@ router.post('/:id/review', authMiddleware, async (req, res) => {
     const existing = await db.prepare('SELECT 1 FROM reviews WHERE product_id = ? AND user_id = ?').get(req.params.id, req.user.id);
     if (existing) return res.status(409).json({ error: 'You already reviewed this product' });
 
+    const purchase = await db.prepare("SELECT 1 FROM orders o JOIN order_items oi ON oi.order_id = o.id WHERE o.user_id = ? AND oi.product_id = ? AND o.status IN ('delivered','paid','processing','shipped') LIMIT 1").get(req.user.id, req.params.id);
+    if (!purchase) return res.status(403).json({ error: 'review.only_purchased' });
+
     await db.prepare('INSERT INTO reviews (product_id, user_id, rating, comment) VALUES (?, ?, ?, ?)').run(req.params.id, req.user.id, Math.round(rating), comment || '');
     res.status(201).json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put('/:id/reviews/:reviewId', authMiddleware, async (req, res) => {
+  try {
+    const { rating, comment } = req.body || {};
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+    }
+    const review = await db.prepare('SELECT * FROM reviews WHERE id = ? AND product_id = ?').get(req.params.reviewId, req.params.id);
+    if (!review) return res.status(404).json({ error: 'Review not found' });
+    if (review.user_id !== req.user.id) return res.status(403).json({ error: 'Not your review' });
+
+    await db.prepare('UPDATE reviews SET rating = ?, comment = ? WHERE id = ?').run(Math.round(rating), comment || '', req.params.reviewId);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete('/:id/reviews/:reviewId', authMiddleware, async (req, res) => {
+  try {
+    const review = await db.prepare('SELECT * FROM reviews WHERE id = ? AND product_id = ?').get(req.params.reviewId, req.params.id);
+    if (!review) return res.status(404).json({ error: 'Review not found' });
+    if (review.user_id !== req.user.id) return res.status(403).json({ error: 'Not your review' });
+
+    await db.prepare('DELETE FROM reviews WHERE id = ?').run(req.params.reviewId);
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
