@@ -131,7 +131,7 @@
       if (products.length === 0 && page === 1) {
         grid.innerHTML = '';
         grid.style.minHeight = '300px';
-        if (emptyEl) emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'none';
         var pag = document.getElementById('pagination');
         if (pag) pag.innerHTML = '';
         return;
@@ -154,7 +154,7 @@
         grid.innerHTML = '';
         grid.style.minHeight = '300px';
         var emptyEl = document.getElementById('emptyState');
-        if (emptyEl) emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'none';
         var pag = document.getElementById('pagination');
         if (pag) pag.innerHTML = '';
       }
