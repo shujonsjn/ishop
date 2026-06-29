@@ -1157,13 +1157,16 @@ tr.drag-over { outline: 2px dashed var(--primary); background: #e8f0fe; }
 .dz-sort-wrap select:focus { outline: none; border-color: var(--primary); }
 
 /* Layout */
-.dz-cat-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+.dz-cat-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; min-height: 600px; }
 
 /* Sidebar */
 .dz-cat-sidebar {
   position: sticky; top: 80px; background: #fff; border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 0; overflow: hidden;
+  max-height: calc(100vh - 100px); overflow-y: auto;
 }
+.dz-cat-sidebar::-webkit-scrollbar { width: 4px; }
+.dz-cat-sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
 .dz-sidebar-section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
 .dz-sidebar-section:last-child { border-bottom: none; }
 .dz-sidebar-section h3 {
@@ -1224,7 +1227,7 @@ tr.drag-over { outline: 2px dashed var(--primary); background: #e8f0fe; }
 .dz-card-badge-verified { background: #f0fdf4; color: #16a34a; }
 
 /* Main */
-.dz-cat-main { min-width: 0; }
+.dz-cat-main { min-width: 0; min-height: 500px; }
 
 /* Mobile filter bar */
 .dz-mobile-filter-bar { display: none; gap: 8px; margin-bottom: 12px; }
