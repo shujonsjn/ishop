@@ -1157,16 +1157,18 @@ tr.drag-over { outline: 2px dashed var(--primary); background: #e8f0fe; }
 .dz-sort-wrap select:focus { outline: none; border-color: var(--primary); }
 
 /* Layout */
-.dz-cat-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; min-height: 600px; }
+.dz-cat-layout { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; min-height: 600px; width: 100%; box-sizing: border-box; }
 
 /* Sidebar */
 .dz-cat-sidebar {
   position: sticky; top: 80px; background: #fff; border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 0; overflow: hidden;
-  max-height: calc(100vh - 100px); overflow-y: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 0;
+  max-height: calc(100vh - 100px); overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin;
 }
 .dz-cat-sidebar::-webkit-scrollbar { width: 4px; }
 .dz-cat-sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+.dz-cat-sidebar::-webkit-scrollbar-track { background: transparent; }
 .dz-sidebar-section { padding: 20px; border-bottom: 1px solid #f0f0f0; }
 .dz-sidebar-section:last-child { border-bottom: none; }
 .dz-sidebar-section h3 {
