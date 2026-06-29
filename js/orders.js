@@ -77,7 +77,7 @@
         html += '<div class="od-item-info">';
         html += '<div class="od-item-name">' + esc(item.name) + '</div>';
         var variantTags = '';
-        if (item.color) variantTags += '<span class="od-tag od-tag-color">🎨 ' + esc(item.color) + '</span>';
+        if (item.color) variantTags += '<span class="od-tag od-tag-color">🎨 ' + esc(colorDisplayName(item.color)) + '</span>';
         if (item.size) variantTags += '<span class="od-tag od-tag-size">📐 ' + esc(item.size) + '</span>';
         if (variantTags) html += '<div class="od-item-variant">' + variantTags + '</div>';
         html += '<div class="od-item-meta">x' + item.quantity + ' × ' + taka(item.price) + ' = ' + taka(item.price * item.quantity) + '</div>';
@@ -158,7 +158,7 @@
         html += '<div class="dz-order-item-name">' + esc(item.name) + '</div>';
         if (item.color || item.size) {
           html += '<div class="dz-order-item-variants">';
-          if (item.color) html += '<span class="od-tag od-tag-color">🎨 ' + esc(item.color) + '</span>';
+          if (item.color) html += '<span class="od-tag od-tag-color">🎨 ' + esc(colorDisplayName(item.color)) + '</span>';
           if (item.size) html += '<span class="od-tag od-tag-size">📐 ' + esc(item.size) + '</span>';
           html += '</div>';
         }
@@ -208,7 +208,7 @@
         if (('#' + o.id).indexOf(searchVal) !== -1) match = true;
         (o.items || []).forEach(function(it) {
           if (it.name && it.name.toLowerCase().indexOf(searchVal) !== -1) match = true;
-          if (it.color && it.color.toLowerCase().indexOf(searchVal) !== -1) match = true;
+          if (it.color && (it.color.toLowerCase().indexOf(searchVal) !== -1 || colorDisplayName(it.color).toLowerCase().indexOf(searchVal) !== -1)) match = true;
         });
         if (!match) return false;
       }

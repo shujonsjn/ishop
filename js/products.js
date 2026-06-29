@@ -46,7 +46,7 @@
 
   window.selectColor = function(color, el) {
     window.selectedColor = color;
-    document.getElementById('pdColorSelected').textContent = color;
+    document.getElementById('pdColorSelected').textContent = colorDisplayName(color);
     var row = document.getElementById('pdColorRow');
     if (row) row.querySelectorAll('.pd-color-swatch').forEach(function(s) { s.classList.remove('active'); });
     el.classList.add('active');
@@ -449,11 +449,13 @@
         var ci = p.color_images || {};
         p.colors.forEach(function(c) {
           var colorImg = (ci[c] && ci[c].length) ? ci[c][0] : ((p.images && p.images.length) ? p.images[0] : '');
-          html += '<div class="pd-color-swatch" onclick="selectColor(\'' + esc(c) + '\', this)" title="' + esc(c) + '">';
+          var displayName = colorDisplayName(c);
+          var cssColor = c.indexOf('|') !== -1 ? c.split('|')[1] || c.split('|')[0] : c;
+          html += '<div class="pd-color-swatch" onclick="selectColor(\'' + esc(c) + '\', this)" title="' + esc(displayName) + '">';
           if (colorImg) {
-            html += '<img src="' + esc(colorImg) + '" alt="' + esc(c) + '">';
+            html += '<img src="' + esc(colorImg) + '" alt="' + esc(displayName) + '">';
           } else {
-            html += '<div class="pd-color-placeholder" style="background:' + esc(c) + ';"></div>';
+            html += '<div class="pd-color-placeholder" style="background:' + esc(cssColor) + ';"></div>';
           }
           html += '</div>';
         });

@@ -145,26 +145,32 @@
 
   /* ---- Flash Sale Timer ---- */
   (function startFlashTimer() {
-    var el = document.getElementById('flashTimer');
-    if (!el) return;
+    var daysEl = document.getElementById('flashDays');
+    var hoursEl = document.getElementById('flashHours');
+    var minsEl = document.getElementById('flashMins');
+    var secsEl = document.getElementById('flashSecs');
+    var countdown = document.getElementById('flashCountdown');
+    if (!daysEl || !countdown) return;
     fetch('/api/admin/settings').then(function(r) { return r.json(); }).then(function(s) {
-      if (s.primary_color) {
-        var section = el.closest('.section');
-        if (section) section.style.setProperty('--flash-color', s.primary_color);
-      }
       var endTime = s && s.flash_sale_end ? new Date(s.flash_sale_end).getTime() : 0;
-      if (!endTime) { el.textContent = __('flash.ended'); return; }
-      setInterval(function() {
+      if (!endTime) { countdown.style.display = 'none'; return; }
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+      function update() {
         var now = Date.now();
         var diff = Math.max(0, Math.floor((endTime - now) / 1000));
-        if (diff <= 0) { el.textContent = __('flash.ended'); return; }
-        var h = Math.floor(diff / 3600);
+        if (diff <= 0) { countdown.innerHTML = '<span style="color:#fff;font-size:14px;font-weight:600;">শেষ হয়েছে</span>'; return; }
+        var d = Math.floor(diff / 86400);
+        var h = Math.floor((diff % 86400) / 3600);
         var m = Math.floor((diff % 3600) / 60);
-        var s = diff % 60;
-        var timeStr = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-        el.textContent = __('flash.timer', {time: timeStr});
-      }, 1000);
-    }).catch(function() { el.textContent = __('flash.ended'); });
+        var sec = diff % 60;
+        daysEl.textContent = pad(d);
+        hoursEl.textContent = pad(h);
+        minsEl.textContent = pad(m);
+        secsEl.textContent = pad(sec);
+      }
+      update();
+      setInterval(update, 1000);
+    }).catch(function() { countdown.style.display = 'none'; });
   })();
 
   /* ---- Categories ---- */
@@ -246,6 +252,9 @@
 
   function renderFlashProducts(list, grid) {
     if (!list || list.length === 0) { grid.innerHTML = ''; return; }
+    var settings = {};
+    try { settings = JSON.parse(localStorage.getItem('siteSettings') || '{}'); } catch(e) {}
+    var showSold = settings.flash_show_sold !== '0';
     grid.innerHTML = list.map(function(p) {
       var img = window.productImage(p);
       var discount = p.compare_price ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
@@ -260,8 +269,8 @@
         '<div class=\"dz-flash-price\">' + taka(p.price) +
         (p.compare_price ? ' <span class=\"dz-flash-compare\">' + taka(p.compare_price) + '</span>' : '') +
         '</div>' +
-        '<div class=\"dz-flash-progress\"><div class=\"dz-flash-progress-bar\" style=\"width:' + pct + '%\"></div></div>' +
-        '<div class=\"dz-flash-sold\">' + __('flash.sold', {count: sold}) + '</div>' +
+        (showSold ? '<div class=\"dz-flash-progress\"><div class=\"dz-flash-progress-bar\" style=\"width:' + pct + '%\"></div></div>' +
+        '<div class=\"dz-flash-sold\">' + __('flash.sold', {count: sold}) + '</div>' : '') +
         '</div></div>';
     }).join('');
   }
@@ -332,28 +341,23 @@
     if (ph.customSections && ph.customSections.length) {
       var container = document.querySelector('.container');
       if (!container) return;
-      ph.customSections.forEach(function(sec) {
+      ph.customSections.forEach(function(sec, si) {
         if (!sec || !sec.show) return;
         var div = document.createElement('section');
         div.className = 'section';
         var title = lang === 'en' ? (sec.titleEn || sec.title) : sec.title;
         if (title) div.innerHTML = '<div class="section-title"><span>' + esc(title) + '</span></div>';
         if (sec.type === 'category' && sec.categorySlug) {
-          div.innerHTML += '<div class="dz-cat-grid"><a href="/products.html?category=' + encodeURIComponent(sec.categorySlug) + '" class="product-card" style="text-align:center;padding:20px;">' + (sec.icon || '🏷️') + '<br>' + esc(sec.title || '') + '</a></div>';
+          div.innerHTML += '<div class="dz-cat-grid"><a href="/products.html?category=' + encodeURIComponent(sec.categorySlug) + '" class="product-card" style="text-align:center;padding:20px;">🏷️<br>' + esc(title || '') + '</a></div>';
+        } else if (sec.type === 'text') {
+          var text = lang === 'en' ? (sec.textEn || sec.text) : sec.text;
+          if (text) div.innerHTML += '<div class="pd-desc" style="padding:16px;">' + esc(text).replace(/\n/g, '<br>') + '</div>';
         } else if (sec.type === 'featured' || sec.type === 'sale' || sec.type === 'new') {
-          div.innerHTML += '<div class="product-grid" id="customSec_' + sec.categorySlug + '"></div>';
+          var secId = 'customSec_' + si;
+          div.innerHTML += '<div class="product-grid" id="' + secId + '"></div>';
           container.appendChild(div);
-          var secType = sec.type === 'sale' ? 'featured' : 'featured';
-          api('GET', '/products?page=1&limit=' + (sec.limit || 8) + (sec.categorySlug ? '&category=' + sec.categorySlug : '')).then(function(data) {
-            var g = document.getElementById('customSec_' + sec.categorySlug);
-            if (g && data.products) g.innerHTML = data.products.map(renderProductCard).join('');
-          });
-          return;
-        } else if (sec.type === 'all') {
-          div.innerHTML += '<div class="product-grid" id="customSec_all"></div>';
-          container.appendChild(div);
-          api('GET', '/products?page=1&limit=' + (sec.limit || 8)).then(function(data) {
-            var g = document.getElementById('customSec_all');
+          api('GET', '/products?page=1&limit=' + (sec.limit || 8) + (sec.categorySlug ? '&category=' + encodeURIComponent(sec.categorySlug) : '')).then(function(data) {
+            var g = document.getElementById(secId);
             if (g && data.products) g.innerHTML = data.products.map(renderProductCard).join('');
           });
           return;

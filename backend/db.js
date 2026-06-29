@@ -45,6 +45,7 @@ let schemaReady = (async () => {
   try { await db.exec("ALTER TABLE categories ADD COLUMN en_name TEXT DEFAULT ''"); } catch {}
   try { await db.exec("ALTER TABLE categories ADD COLUMN sort_order INTEGER DEFAULT 0"); } catch {}
   try { await db.exec("UPDATE categories SET sort_order = id WHERE sort_order IS NULL OR sort_order = 0"); } catch {}
+  try { await db.exec("ALTER TABLE categories ADD COLUMN parent_id INTEGER DEFAULT 0"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,slug TEXT UNIQUE NOT NULL,description TEXT DEFAULT '',price REAL NOT NULL,purchase_price REAL DEFAULT 0,compare_price REAL,category_id INTEGER REFERENCES categories(id),images TEXT DEFAULT '[]',stock INTEGER DEFAULT 0,featured INTEGER DEFAULT 0,active INTEGER DEFAULT 1,created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   try { await db.exec("ALTER TABLE products ADD COLUMN colors TEXT DEFAULT '[]'"); } catch {}
   try { await db.exec("ALTER TABLE products ADD COLUMN purchase_price REAL DEFAULT 0"); } catch {}

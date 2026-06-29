@@ -137,12 +137,12 @@ router.get('/categories', authMiddleware, adminMiddleware, async (req, res) => {
 
 router.post('/categories', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, en_name, description, image } = req.body || {};
+    const { name, en_name, description, image, parent_id } = req.body || {};
     if (!name) return res.status(400).json({ error: 'name required' });
     const slug = name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') || 'category';
     const maxRow = await db.prepare('SELECT MAX(sort_order) AS m FROM categories').get();
     const sortOrder = (maxRow && maxRow.m != null ? Number(maxRow.m) : 0) + 1;
-    const result = await db.prepare('INSERT INTO categories (name, en_name, slug, description, image, sort_order) VALUES (?, ?, ?, ?, ?, ?)').run(name, en_name || '', slug, description || '', image || '', sortOrder);
+    const result = await db.prepare('INSERT INTO categories (name, en_name, slug, description, image, sort_order, parent_id) VALUES (?, ?, ?, ?, ?, ?, ?)').run(name, en_name || '', slug, description || '', image || '', sortOrder, Number(parent_id) || 0);
     const row = await db.prepare('SELECT * FROM categories WHERE id = ?').get(Number(result.lastInsertRowid));
     res.status(201).json(row);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -161,11 +161,11 @@ router.put('/categories/order', authMiddleware, adminMiddleware, async (req, res
 
 router.put('/categories/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { name, en_name, description, image } = req.body || {};
+    const { name, en_name, description, image, parent_id } = req.body || {};
     const existing = await db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'Category not found' });
     const slug = name ? name.toLowerCase().replace(/[^\w\u0980-\u09FF]+/g, '-').replace(/^-+|-+$/g, '') : existing.slug;
-    await db.prepare('UPDATE categories SET name = ?, en_name = ?, slug = ?, description = ?, image = ? WHERE id = ?').run(name || existing.name, en_name !== undefined ? en_name : existing.en_name || '', slug, description !== undefined ? description : existing.description, image !== undefined ? image : existing.image, req.params.id);
+    await db.prepare('UPDATE categories SET name = ?, en_name = ?, slug = ?, description = ?, image = ?, parent_id = ? WHERE id = ?').run(name || existing.name, en_name !== undefined ? en_name : existing.en_name || '', slug, description !== undefined ? description : existing.description, image !== undefined ? image : existing.image, parent_id !== undefined ? Number(parent_id) : (existing.parent_id || 0), req.params.id);
     const row = await db.prepare('SELECT * FROM categories WHERE id = ?').get(req.params.id);
     res.json(row);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -236,7 +236,7 @@ router.put('/orders/:id/status', authMiddleware, adminMiddleware, async (req, re
 /* Public — no auth needed */
 router.get('/settings', async (req, res) => {
   try {
-    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('site_name', 'logo_url', 'banners', 'banner_height', 'footer_content', 'flash_sale_end', 'header_bg', 'header_text_color', 'body_bg', 'primary_color', 'footer_bg', 'footer_text_color', 'footer_copyright', 'text_flash_title_bn', 'text_flash_title_en', 'text_flash_all_bn', 'text_flash_all_en', 'text_flash_all_link', 'text_categories_title_bn', 'text_categories_title_en', 'text_jfy_title_bn', 'text_jfy_title_en', 'checkout_labels', 'checkout_custom_fields', 'sslcommerz_store_id', 'sslcommerz_store_pass', 'sslcommerz_sandbox', 'sslcommerz_base_url', 'delivery_inside_dhaka', 'delivery_outside_dhaka', 'trust_badges', 'page_about', 'page_blog', 'page_privacy', 'page_terms', 'page_refund', 'page_how_to_buy', 'page_help', 'page_app', 'page_seller', 'page_home', 'page_products', 'page_home_sections', 'header_search_placeholder_bn', 'header_search_placeholder_en', 'header_show_search', 'header_show_home', 'header_show_products', 'header_show_cart', 'header_show_orders', 'header_show_admin', 'header_show_lang', 'header_show_auth', 'header_padding', 'header_custom_links', 'header_custom_nav_label_bn', 'header_custom_nav_label_en')").all();
+    const rows = await db.prepare("SELECT key, value FROM settings WHERE key IN ('site_name', 'logo_url', 'banners', 'banner_height', 'footer_content', 'flash_sale_end', 'flash_show_sold', 'header_bg', 'header_text_color', 'body_bg', 'primary_color', 'footer_bg', 'footer_text_color', 'footer_copyright', 'text_flash_title_bn', 'text_flash_title_en', 'text_flash_all_bn', 'text_flash_all_en', 'text_flash_all_link', 'text_categories_title_bn', 'text_categories_title_en', 'text_jfy_title_bn', 'text_jfy_title_en', 'checkout_labels', 'checkout_custom_fields', 'sslcommerz_store_id', 'sslcommerz_store_pass', 'sslcommerz_sandbox', 'sslcommerz_base_url', 'delivery_inside_dhaka', 'delivery_outside_dhaka', 'trust_badges', 'page_about', 'page_blog', 'page_privacy', 'page_terms', 'page_refund', 'page_how_to_buy', 'page_help', 'page_app', 'page_seller', 'page_home', 'page_products', 'page_home_sections', 'header_search_placeholder_bn', 'header_search_placeholder_en', 'header_show_search', 'header_show_home', 'header_show_products', 'header_show_cart', 'header_show_orders', 'header_show_admin', 'header_show_lang', 'header_show_auth', 'header_padding', 'header_custom_links', 'header_custom_nav_label_bn', 'header_custom_nav_label_en', 'fb_page_token', 'fb_verify_token', 'fb_page_id', 'fb_auto_reply', 'fb_welcome_msg', 'fb_bot_replies', 'fb_welcome_title_bn', 'fb_welcome_title_en')").all();
     const settings = {};
     rows.forEach(function(r) { settings[r.key] = r.value; });
     res.json(settings);
@@ -245,7 +245,7 @@ router.get('/settings', async (req, res) => {
 
 router.put('/settings', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const allowed = ['site_name', 'logo_url', 'banners', 'banner_height', 'footer_content', 'flash_sale_end', 'header_bg', 'header_text_color', 'body_bg', 'primary_color', 'footer_bg', 'footer_text_color', 'footer_copyright', 'text_flash_title_bn', 'text_flash_title_en', 'text_flash_all_bn', 'text_flash_all_en', 'text_flash_all_link', 'text_categories_title_bn', 'text_categories_title_en', 'text_jfy_title_bn', 'text_jfy_title_en', 'sslcommerz_store_id', 'sslcommerz_store_pass', 'sslcommerz_sandbox', 'sslcommerz_base_url', 'delivery_inside_dhaka', 'delivery_outside_dhaka', 'trust_badges', 'page_about', 'page_blog', 'page_privacy', 'page_terms', 'page_refund', 'page_how_to_buy', 'page_help', 'page_app', 'page_seller', 'page_home', 'page_products', 'page_home_sections', 'header_search_placeholder_bn', 'header_search_placeholder_en', 'header_show_search', 'header_show_home', 'header_show_products', 'header_show_cart', 'header_show_orders', 'header_show_admin', 'header_show_lang', 'header_show_auth', 'header_padding', 'header_custom_links', 'header_custom_nav_label_bn', 'header_custom_nav_label_en'];
+    const allowed = ['site_name', 'logo_url', 'banners', 'banner_height', 'footer_content', 'flash_sale_end', 'flash_show_sold', 'header_bg', 'header_text_color', 'body_bg', 'primary_color', 'footer_bg', 'footer_text_color', 'footer_copyright', 'text_flash_title_bn', 'text_flash_title_en', 'text_flash_all_bn', 'text_flash_all_en', 'text_flash_all_link', 'text_categories_title_bn', 'text_categories_title_en', 'text_jfy_title_bn', 'text_jfy_title_en', 'sslcommerz_store_id', 'sslcommerz_store_pass', 'sslcommerz_sandbox', 'sslcommerz_base_url', 'delivery_inside_dhaka', 'delivery_outside_dhaka', 'trust_badges', 'page_about', 'page_blog', 'page_privacy', 'page_terms', 'page_refund', 'page_how_to_buy', 'page_help', 'page_app', 'page_seller', 'page_home', 'page_products', 'page_home_sections', 'header_search_placeholder_bn', 'header_search_placeholder_en', 'header_show_search', 'header_show_home', 'header_show_products', 'header_show_cart', 'header_show_orders', 'header_show_admin', 'header_show_lang', 'header_show_auth', 'header_padding', 'header_custom_links', 'header_custom_nav_label_bn', 'header_custom_nav_label_en', 'fb_page_token', 'fb_verify_token', 'fb_page_id', 'fb_auto_reply', 'fb_welcome_msg', 'fb_bot_replies', 'fb_welcome_title_bn', 'fb_welcome_title_en'];
     for (const key of allowed) {
       if (req.body[key] !== undefined) {
         const val = typeof req.body[key] === 'object' ? JSON.stringify(req.body[key]) : String(req.body[key]);

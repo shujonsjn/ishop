@@ -14,6 +14,7 @@ import cartRouter from './routes/cart.js';
 import ordersRouter from './routes/orders.js';
 import paymentRouter from './routes/payment.js';
 import adminRouter from './routes/admin.js';
+import facebookRouter from './routes/facebook.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/payment', paymentRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/facebook', facebookRouter);
 
 app.get('/api/checkout-config', async (req, res) => {
   try {

@@ -102,6 +102,10 @@
           <span class="settings-tab-icon">🛡️</span>
           <span data-i18n="settings.tab_trust">ট্রাস্ট ব্যাজ</span>
         </button>
+        <button class="settings-tab" data-tab="facebook" onclick="switchSettingsTab('facebook')">
+          <span class="settings-tab-icon">💬</span>
+          Facebook Messenger
+        </button>
       </div>
       <div class="settings-content">
 
@@ -296,6 +300,16 @@
           <label data-i18n="settings.flash_end_time">শেষ হওয়ার সময়</label>
           <input type="datetime-local" id="settingFlashEnd" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);">
         </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:16px;">📊</span>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#374151;">"ইতিমধ্যে X টি বিক্রি হয়েছে" দেখান</div>
+              <div style="font-size:12px;color:#6b7280;">Flash Sale কার্ডে সেল প্রগ্রেস বার ও সংখ্যা দেখাবে</div>
+            </div>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="settingFlashShowSold" checked><span class="slider"></span></label>
+        </div>
         <button class="btn btn-primary" onclick="saveFlashEnd()" data-i18n="settings.save_flash">ফ্ল্যাশ সেল সংরক্ষণ</button>
       </div>
     </div>
@@ -469,6 +483,71 @@
       </div>
     </div>
 
+    <!-- TAB: Facebook Messenger -->
+    <div class="settings-panel" id="settingsTab_facebook">
+      <h3 class="settings-panel-title">💬 Facebook Messenger — অটো-রিপ্লাই বট</h3>
+      <div class="settings-card">
+        <div style="background:#e7f3ff;border:1px solid #b3d7ff;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0056b3;">
+          <strong>ℹ️ সেটআপ গাইড:</strong><br>
+          1. <a href="https://developers.facebook.com" target="_blank">Facebook Developers</a> এ যান<br>
+          2. Meta App তৈরি করুন → Messenger সক্রিয় করুন<br>
+          3. Webhook URL সেট করুন: <code style="background:#fff;padding:2px 6px;border-radius:4px;" id="fbWebhookUrl"></code><br>
+          4. Verify Token দিন (নিচে দেওয়া টোকেন ব্যবহার করুন)<br>
+          5. Page Access Token নিচে পেস্ট করুন
+        </div>
+
+        <div class="form-group">
+          <label>🔑 Page Access Token</label>
+          <input type="text" id="settingFbPageToken" placeholder="EAAxxxxxxxx..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+        <div class="form-group">
+          <label>🔐 Verify Token <span style="font-weight:400;color:#888;font-size:12px;">— Facebook webhook ভেরিফিকেশনের জন্য</span></label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="settingFbVerifyToken" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:#f9fafb;" readonly>
+            <button class="btn btn-outline" onclick="generateFbToken()" style="white-space:nowrap;">🔄 নতুন টোকেন</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>📄 Page ID <span style="font-weight:400;color:#888;font-size:12px;">— Facebook Page ID</span></label>
+          <input type="text" id="settingFbPageId" placeholder="123456789" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;">
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;margin:16px 0;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">🤖</span>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:#374151;">অটো-রিপ্লাই সক্রিয় করুন</div>
+              <div style="font-size:12px;color:#6b7280;">Messenger এ মেসেজ পেলে অটোমেটিক উত্তর দেবে</div>
+            </div>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="settingFbAutoReply"><span class="slider"></span></label>
+        </div>
+
+        <div class="form-group">
+          <label>👋 স্বাগত বার্তা (যখন কোনো কীওয়ার্ড ম্যাচ করে না)</label>
+          <textarea id="settingFbWelcomeMsg" rows="3" placeholder="ধন্যবাদ! আমরা আপনার মেসেজ পেয়েছি। শীঘ্রই রিপ্লাই দেবে।" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;resize:vertical;"></textarea>
+        </div>
+
+        <div style="margin-top:20px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <h4 style="margin:0;font-size:15px;color:#111827;">🧠 কীওয়ার্ড অটো-রিপ্লাই</h4>
+            <button class="btn btn-outline btn-sm" onclick="addBotReply()">+ যোগ করুন</button>
+          </div>
+          <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">ব্যবহারকারী এই শব্দগুলো পাঠালে সংশ্লিষ্ট উত্তর পাবে। কমা দিয়ে একাধিক কীওয়ার্ড দিন।</p>
+          <div id="botRepliesList"></div>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveFbSettings()" style="width:100%;margin-top:16px;">💾 Facebook সেটিংস সংরক্ষণ</button>
+      </div>
+
+      <!-- FB Messages Inbox -->
+      <div class="settings-card" style="margin-top:20px;">
+        <h4 style="margin:0 0 12px;font-size:15px;color:#111827;">📬 Messenger মেসেজ ইনবক্স</h4>
+        <div id="fbMessagesList" style="max-height:400px;overflow-y:auto;"></div>
+        <button class="btn btn-outline btn-sm" onclick="loadFbMessages()" style="margin-top:8px;">🔄 রিফ্রেশ</button>
+      </div>
+    </div>
+
       </div><!-- end settings-content -->
     </div><!-- end settings-layout -->
   </div>
@@ -486,6 +565,7 @@ window.switchSettingsTab = function(tab) {
   if (btn) btn.classList.add('active');
   if (panel) panel.classList.add('active');
   if (tab === 'trust') loadTrustSettings();
+  if (tab === 'flash') loadFlashSettings();
 };
 
 window.uploadLogo = function(input) {
@@ -643,15 +723,33 @@ window.saveBanners = function() {
 
 window.saveFlashEnd = function() {
   var val = document.getElementById('settingFlashEnd').value;
-  if (!val) { toast(window.__ ? __('settings.select_time') : 'সময় নির্বাচন করুন', 'error'); return; }
-  var endDate = new Date(val);
-  if (isNaN(endDate.getTime())) { toast(window.__ ? __('settings.invalid_time') : 'অবৈধ সময়', 'error'); return; }
-  var data = { flash_sale_end: endDate.toISOString() };
+  var data = {};
+  if (val) {
+    var endDate = new Date(val);
+    if (isNaN(endDate.getTime())) { toast(window.__ ? __('settings.invalid_time') : 'অবৈধ সময়', 'error'); return; }
+    data.flash_sale_end = endDate.toISOString();
+  }
+  data.flash_show_sold = document.getElementById('settingFlashShowSold').checked ? '1' : '0';
   apiAdmin('PUT', '/settings', data).then(function(res) {
     if (res.error) { toast(res.error, 'error'); return; }
     toast(__('admin.saved'));
   });
 };
+
+function loadFlashSettings() {
+  apiAdmin('GET', '/settings').then(function(s) {
+    if (s.flash_sale_end) {
+      try {
+        var d = new Date(s.flash_sale_end);
+        if (!isNaN(d.getTime())) {
+          var pad = function(n) { return n < 10 ? '0' + n : n; };
+          document.getElementById('settingFlashEnd').value = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+      } catch(e) {}
+    }
+    document.getElementById('settingFlashShowSold').checked = s.flash_show_sold !== '0';
+  });
+}
 
 window.saveHeaderSettings = function() {
   var data = {
@@ -928,6 +1026,115 @@ function loadTrustSettings() {
     renderTrustBadgeList();
   });
 }
+
+/* ---- Facebook Messenger Settings ---- */
+var botReplies = [];
+
+window.generateFbToken = function() {
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var token = '';
+  for (var i = 0; i < 24; i++) token += chars.charAt(Math.floor(Math.random() * chars.length));
+  document.getElementById('settingFbVerifyToken').value = token;
+};
+
+function renderBotReplies() {
+  var el = document.getElementById('botRepliesList');
+  if (!el) return;
+  el.innerHTML = botReplies.map(function(r, i) {
+    return '<div style="border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin-bottom:10px;background:#fafafa;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+      '<label style="font-weight:600;margin:0;font-size:13px;">🔑 কীওয়ার্ড ' + (i + 1) + '</label>' +
+      '<button class="btn-icon btn-icon-danger" onclick="removeBotReply(' + i + ')" title="মুছুন">🗑️</button>' +
+      '</div>' +
+      '<div class="form-group" style="margin-bottom:8px;"><label style="font-size:12px;color:#6b7280;">কীওয়ার্ড (কমা দিয়ে আলাদা)</label>' +
+      '<input type="text" class="bot-keywords" data-idx="' + i + '" value="' + esc(r.keywords || '') + '" placeholder="মূল্য, দাম, price, order" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;font-size:13px;"></div>' +
+      '<div class="form-group" style="margin:0;"><label style="font-size:12px;color:#6b7280;">উত্তর</label>' +
+      '<textarea class="bot-reply" data-idx="' + i + '" rows="2" placeholder="আপনার উত্তর লিখুন..." style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;font-size:13px;resize:vertical;">' + esc(r.reply || '') + '</textarea></div>' +
+      '</div>';
+  }).join('');
+}
+
+window.addBotReply = function() {
+  botReplies.push({ keywords: '', reply: '' });
+  renderBotReplies();
+};
+
+window.removeBotReply = function(idx) {
+  botReplies.splice(idx, 1);
+  renderBotReplies();
+};
+
+window.saveFbSettings = function() {
+  document.querySelectorAll('.bot-keywords').forEach(function(inp) {
+    var i = Number(inp.dataset.idx);
+    if (botReplies[i]) botReplies[i].keywords = inp.value.trim();
+  });
+  document.querySelectorAll('.bot-reply').forEach(function(ta) {
+    var i = Number(ta.dataset.idx);
+    if (botReplies[i]) botReplies[i].reply = ta.value.trim();
+  });
+  var data = {
+    fb_page_token: document.getElementById('settingFbPageToken').value.trim(),
+    fb_verify_token: document.getElementById('settingFbVerifyToken').value.trim(),
+    fb_page_id: document.getElementById('settingFbPageId').value.trim(),
+    fb_auto_reply: document.getElementById('settingFbAutoReply').checked ? 'true' : 'false',
+    fb_welcome_msg: document.getElementById('settingFbWelcomeMsg').value.trim(),
+    fb_bot_replies: JSON.stringify(botReplies)
+  };
+  apiAdmin('PUT', '/settings', data).then(function(res) {
+    if (res.error) { toast(res.error, 'error'); return; }
+    toast(__('admin.saved'));
+  });
+};
+
+function loadFbSettings() {
+  apiAdmin('GET', '/settings').then(function(s) {
+    if (s.fb_page_token) document.getElementById('settingFbPageToken').value = s.fb_page_token;
+    if (s.fb_verify_token) document.getElementById('settingFbVerifyToken').value = s.fb_verify_token;
+    else generateFbToken();
+    if (s.fb_page_id) document.getElementById('settingFbPageId').value = s.fb_page_id;
+    if (s.fb_auto_reply === 'true') document.getElementById('settingFbAutoReply').checked = true;
+    if (s.fb_welcome_msg) document.getElementById('settingFbWelcomeMsg').value = s.fb_welcome_msg;
+    if (s.fb_bot_replies) {
+      try { botReplies = JSON.parse(s.fb_bot_replies); } catch(e) { botReplies = []; }
+    }
+    renderBotReplies();
+    var wh = document.getElementById('fbWebhookUrl');
+    var base = s.sslcommerz_base_url || window.location.origin;
+    if (wh) wh.textContent = base + '/api/facebook/webhook';
+  });
+}
+
+window.loadFbMessages = function() {
+  fetch('/api/facebook/messages').then(function(r) { return r.json(); }).then(function(msgs) {
+    var el = document.getElementById('fbMessagesList');
+    if (!el) return;
+    if (!msgs.length) { el.innerHTML = '<p style="color:#6b7280;font-size:13px;padding:16px;text-align:center;">কোনো মেসেজ নেই</p>'; return; }
+    el.innerHTML = msgs.slice(0, 50).map(function(m) {
+      var isIn = m.direction === 'incoming';
+      var bg = isIn ? '#e7f3ff' : '#f0fdf4';
+      var align = isIn ? 'flex-start' : 'flex-end';
+      var label = isIn ? '📩 ব্যবহারকারী' : '📤 বট';
+      return '<div style="display:flex;justify-content:' + align + ';margin-bottom:8px;">' +
+        '<div style="max-width:80%;padding:8px 12px;border-radius:10px;background:' + bg + ';font-size:13px;">' +
+        '<div style="font-size:11px;color:#6b7280;margin-bottom:4px;">' + label + ' — ' + (m.sender_id || '').substring(0, 12) + '...</div>' +
+        '<div>' + esc(m.message_text || '') + '</div>' +
+        '</div></div>';
+    }).join('');
+  });
+};
+
+/* Auto-load when tab opened */
+(function() {
+  var origSwitch = window.switchSettingsTab;
+  window.switchSettingsTab = function(tab) {
+    origSwitch(tab);
+    if (tab === 'facebook') {
+      loadFbSettings();
+      loadFbMessages();
+    }
+  };
+})();
 </script>
 </body>
 </html>

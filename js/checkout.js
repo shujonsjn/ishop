@@ -80,7 +80,7 @@
         html += '<div class="cs-item">' +
           '<div class="cs-item-info">' +
           '<div class="cs-item-name">' + esc(window.productName(item)) + '</div>' +
-          (item.color || item.size ? '<div class="cs-item-variant">' + (item.color ? esc(item.color) : '') + (item.color && item.size ? ' / ' : '') + (item.size ? esc(item.size) : '') + '</div>' : '') +
+          (item.color || item.size ? '<div class="cs-item-variant">' + (item.color ? esc(colorDisplayName(item.color)) : '') + (item.color && item.size ? ' / ' : '') + (item.size ? esc(item.size) : '') + '</div>' : '') +
           '<div class="cs-item-meta">x' + item.quantity + ' × ' + taka(item.price) + '</div>' +
           '</div>' +
           '<div class="cs-item-total">' + taka(item.subtotal) + '</div>' +

@@ -31,7 +31,7 @@
         if (!img) img = window.productImage(item);
 
         var variants = [];
-        if (item.color) variants.push(esc(item.color));
+        if (item.color) variants.push(esc(colorDisplayName(item.color)));
         if (item.size) variants.push(esc(item.size));
 
         html += '<div class="cart-item">' +

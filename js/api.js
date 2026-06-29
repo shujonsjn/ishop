@@ -13,6 +13,14 @@
     return fetch('/api' + path, opts).then(r => r.json());
   };
 
+  window.colorDisplayName = function(color) {
+    if (!color) return '';
+    if (color.indexOf('|') === -1) return color;
+    var lang = localStorage.getItem('lang') || 'bn';
+    var parts = color.split('|');
+    return lang === 'en' ? (parts[1] || parts[0]) : parts[0];
+  };
+
   window.apiForm = function(method, path, formData) {
     const headers = {};
     const token = localStorage.getItem('token');
@@ -232,7 +240,8 @@
         e.preventDefault();
         if (typeof showProfileModal === 'function') showProfileModal(this);
         else window.location = '/profile.html';
-      };
+  };
+
     }
   })();
 
@@ -318,4 +327,209 @@
     });
   }
 
+})();
+
+/* ── Facebook Messenger Chat Widget ── */
+(function() {
+  function createFbWidget() {
+    var s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+    var pageId = s.fb_page_id || '';
+    var autoReply = s.fb_auto_reply;
+    if (!pageId) return;
+
+    var widget = document.createElement('div');
+    widget.id = 'fbMessengerWidget';
+    widget.innerHTML =
+      '<style>' +
+        '#fbMessengerBtn{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:#0084ff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,132,255,0.4);z-index:9998;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;}' +
+        '#fbMessengerBtn:hover{transform:scale(1.1);}' +
+        '#fbMessengerBtn svg{width:30px;height:30px;fill:#fff;}' +
+        '#fbMessengerPopup{position:fixed;bottom:96px;right:24px;width:320px;max-height:420px;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.2);z-index:9999;display:none;flex-direction:column;font-family:inherit;}' +
+        '#fbMessengerPopup.open{display:flex;}' +
+        '#fbMsgHeader{background:#0084ff;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;}' +
+        '#fbMsgHeader h3{margin:0;font-size:15px;font-weight:600;}' +
+        '#fbMsgHeader button{margin-left:auto;background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 4px;}' +
+        '#fbMsgBody{flex:1;background:#f0f2f5;padding:12px;overflow-y:auto;min-height:200px;max-height:280px;}' +
+        '#fbMsgInput{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid #e5e7eb;}' +
+        '#fbMsgInput input{flex:1;padding:10px 14px;border:1px solid #ddd;border-radius:20px;font-size:14px;outline:none;}' +
+        '#fbMsgInput input:focus{border-color:#0084ff;}' +
+        '#fbMsgInput button{background:#0084ff;color:#fff;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px;}' +
+        '.fb-msg-bubble{max-width:85%;padding:10px 14px;border-radius:18px;margin-bottom:8px;font-size:14px;line-height:1.4;word-wrap:break-word;}' +
+        '.fb-msg-user{background:#0084ff;color:#fff;margin-left:auto;border-bottom-right-radius:4px;}' +
+        '.fb-msg-bot{background:#e4e6eb;color:#111;border-bottom-left-radius:4px;}' +
+        '.fb-msg-hint{font-size:11px;color:#65676b;text-align:center;padding:8px;}' +
+      '</style>' +
+      '<button id="fbMessengerBtn" title="Messenger এ চ্যাট করুন">' +
+        '<svg viewBox="0 0 24 24"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.2 5.42 3.15 7.1V22l3.04-1.67c.81.22 1.68.34 2.56.34h.25c5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1 12.5l-2.5-2.7L5.5 14.5l5.5-5.8 2.5 2.7 4.5-2.7-5.5 5.8z"/></svg>' +
+      '</button>' +
+      '<div id="fbMessengerPopup">' +
+        '<div id="fbMsgHeader">' +
+          '<div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;">💬</div>' +
+          '<div><h3 id="fbMsgTitle">Messenger চ্যাট</h3><div style="font-size:11px;opacity:0.8;">সাধারণত দ্রুত উত্তর দেওয়া হয়</div></div>' +
+          '<button onclick="document.getElementById(\'fbMessengerPopup\').classList.remove(\'open\')">✕</button>' +
+        '</div>' +
+        '<div id="fbMsgBody">' +
+          '<div class="fb-msg-hint">আমাদের Messenger এ মেসেজ করুন অথবা নিচে লিখুন</div>' +
+        '</div>' +
+        '<div id="fbMsgInput">' +
+          '<input type="text" id="fbMsgText" placeholder="মেসেজ লিখুন..." onkeydown="if(event.key===\'Enter\')document.getElementById(\'fbMsgSend\').click()">' +
+          '<button id="fbMsgSend">➤</button>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(widget);
+
+    var btn = document.getElementById('fbMessengerBtn');
+    var popup = document.getElementById('fbMessengerPopup');
+    var msgBody = document.getElementById('fbMsgBody');
+    var msgInput = document.getElementById('fbMsgText');
+    var sendBtn = document.getElementById('fbMsgSend');
+
+    btn.addEventListener('click', function() {
+      popup.classList.toggle('open');
+      if (popup.classList.contains('open')) msgInput.focus();
+    });
+
+    function addMsg(text, type) {
+      var div = document.createElement('div');
+      div.className = 'fb-msg-bubble fb-msg-' + type;
+      div.textContent = text;
+      msgBody.appendChild(div);
+      msgBody.scrollTop = msgBody.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', function() {
+      var text = msgInput.value.trim();
+      if (!text) return;
+      msgInput.value = '';
+      addMsg(text, 'user');
+
+      fetch('/api/facebook/webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          object: 'page',
+          entry: [{ messaging: [{ sender: { id: 'web_chat_' + Date.now() }, message: { text: text } }] }]
+        })
+      }).then(function() {
+        return fetch('/api/facebook/messages');
+      }).then(function(r) { return r.json(); }).then(function(msgs) {
+        var outgoing = msgs.filter(function(m) { return m.direction === 'outgoing'; });
+        if (outgoing.length) {
+          setTimeout(function() { addMsg(outgoing[0].message_text, 'bot'); }, 500);
+        } else {
+          var s = JSON.parse(localStorage.getItem('siteSettings') || '{}');
+          var welcome = s.fb_welcome_msg || 'ধন্যবাদ! শীঘ্রই আমাদের টিম আপনাকে রিপ্লাই দেবে।';
+          setTimeout(function() { addMsg(welcome, 'bot'); }, 500);
+        }
+      }).catch(function() {
+        addMsg('দুঃখিত, এখন সংযোগ হচ্ছে না। পরে আবার চেষ্টা করুন।', 'bot');
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createFbWidget);
+  } else {
+    createFbWidget();
+  }
+
+  /* Category Mega Menu — 3-column CartUp pink style */
+  var _megaTree = [];
+  var _megaLoaded = false;
+  function loadMegaCategories() {
+    if (_megaLoaded) return Promise.resolve();
+    return api('GET', '/categories/tree').then(function(tree) {
+      _megaTree = tree || [];
+      _megaLoaded = true;
+    }).catch(function() {
+      return api('GET', '/categories').then(function(cats) {
+        _megaTree = (cats || []).map(function(c) { c.children = []; return c; });
+        _megaLoaded = true;
+      });
+    });
+  }
+  function renderMegaMain() {
+    var col = document.getElementById('megaColMain');
+    if (!col) return;
+    var lang = localStorage.getItem('lang') || 'bn';
+    var html = '';
+    _megaTree.forEach(function(cat) {
+      var name = lang === 'en' && cat.en_name ? cat.en_name : cat.name;
+      var hasSub = cat.children && cat.children.length > 0;
+      html += '<div class="mega-main-item" data-cat-id="' + cat.id + '">';
+      html += '<span>' + esc(name) + '</span>';
+      if (hasSub) html += '<span class="mega-main-arrow">\u203A</span>';
+      html += '</div>';
+    });
+    col.innerHTML = html;
+    col.querySelectorAll('.mega-main-item').forEach(function(item) {
+      item.addEventListener('mouseenter', function() {
+        col.querySelectorAll('.mega-main-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+        var catId = item.getAttribute('data-cat-id');
+        renderMegaSub(catId);
+      });
+    });
+  }
+  function renderMegaSub(catId) {
+    var col = document.getElementById('megaColSub');
+    var col2 = document.getElementById('megaColSub2');
+    if (!col) return;
+    col2.innerHTML = '';
+    var lang = localStorage.getItem('lang') || 'bn';
+    var cat = _megaTree.find(function(c) { return c.id == catId; });
+    if (!cat || !cat.children || cat.children.length === 0) {
+      col.innerHTML = '<a href="/products.html?category=' + cat.slug + '" class="mega-link-item">' + esc(lang === 'en' && cat.en_name ? cat.en_name : cat.name) + '</a>';
+      return;
+    }
+    var html = '';
+    cat.children.forEach(function(sub) {
+      var sname = lang === 'en' && sub.en_name ? sub.en_name : sub.name;
+      var hasSub2 = sub.children && sub.children.length > 0;
+      html += '<div class="mega-sub-item" data-sub-id="' + sub.id + '">';
+      html += '<span>' + esc(sname) + '</span>';
+      if (hasSub2) html += '<span class="mega-sub-arrow">\u203A</span>';
+      html += '</div>';
+    });
+    col.innerHTML = html;
+    col.querySelectorAll('.mega-sub-item').forEach(function(item) {
+      item.addEventListener('mouseenter', function() {
+        col.querySelectorAll('.mega-sub-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+        var subId = item.getAttribute('data-sub-id');
+        renderMegaSub2(catId, subId);
+      });
+    });
+  }
+  function renderMegaSub2(catId, subId) {
+    var col = document.getElementById('megaColSub2');
+    if (!col) return;
+    var lang = localStorage.getItem('lang') || 'bn';
+    var cat = _megaTree.find(function(c) { return c.id == catId; });
+    if (!cat) return;
+    var sub = (cat.children || []).find(function(s) { return s.id == subId; });
+    if (!sub || !sub.children || sub.children.length === 0) {
+      col.innerHTML = '<a href="/products.html?category=' + sub.slug + '" class="mega-link-item">' + esc(lang === 'en' && sub.en_name ? sub.en_name : sub.name) + '</a>';
+      return;
+    }
+    var html = '';
+    sub.children.forEach(function(sub2) {
+      var sname = lang === 'en' && sub2.en_name ? sub2.en_name : sub2.name;
+      html += '<a href="/products.html?category=' + sub2.slug + '" class="mega-link-item">' + esc(sname) + '</a>';
+    });
+    col.innerHTML = html;
+  }
+  function initMegaMenuEvents() {
+    var trigger = document.getElementById('megaCatTrigger');
+    if (!trigger) return;
+    trigger.addEventListener('mouseenter', function() {
+      loadMegaCategories().then(function() { renderMegaMain(); });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMegaMenuEvents);
+  } else {
+    initMegaMenuEvents();
+  }
 })();

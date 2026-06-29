@@ -194,6 +194,44 @@ function renderEditor(key) {
     html += '<div class="section-editor">';
     html += '<label>কলাম সংখ্যা (পণ্য গ্রিড)</label><input type="number" id="homeColumns" min="2" max="6" value="' + esc(data.columns || '4') + '" style="width:100px;">';
     html += '</div>';
+    html += '<div class="section-editor">';
+    html += '<label>"আরও দেখুন" বাটন (বাংলা)</label><input type="text" id="homeMoreBtn" value="' + esc(data.moreBtn || '') + '">';
+    html += '<label style="margin-top:8px;">"আরও দেখুন" বাটন (English)</label><input type="text" id="homeMoreBtnEn" value="' + esc(data.moreBtnEn || '') + '">';
+    html += '</div>';
+
+    html += '<div class="section-editor"><h3 style="margin-bottom:16px;">📐 কাস্টম সেকশন</h3>';
+    var cs = data.customSections || [];
+    cs.forEach(function(sec, i) {
+      html += '<div class="section-editor" style="background:#f8f9fa;border:1px dashed #d1d5db;">';
+      html += '<div class="sec-header"><h3>সেকশন ' + (i+1) + '</h3><div>';
+      html += '<button class="btn-remove" onclick="moveHomeSection(' + i + ',-1)" style="margin-right:4px;">⬆</button>';
+      html += '<button class="btn-remove" onclick="moveHomeSection(' + i + ',1)" style="margin-right:4px;">⬇</button>';
+      html += '<button class="btn-remove" onclick="removeHomeSection(' + i + ')">✕ সরান</button></div></div>';
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
+      html += '<div><label>সেকশন ধরন</label><select id="hsType_' + i + '" onchange="toggleHomeSectionFields(' + i + ')" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;">';
+      ['featured','sale','new','category','text'].forEach(function(t) {
+        html += '<option value="' + t + '"' + (sec.type === t ? ' selected' : '') + '>' + ({featured:'Featured Products',sale:'Flash Sale',new:'New Arrivals',category:'Category Products',text:'Custom Text'}[t]) + '</option>';
+      });
+      html += '</select></div>';
+      html += '<div><label>দেখানো</label><select id="hsShow_' + i + '" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;"><option value="1"' + (sec.show !== false ? ' selected' : '') + '>হ্যাঁ</option><option value="0"' + (sec.show === false ? ' selected' : '') + '>না</option></select></div>';
+      html += '</div>';
+      html += '<div style="margin-top:8px;"><label>শিরোনাম (বাংলা)</label><input type="text" id="hsTitle_' + i + '" value="' + esc(sec.title || '') + '"></div>';
+      html += '<div style="margin-top:8px;"><label>শিরোনাম (English)</label><input type="text" id="hsTitleEn_' + i + '" value="' + esc(sec.titleEn || '') + '"></div>';
+      html += '<div id="hsExtra_' + i + '" style="margin-top:8px;">';
+      html += '<div class="hs-type-category hs-type-featured hs-type-sale hs-type-new" style="' + (sec.type !== 'text' ? '' : 'display:none;') + '"><label>ক্যাটাগরি স্লাগ</label><select id="hsCat_' + i + '" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;"><option value="">-- বাছাই করুন --</option></select></div>';
+      html += '<div class="hs-type-text" style="' + (sec.type === 'text' ? '' : 'display:none;') + '"><label>কন্টেন্ট (বাংলা)</label><textarea id="hsText_' + i + '" rows="3" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;">' + esc(sec.text || '') + '</textarea>';
+      html += '<label style="margin-top:8px;">কন্টেন্ট (English)</label><textarea id="hsTextEn_' + i + '" rows="3" style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;">' + esc(sec.textEn || '') + '</textarea></div>';
+      html += '<div class="hs-type-featured hs-type-sale hs-type-new" style="' + (['featured','sale','new'].indexOf(sec.type) >= 0 ? '' : 'display:none;') + '"><label>সীমা</label><input type="number" id="hsLimit_' + i + '" value="' + esc(sec.limit || '8') + '" min="1" max="20" style="width:80px;padding:8px;border:1.5px solid var(--border);border-radius:8px;"></div>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">';
+    html += '<button class="btn-add" onclick="addHomeSection(\'featured\')">+ Featured</button>';
+    html += '<button class="btn-add" onclick="addHomeSection(\'sale\')">+ Flash Sale</button>';
+    html += '<button class="btn-add" onclick="addHomeSection(\'new\')">+ New Arrivals</button>';
+    html += '<button class="btn-add" onclick="addHomeSection(\'category\')">+ Category</button>';
+    html += '<button class="btn-add" onclick="addHomeSection(\'text\')">+ Custom Text</button>';
+    html += '</div></div>';
   }
   else if (def.type === 'products_page') {
     html += '<div class="section-editor"><h3 style="margin-bottom:16px;">📦 পণ্য পেজ কন্টেন্ট</h3>';
@@ -316,6 +354,22 @@ function savePage() {
     data.moreBtn = document.getElementById('homeMoreBtn') ? document.getElementById('homeMoreBtn').value : '';
     data.moreBtnEn = document.getElementById('homeMoreBtnEn') ? document.getElementById('homeMoreBtnEn').value : '';
     data.columns = document.getElementById('homeColumns') ? document.getElementById('homeColumns').value : '4';
+
+    data.customSections = [];
+    var i = 0;
+    while (document.getElementById('hsType_' + i)) {
+      data.customSections.push({
+        type: document.getElementById('hsType_' + i).value,
+        show: document.getElementById('hsShow_' + i).value === '1',
+        title: document.getElementById('hsTitle_' + i) ? document.getElementById('hsTitle_' + i).value : '',
+        titleEn: document.getElementById('hsTitleEn_' + i) ? document.getElementById('hsTitleEn_' + i).value : '',
+        categorySlug: document.getElementById('hsCat_' + i) ? document.getElementById('hsCat_' + i).value : '',
+        text: document.getElementById('hsText_' + i) ? document.getElementById('hsText_' + i).value : '',
+        textEn: document.getElementById('hsTextEn_' + i) ? document.getElementById('hsTextEn_' + i).value : '',
+        limit: document.getElementById('hsLimit_' + i) ? document.getElementById('hsLimit_' + i).value : '8'
+      });
+      i++;
+    }
   }
   else if (def.type === 'products_page') {
     data.title = document.getElementById('prodTitle') ? document.getElementById('prodTitle').value : '';

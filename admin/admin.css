@@ -917,6 +917,43 @@ tr.drag-over { background: #e0e7ff !important; outline: 2px dashed #6366f1; outl
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .dash-grid { grid-template-columns: 1fr; }
 }
+/* ─── Category Tree View ─── */
+.cat-tree { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+.cat-tree-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6; transition: background 0.1s;
+}
+.cat-tree-item:last-child { border-bottom: none; }
+.cat-tree-item:hover { background: #fafbfc; }
+.cat-tree-arrow {
+  width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #9ca3af; cursor: pointer; user-select: none; flex-shrink: 0;
+  transition: color 0.15s;
+}
+.cat-tree-arrow:hover { color: #374151; }
+.cat-tree-arrow-leaf { visibility: hidden; }
+.cat-tree-icon {
+  width: 36px; height: 36px; border-radius: 8px; background: #f3f4f6;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+.cat-tree-icon img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; }
+.cat-tree-info { flex: 1; min-width: 0; }
+.cat-tree-name { font-size: 14px; font-weight: 600; color: #1f2937; }
+.cat-tree-en { font-weight: 400; color: #9ca3af; font-size: 13px; }
+.cat-tree-meta { font-size: 12px; color: #9ca3af; margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+.cat-tree-slug { font-family: monospace; font-size: 11px; color: #d1d5db; }
+.cat-level {
+  display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.cat-level-main { background: #dbeafe; color: #1d4ed8; }
+.cat-level-sub { background: #fef3c7; color: #b45309; }
+.cat-level-sub2 { background: #ede9fe; color: #7c3aed; }
+.cat-tree-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.cat-tree-actions .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+.cat-tree-actions .btn-danger { color: #ef4444; border-color: #fca5a5; }
+.cat-tree-actions .btn-danger:hover { background: #fef2f2; }
+
 @media (max-width: 768px) {
   .admin-layout { grid-template-columns: 1fr; }
   .admin-sidebar { display: none; }

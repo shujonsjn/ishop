@@ -122,10 +122,15 @@
           <div class="form-group"><label data-i18n="admin.purchase_price">Purchase Price (৳)</label><input type="number" id="pfPurchasePrice" step="0.01" value="0" placeholder="0.00"></div>
           <div class="form-group"></div>
           <div class="form-group pf-full">
-            <label data-i18n="admin.colors">রং</label>
+            <label data-i18n="admin.colors">রং (দুটি ভাষায় যোগ করুন)</label>
+            <div style="display:flex;gap:6px;margin-bottom:6px;">
+              <input type="text" class="chip-input" id="pfColorInputBn" data-i18n-placeholder="admin.colors_placeholder_bn" style="flex:1;border:1px solid #d1d5db;border-radius:6px;padding:6px 8px;font-size:13px;" placeholder="রং (বাংলা)">
+              <input type="text" class="chip-input" id="pfColorInputEn" data-i18n-placeholder="admin.colors_placeholder_en" style="flex:1;border:1px solid #d1d5db;border-radius:6px;padding:6px 8px;font-size:13px;" placeholder="Color (English)">
+            </div>
             <div class="chip-wrap" id="pfColorChips">
-              <input type="text" class="chip-input" id="pfColorInput" placeholder="Type color & press Enter or + button">
-              <span class="chip-add-btn" onclick="document.getElementById('pfColorFileInput').click()">+ ছবি</span>
+              <input type="text" class="chip-input" id="pfColorInput" style="display:none;">
+              <span class="chip-add-btn" onclick="addBilingualColor()" data-i18n="admin.colors_add">+ যোগ করুন</span>
+              <span class="chip-add-btn" onclick="document.getElementById('pfColorFileInput').click()" style="border-color:#6366f1;color:#4f46e5;background:#eef2ff;">+ ছবি</span>
               <input type="file" id="pfColorFileInput" accept="image/*" style="display:none;" onchange="addColorWithImage(this)">
             </div>
           </div>
@@ -133,9 +138,9 @@
             <label class="pf-checkbox-label"><input type="checkbox" id="pfHasSizes" onchange="toggleSizesField()"> <span data-i18n="admin.has_sizes">সাইজ আছে?</span></label>
           </div>
           <div class="form-group pf-full" id="pfSizesWrap" style="display:none;">
-            <label>সাইজ</label>
+            <label data-i18n="admin.sizes">সাইজ (কমা দিয়ে আলাদা করুন)</label>
             <div class="chip-wrap" id="pfSizeChips">
-              <input type="text" class="chip-input" id="pfSizeInput" placeholder="Type size & press Enter">
+              <input type="text" class="chip-input" id="pfSizeInput" data-i18n-placeholder="admin.sizes_placeholder" placeholder="যেমন: S, M, L, XL">
             </div>
           </div>
           <!-- Size Chart Image Upload -->
@@ -221,6 +226,18 @@
 <script src="../js/api.js"></script>
 <script src="../js/admin.js"></script>
 <script>
+document.getElementById('pfColorInputBn').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addBilingualColor();
+  }
+});
+document.getElementById('pfColorInputEn').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addBilingualColor();
+  }
+});
 document.getElementById('pfColorInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
@@ -235,7 +252,7 @@ document.getElementById('pfSizeInput').addEventListener('keydown', function(e) {
     this.value = '';
   }
 });
-document.getElementById('pfColorChips').addEventListener('click', function(e) { if (e.target === this || e.target.classList.contains('chip-input')) document.getElementById('pfColorInput').focus(); });
+document.getElementById('pfColorChips').addEventListener('click', function(e) { if (e.target === this || e.target.classList.contains('chip-input')) document.getElementById('pfColorInputBn').focus(); });
 document.getElementById('pfSizeChips').addEventListener('click', function(e) { if (e.target === this || e.target.classList.contains('chip-input')) document.getElementById('pfSizeInput').focus(); });
 document.getElementById('pfHasSizes').addEventListener('change', function() { toggleSizesField(); renderVariantStockMatrix(); });
 renderVariantStockMatrix();
