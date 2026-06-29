@@ -278,10 +278,14 @@
   function renderProductCard(p) {
     var img = window.productImage(p);
     var discount = p.compare_price ? Math.round((1 - p.price / p.compare_price) * 100) : 0;
+    var badges = '';
+    if (p.is_fast) badges += '<span class="dz-card-badge dz-card-badge-fast">🚚</span>';
+    if (p.is_verified) badges += '<span class="dz-card-badge dz-card-badge-verified">✅</span>';
     return '<div class=\"product-card\" onclick=\"window.location=\'' + window.location.origin + '/product.html?id=' + p.id + '\'\">' +
       (discount > 0 ? '<div class=\"product-card-discount\">-' + discount + '%</div>' : '') +
       (img ? '<img class=\"product-card-image\" src=\"' + esc(img) + '\" alt=\"' + esc(window.productName(p)) + '\" loading=\"lazy\">' : '<div class=\"product-card-image\" style=\"display:flex;align-items:center;justify-content:center;color:var(--gray);\">' + __('products.no_image') + '</div>') +
       '<div class=\"product-card-body\">' +
+      (badges ? '<div class="dz-card-badges">' + badges + '</div>' : '') +
       '<div class=\"product-card-category\">' + esc(window.catNameStr(p.category_name, p.category_en_name) || '') + '</div>' +
       '<div class=\"product-card-title\">' + esc(window.productName(p)) + '</div>' +
       '<div class=\"product-card-price\">' + taka(p.price) +

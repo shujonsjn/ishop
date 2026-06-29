@@ -29,7 +29,7 @@ function slugify(text) {
 
 router.get('/', async (req, res) => {
   try {
-    const { category, search, page, limit, sort, featured, brand, min_rating, min_price, max_price } = req.query;
+    const { category, search, page, limit, sort, featured, brand, min_rating, min_price, max_price, is_fast, is_verified } = req.query;
     const pageNum = Math.max(1, parseInt(page) || 1);
     const limitNum = Math.min(50, Math.max(1, parseInt(limit) || 12));
     const offset = (pageNum - 1) * limitNum;
@@ -63,6 +63,12 @@ router.get('/', async (req, res) => {
     if (max_price) {
       where.push('p.price <= ?');
       args.push(parseFloat(max_price));
+    }
+    if (is_fast === '1') {
+      where.push('p.is_fast = 1');
+    }
+    if (is_verified === '1') {
+      where.push('p.is_verified = 1');
     }
 
     const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';

@@ -347,6 +347,8 @@
     'admin.sizes': { bn: 'সাইজ (কমা দিয়ে আলাদা করুন)', en: 'Sizes (comma separated)' },
     'admin.sizes_placeholder': { bn: 'যেমন: S, M, L, XL', en: 'e.g. S, M, L, XL' },
     'admin.featured': { bn: 'ফিচার্ড', en: 'Featured' },
+    'admin.fast_delivery': { bn: 'দ্রুত ডেলিভারি', en: 'Fast Delivery' },
+    'admin.verified': { bn: 'যাচাইকৃত', en: 'Verified' },
     'admin.drag_hint': { bn: 'ক্যাটাগরি পুনর্বিন্যাস করতে টেনে আনুন', en: 'Drag to reorder categories' },
     'admin.description': { bn: 'বিবরণ', en: 'Description' },
     'admin.parent_category': { bn: 'প্যারেন্ট ক্যাটাগরি', en: 'Parent Category' },

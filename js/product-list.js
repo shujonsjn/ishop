@@ -25,6 +25,16 @@
         loadProducts(true);
       });
     });
+    document.querySelectorAll('.dz-filter-checks input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() { loadProducts(true); });
+    });
+    var priceTimeout;
+    document.querySelectorAll('.dz-price-filter input').forEach(function(inp) {
+      inp.addEventListener('input', function() {
+        clearTimeout(priceTimeout);
+        priceTimeout = setTimeout(function() { loadProducts(true); }, 500);
+      });
+    });
   });
 
   window.doSearch = function() {
@@ -86,6 +96,11 @@
     var priceMax = document.getElementById('priceMax');
     if (priceMin && priceMin.value) url += '&min_price=' + priceMin.value;
     if (priceMax && priceMax.value) url += '&max_price=' + priceMax.value;
+
+    var fastCb = document.querySelector('.dz-filter-checks input[value="fast"]');
+    if (fastCb && fastCb.checked) url += '&is_fast=1';
+    var verifiedCb = document.querySelector('.dz-filter-checks input[value="verified"]');
+    if (verifiedCb && verifiedCb.checked) url += '&is_verified=1';
 
     api('GET', url).then(function(data) {
       grid.classList.remove('product-grid-loading');

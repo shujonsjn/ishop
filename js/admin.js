@@ -526,6 +526,8 @@
     });
     document.getElementById('pfFeatured').checked = data ? !!data.featured : false;
     document.getElementById('pfHasSizes').checked = data ? !!data.has_sizes : false;
+    if (document.getElementById('pfFast')) document.getElementById('pfFast').checked = data ? !!data.is_fast : false;
+    if (document.getElementById('pfVerified')) document.getElementById('pfVerified').checked = data ? !!data.is_verified : false;
     toggleSizesField();
     if (modal) modal.dataset.editId = data ? data.id : '';
     renderImagePreviews();
@@ -977,7 +979,9 @@
         colors: getColors(),
         sizes: getSizes(),
         color_images: getColorImages(),
-        size_chart_image: document.getElementById('pfSizeChartImage') ? document.getElementById('pfSizeChartImage').value || '' : ''
+        size_chart_image: document.getElementById('pfSizeChartImage') ? document.getElementById('pfSizeChartImage').value || '' : '',
+        is_fast: document.getElementById('pfFast') ? document.getElementById('pfFast').checked ? 1 : 0 : 0,
+        is_verified: document.getElementById('pfVerified') ? document.getElementById('pfVerified').checked ? 1 : 0 : 0
       };
       if (!data.name) { toast(__('toast.enter_name'), 'error'); return; }
       if (!data.price) { toast(__('toast.enter_price'), 'error'); return; }

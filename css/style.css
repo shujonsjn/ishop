@@ -1215,6 +1215,14 @@ tr.drag-over { outline: 2px dashed var(--primary); background: #e8f0fe; }
 .dz-rating-item.active { background: #fef3c7; font-weight: 600; }
 .dz-rating-item span { color: #6b7280; font-size: var(--fs-sm); }
 
+/* Card badges */
+.dz-card-badges { display: flex; gap: 4px; margin-bottom: 4px; }
+.dz-card-badge {
+  font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700;
+}
+.dz-card-badge-fast { background: #fff0f6; color: #e91e8c; }
+.dz-card-badge-verified { background: #f0fdf4; color: #16a34a; }
+
 /* Main */
 .dz-cat-main { min-width: 0; }
 

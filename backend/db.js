@@ -56,6 +56,8 @@ let schemaReady = (async () => {
   try { await db.exec("ALTER TABLE products ADD COLUMN has_sizes INTEGER DEFAULT 0"); } catch {}
   try { await db.exec("ALTER TABLE products ADD COLUMN color_images TEXT DEFAULT '{}'"); } catch {}
   try { await db.exec("ALTER TABLE products ADD COLUMN size_chart_image TEXT DEFAULT ''"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN is_fast INTEGER DEFAULT 0"); } catch {}
+  try { await db.exec("ALTER TABLE products ADD COLUMN is_verified INTEGER DEFAULT 0"); } catch {}
   await db.exec("CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL REFERENCES products(id),user_id INTEGER NOT NULL REFERENCES users(id),rating INTEGER NOT NULL,comment TEXT DEFAULT '',created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   await db.exec("CREATE TABLE IF NOT EXISTS cart (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER REFERENCES users(id),session_id TEXT,product_id INTEGER NOT NULL REFERENCES products(id),quantity INTEGER DEFAULT 1,created_at DATETIME DEFAULT CURRENT_TIMESTAMP)");
   try { await db.exec("ALTER TABLE cart ADD COLUMN color TEXT DEFAULT ''"); } catch {}
