@@ -111,9 +111,9 @@
       }
 
       var countEl = document.getElementById('catCount');
-      if (countEl) countEl.textContent = __('products.count', {count: total});
+      if (countEl) countEl.textContent = total + ' ' + __('products.items_found');
       var resultEl = document.getElementById('resultCount');
-      if (resultEl) resultEl.textContent = __('products.results', {count: total});
+      if (resultEl) resultEl.textContent = total + ' ' + __('products.items_found');
 
       var emptyEl = document.getElementById('emptyState');
       if (products.length === 0 && page === 1) {
@@ -235,4 +235,25 @@
       }
     }).catch(function(){});
   }
+
+  window.toggleMobileSidebar = function() {
+    var sb = document.getElementById('catSidebar');
+    if (sb) {
+      var isOpen = sb.style.display === 'block';
+      sb.style.display = isOpen ? '' : 'block';
+      sb.style.position = isOpen ? '' : 'fixed';
+      sb.style.top = isOpen ? '' : '0';
+      sb.style.left = isOpen ? '' : '0';
+      sb.style.right = isOpen ? '' : '0';
+      sb.style.bottom = isOpen ? '' : '0';
+      sb.style.zIndex = isOpen ? '' : '999';
+      sb.style.overflow = isOpen ? '' : 'auto';
+      sb.style.borderRadius = isOpen ? '' : '0';
+    }
+  };
+
+  window.toggleMobileSort = function() {
+    var sel = document.getElementById('sortFilter');
+    if (sel) sel.focus();
+  };
 })();
