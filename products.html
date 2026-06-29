@@ -70,8 +70,15 @@
   <div class="dz-cat-layout">
     <aside class="dz-cat-sidebar" id="catSidebar">
       <div class="dz-sidebar-section">
-        <h3 data-i18n="products.sidebar_title">বিভাগ</h3>
-        <div id="categoryList"></div>
+        <h3 data-i18n="products.brands">ব্র্যান্ড</h3>
+        <div id="brandList" class="dz-filter-list"></div>
+      </div>
+      <div class="dz-sidebar-section">
+        <h3 data-i18n="products.services">সার্ভিস</h3>
+        <div class="dz-filter-checks">
+          <label class="dz-check-item"><input type="checkbox" value="fast"> <span class="dz-badge-fast">🚚 FAST</span></label>
+          <label class="dz-check-item"><input type="checkbox" value="verified"> <span class="dz-badge-verified">✅ Verified</span></label>
+        </div>
       </div>
       <div class="dz-sidebar-section">
         <h3 data-i18n="products.price_filter">দাম</h3>
@@ -79,6 +86,15 @@
           <input type="number" id="priceMin" placeholder="সর্বনিম্ন" min="0">
           <span>—</span>
           <input type="number" id="priceMax" placeholder="সর্বোচ্চ" min="0">
+        </div>
+      </div>
+      <div class="dz-sidebar-section">
+        <h3 data-i18n="products.rating">রেটিং</h3>
+        <div class="dz-rating-filter" id="ratingFilter">
+          <div class="dz-rating-item" data-rating="4">★★★★☆ <span>4+</span></div>
+          <div class="dz-rating-item" data-rating="3">★★★☆☆ <span>3+</span></div>
+          <div class="dz-rating-item" data-rating="2">★★☆☆☆ <span>2+</span></div>
+          <div class="dz-rating-item" data-rating="1">★☆☆☆☆ <span>1+</span></div>
         </div>
       </div>
     </aside>
@@ -100,12 +116,6 @@
             <option value="price_desc">দাম (বেশি)</option>
           </select>
         </div>
-      </div>
-
-      <!-- AI Recommendations -->
-      <div class="dz-ai-recs" id="aiRecs">
-        <div class="dz-ai-recs-header" data-i18n="products.ai_recs_title"><span class="dz-ai-recs-icon">🤖</span> AI রেকমেন্ডেশন</div>
-        <div class="dz-ai-recs-row" id="aiRecsRow"></div>
       </div>
 
       <!-- Product grid -->

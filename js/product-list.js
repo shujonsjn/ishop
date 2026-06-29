@@ -11,36 +11,19 @@
   var allCats = [];
 
   document.addEventListener('DOMContentLoaded', function() {
-    loadCategories();
+    loadBrands();
     loadProducts(false);
     applyProductsPageOverrides();
     if (searchQuery) {
       var inp = document.getElementById('searchInput');
       if (inp) inp.value = searchQuery;
     }
-    document.addEventListener('click', function(e) {
-      var link = e.target.closest('.dz-cat-link');
-      if (!link) return;
-      e.preventDefault();
-      var href = link.getAttribute('href');
-      var params2 = new URL(href, window.location.origin).searchParams;
-      categorySlug = params2.get('category') || '';
-      page = 1;
-      var url2 = new URL(window.location.pathname, window.location.origin);
-      if (categorySlug) url2.searchParams.set('category', categorySlug);
-      window.history.pushState({}, '', url2);
-      var sidebar = document.getElementById('categoryList');
-      if (sidebar) sidebar.querySelectorAll('.dz-cat-link').forEach(function(a) {
-        var aHref = new URL(a.getAttribute('href'), window.location.origin).searchParams;
-        a.classList.toggle('active', aHref.get('category') === categorySlug);
+    document.querySelectorAll('.dz-rating-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.dz-rating-item').forEach(function(i) { i.classList.remove('active'); });
+        item.classList.add('active');
+        loadProducts(true);
       });
-      var grid = document.getElementById('productGrid');
-      if (grid) {
-        var sk = '';
-        for (var i = 0; i < 8; i++) sk += '<div class="product-card skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>';
-        grid.innerHTML = sk;
-      }
-      loadProducts(true);
     });
   });
 
@@ -89,6 +72,20 @@
     if (sortVal && sortVal !== 'ai') url += '&sort=' + sortVal;
     if (searchQuery) url += '&search=' + encodeURIComponent(searchQuery);
     if (categorySlug) url += '&category=' + encodeURIComponent(categorySlug);
+
+    var selectedBrands = [];
+    document.querySelectorAll('.brand-filter:checked').forEach(function(cb) {
+      selectedBrands.push(cb.value);
+    });
+    if (selectedBrands.length > 0) url += '&brand=' + encodeURIComponent(selectedBrands.join(','));
+
+    var activeRating = document.querySelector('.dz-rating-item.active');
+    if (activeRating) url += '&min_rating=' + activeRating.getAttribute('data-rating');
+
+    var priceMin = document.getElementById('priceMin');
+    var priceMax = document.getElementById('priceMax');
+    if (priceMin && priceMin.value) url += '&min_price=' + priceMin.value;
+    if (priceMax && priceMax.value) url += '&max_price=' + priceMax.value;
 
     api('GET', url).then(function(data) {
       grid.classList.remove('product-grid-loading');
@@ -172,18 +169,29 @@
     loadProducts(false);
   };
 
-  function loadCategories() {
-    api('GET', '/categories').then(function(cats) {
-      allCats = cats || [];
-      var sidebar = document.getElementById('categoryList');
+  function loadBrands() {
+    api('GET', '/products?limit=200').then(function(data) {
+      var products = data.products || [];
+      var brandMap = {};
+      products.forEach(function(p) {
+        if (p.brand) brandMap[p.brand] = (brandMap[p.brand] || 0) + 1;
+      });
+      var brands = Object.keys(brandMap).sort();
+      var sidebar = document.getElementById('brandList');
       if (!sidebar) return;
-      var html = '<a href="/products.html" class="dz-cat-link' + (!categorySlug ? ' active' : '') + '" data-i18n="products.sidebar_all">' + __('products.sidebar_all') + '</a>';
-      cats.forEach(function(c) {
-        var active = categorySlug === c.slug ? ' active' : '';
-        html += '<a href="/products.html?category=' + encodeURIComponent(c.slug) + '" class="dz-cat-link' + active + '">' + esc(window.catName(c)) + '</a>';
+      if (brands.length === 0) {
+        sidebar.innerHTML = '<p style="color:#9ca3af;font-size:13px;">কোনো ব্র্যান্ড পাওয়া যায়নি</p>';
+        return;
+      }
+      var html = '';
+      brands.forEach(function(b) {
+        html += '<label class="dz-check-item"><input type="checkbox" value="' + esc(b) + '" class="brand-filter"> ' + esc(b) + ' <span style="color:#9ca3af;font-size:12px;">(' + brandMap[b] + ')</span></label>';
       });
       sidebar.innerHTML = html;
-    });
+      sidebar.querySelectorAll('.brand-filter').forEach(function(cb) {
+        cb.addEventListener('change', function() { loadProducts(true); });
+      });
+    }).catch(function() {});
   }
 
   function applyProductsPageOverrides() {

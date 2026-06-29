@@ -29,7 +29,7 @@ function slugify(text) {
 
 router.get('/', async (req, res) => {
   try {
-    const { category, search, page, limit, sort, featured } = req.query;
+    const { category, search, page, limit, sort, featured, brand, min_rating, min_price, max_price } = req.query;
     const pageNum = Math.max(1, parseInt(page) || 1);
     const limitNum = Math.min(50, Math.max(1, parseInt(limit) || 12));
     const offset = (pageNum - 1) * limitNum;
@@ -46,6 +46,23 @@ router.get('/', async (req, res) => {
     }
     if (featured === '1') {
       where.push('p.featured = 1');
+    }
+    if (brand) {
+      const brands = brand.split(',');
+      where.push('p.brand IN (' + brands.map(() => '?').join(',') + ')');
+      args.push(...brands);
+    }
+    if (min_rating) {
+      where.push('(SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) >= ?');
+      args.push(parseInt(min_rating));
+    }
+    if (min_price) {
+      where.push('p.price >= ?');
+      args.push(parseFloat(min_price));
+    }
+    if (max_price) {
+      where.push('p.price <= ?');
+      args.push(parseFloat(max_price));
     }
 
     const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
