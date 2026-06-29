@@ -77,8 +77,8 @@ router.get('/', async (req, res) => {
     const orderBy = sort === 'price_asc' ? 'ORDER BY p.price ASC'
       : sort === 'price_desc' ? 'ORDER BY p.price DESC'
       : sort === 'oldest' ? 'ORDER BY p.id ASC'
-      : sort === 'bestselling' ? 'ORDER BY p.stock ASC, p.id DESC'
-      : sort === 'ai' ? 'ORDER BY p.id DESC'
+      : sort === 'newest' ? 'ORDER BY p.id DESC'
+      : sort === 'bestselling' ? 'ORDER BY p.stock DESC, p.id DESC'
       : 'ORDER BY p.id DESC';
 
     const countSql = 'SELECT COUNT(*) AS total FROM products p LEFT JOIN categories c ON c.id = p.category_id ' + whereClause;
