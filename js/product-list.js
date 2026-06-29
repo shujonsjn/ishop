@@ -185,11 +185,15 @@
   };
 
   function loadBrands() {
-    api('GET', '/products?limit=200').then(function(data) {
+    fetch('/api/admin/settings').then(function(){}).catch(function(){});
+    api('GET', '/products?limit=500').then(function(data) {
       var products = data.products || [];
       var brandMap = {};
       products.forEach(function(p) {
-        if (p.brand) brandMap[p.brand] = (brandMap[p.brand] || 0) + 1;
+        if (p.brand && p.brand.trim()) {
+          var b = p.brand.trim();
+          brandMap[b] = (brandMap[b] || 0) + 1;
+        }
       });
       var brands = Object.keys(brandMap).sort();
       var sidebar = document.getElementById('brandList');

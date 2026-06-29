@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
   try {
     const { category, search, page, limit, sort, featured, brand, min_rating, min_price, max_price, is_fast, is_verified } = req.query;
     const pageNum = Math.max(1, parseInt(page) || 1);
-    const limitNum = Math.min(50, Math.max(1, parseInt(limit) || 12));
+    const limitNum = Math.min(500, Math.max(1, parseInt(limit) || 12));
     const offset = (pageNum - 1) * limitNum;
     const where = ['p.active = 1'];
     const args = [];
@@ -48,9 +48,11 @@ router.get('/', async (req, res) => {
       where.push('p.featured = 1');
     }
     if (brand) {
-      const brands = brand.split(',');
-      where.push('p.brand IN (' + brands.map(() => '?').join(',') + ')');
-      args.push(...brands);
+      const brands = brand.split(',').map(b => b.trim()).filter(Boolean);
+      if (brands.length > 0) {
+        where.push('LOWER(p.brand) IN (' + brands.map(() => 'LOWER(?)').join(',') + ')');
+        args.push(...brands);
+      }
     }
     if (min_rating) {
       where.push('(SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) >= ?');
