@@ -459,7 +459,7 @@
     _megaTree.forEach(function(cat) {
       var name = lang === 'en' && cat.en_name ? cat.en_name : cat.name;
       var hasSub = cat.children && cat.children.length > 0;
-      html += '<div class="mega-main-item" data-cat-id="' + cat.id + '">';
+      html += '<div class="mega-main-item" data-cat-id="' + cat.id + '" data-cat-slug="' + esc(cat.slug) + '">';
       html += '<span>' + esc(name) + '</span>';
       if (hasSub) html += '<span class="mega-main-arrow">\u203A</span>';
       html += '</div>';
@@ -471,6 +471,10 @@
         item.classList.add('active');
         var catId = item.getAttribute('data-cat-id');
         renderMegaSub(catId);
+      });
+      item.addEventListener('click', function() {
+        var slug = item.getAttribute('data-cat-slug');
+        window.location.href = '/products.html?category=' + slug;
       });
     });
   }
@@ -493,7 +497,7 @@
     cat.children.forEach(function(sub) {
       var sname = lang === 'en' && sub.en_name ? sub.en_name : sub.name;
       var hasSub2 = sub.children && sub.children.length > 0;
-      html += '<div class="mega-sub-item" data-sub-id="' + sub.id + '">';
+      html += '<div class="mega-sub-item" data-sub-id="' + sub.id + '" data-sub-slug="' + esc(sub.slug) + '">';
       html += '<span>' + esc(sname) + '</span>';
       if (hasSub2) html += '<span class="mega-sub-arrow">\u203A</span>';
       html += '</div>';
@@ -505,6 +509,10 @@
         item.classList.add('active');
         var subId = item.getAttribute('data-sub-id');
         renderMegaSub2(catId, subId);
+      });
+      item.addEventListener('click', function() {
+        var slug = item.getAttribute('data-sub-slug');
+        window.location.href = '/products.html?category=' + slug;
       });
     });
   }
