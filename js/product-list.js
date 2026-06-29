@@ -212,11 +212,7 @@
         if (sl) sortLabel.textContent = sl;
       }
 
-      var sidebarTitle = document.querySelector('#catSidebar h3');
-      if (sidebarTitle) {
-        var st = lang === 'en' ? (pp.sidebarTitleEn || pp.sidebarTitle) : pp.sidebarTitle;
-        if (st) sidebarTitle.textContent = st;
-      }
+      // Sidebar title no longer overridden (brands/services/price/rating sections are fixed)
 
       var aiTitle = document.querySelector('.dz-ai-recs-header');
       if (aiTitle) {
