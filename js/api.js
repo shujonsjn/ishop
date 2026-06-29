@@ -451,7 +451,9 @@
   }
   function renderMegaMain() {
     var col = document.getElementById('megaColMain');
+    var panel = document.querySelector('.mega-cat-panel');
     if (!col) return;
+    if (panel) { panel.classList.remove('has-sub', 'has-sub2'); }
     var lang = localStorage.getItem('lang') || 'bn';
     var html = '';
     _megaTree.forEach(function(cat) {
@@ -475,14 +477,18 @@
   function renderMegaSub(catId) {
     var col = document.getElementById('megaColSub');
     var col2 = document.getElementById('megaColSub2');
+    var panel = document.querySelector('.mega-cat-panel');
     if (!col) return;
+    if (panel) panel.classList.remove('has-sub2');
     col2.innerHTML = '';
     var lang = localStorage.getItem('lang') || 'bn';
     var cat = _megaTree.find(function(c) { return c.id == catId; });
     if (!cat || !cat.children || cat.children.length === 0) {
+      if (panel) panel.classList.remove('has-sub');
       col.innerHTML = '<a href="/products.html?category=' + cat.slug + '" class="mega-link-item">' + esc(lang === 'en' && cat.en_name ? cat.en_name : cat.name) + '</a>';
       return;
     }
+    if (panel) panel.classList.add('has-sub');
     var html = '';
     cat.children.forEach(function(sub) {
       var sname = lang === 'en' && sub.en_name ? sub.en_name : sub.name;
@@ -504,15 +510,18 @@
   }
   function renderMegaSub2(catId, subId) {
     var col = document.getElementById('megaColSub2');
+    var panel = document.querySelector('.mega-cat-panel');
     if (!col) return;
     var lang = localStorage.getItem('lang') || 'bn';
     var cat = _megaTree.find(function(c) { return c.id == catId; });
     if (!cat) return;
     var sub = (cat.children || []).find(function(s) { return s.id == subId; });
     if (!sub || !sub.children || sub.children.length === 0) {
+      if (panel) panel.classList.remove('has-sub2');
       col.innerHTML = '<a href="/products.html?category=' + sub.slug + '" class="mega-link-item">' + esc(lang === 'en' && sub.en_name ? sub.en_name : sub.name) + '</a>';
       return;
     }
+    if (panel) panel.classList.add('has-sub2');
     var html = '';
     sub.children.forEach(function(sub2) {
       var sname = lang === 'en' && sub2.en_name ? sub2.en_name : sub2.name;

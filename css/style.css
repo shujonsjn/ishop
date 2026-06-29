@@ -179,10 +179,17 @@ nav a:hover { color: #fff; background: rgba(255,255,255,0.15); }
 .mega-cat-panel {
   display: none; position: absolute; top: calc(100% + 6px); left: 0;
   background: #fff; border-radius: 0 0 8px 8px; box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-  z-index: 150; overflow: hidden; width: 850px; max-width: 98vw;
+  z-index: 150; overflow: hidden;
+  width: 270px; max-width: 98vw;
   border-top: 3px solid #e91e8c;
+  transition: width 0.15s ease;
 }
 .mega-cat-trigger:hover > .mega-cat-panel, .mega-cat-trigger.is-open > .mega-cat-panel { display: flex; animation: megaFadeIn 0.12s ease; }
+.mega-cat-panel.has-sub { width: 550px; }
+.mega-cat-panel.has-sub2 { width: 830px; }
+.mega-col-sub, .mega-col-sub2 { display: none; }
+.mega-cat-panel.has-sub .mega-col-sub { display: block; }
+.mega-cat-panel.has-sub2 .mega-col-sub2 { display: block; }
 @keyframes megaFadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
 .mega-col {
   min-height: 420px; max-height: 70vh; overflow-y: auto; padding: 0;
