@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
 <title data-i18n="admin.title_dashboard">অ্যাডমিন ড্যাশবোর্ড</title>
-<link rel="stylesheet" href="../css/style.css?v=4.2">
+<link rel="stylesheet" href="../css/style.css?v=6.3">
 <link rel="stylesheet" href="admin.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -17,15 +17,33 @@
 <body>
 
 <header>
-  <div class="header-inner">
-    <a href="/admin/" class="logo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
-    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
+  <div class="header-main">
+    <a href="/" class="header-logo" id="siteLogo">ই<span>শপ</span></a>
+    <div style="flex:1"></div>
+    <div class="header-icons">
+      <a href="/profile.html#orders" class="header-icon-link" id="navOrders" title="Profile">
+        <span class="icon">👤</span>
+        <span>প্রোফাইল</span>
+      </a>
+      <a href="/cart.html" class="header-icon-link" id="navCart" title="Cart">
+        <span class="icon">🛒</span>
+        <span class="header-icon-badge" id="cartCount" style="display:none">0</span>
+        <span>কার্ট</span>
+      </a>
+    </div>
   </div>
 </header>
 
 <div class="admin-layout">
     <div class="admin-sidebar">
-      <div class="sidebar-brand">🛡️ Admin Panel</div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-logo">🛡️</div>
+        <div class="sidebar-brand-info">
+          <div class="sidebar-brand-name" id="adminBrandName">Admin Panel</div>
+          <div class="sidebar-brand-sub">Management Console</div>
+        </div>
+      </div>
+      <div class="sidebar-nav">
       <div class="sidebar-section">
         <div class="sidebar-section-title">Main</div>
         <a href="/admin/" data-nav="dashboard" class="active"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
@@ -45,6 +63,15 @@
         <a href="/admin/pages.html" data-nav="pages"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
         <a href="/admin/settings.html" data-nav="settings"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
         <a href="/admin/profile.html" data-nav="profile"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar">👤</div>
+        <div class="sidebar-footer-info">
+          <div class="sidebar-footer-name" id="adminSidebarName">Admin</div>
+          <div class="sidebar-footer-role">Administrator</div>
+        </div>
+        <button class="sidebar-footer-logout" onclick="localStorage.clear();window.location='/'" title="Logout">⏻</button>
       </div>
     </div>
 

@@ -1731,6 +1731,19 @@
         if (typeof renderCustomLinksEditor === 'function') renderCustomLinksEditor();
       }
     }
+    if (document.getElementById('settingHeaderShowPromo')) {
+      document.getElementById('settingHeaderShowPromo').checked = s.header_show_promo !== '0';
+      document.getElementById('settingHeaderPromoBn').value = s.header_promo_bn || '';
+      document.getElementById('settingHeaderPromoEn').value = s.header_promo_en || '';
+      if (s.header_promo_bg) {
+        document.getElementById('settingHeaderPromoBg').value = s.header_promo_bg;
+        document.getElementById('settingHeaderPromoBgText').value = s.header_promo_bg;
+      }
+      if (s.header_promo_color) {
+        document.getElementById('settingHeaderPromoColor').value = s.header_promo_color;
+        document.getElementById('settingHeaderPromoColorText').value = s.header_promo_color;
+      }
+    }
   }
 
   var customLinks = [];
@@ -1783,7 +1796,7 @@
     renderCustomLinksEditor();
   };
 
-  function collectCustomLinks() {
+  window.collectCustomLinks = function() {
     var el = document.getElementById('customLinksEditor');
     if (!el) return customLinks;
     var rows = el.children;
@@ -1912,13 +1925,30 @@
     }).catch(function() { toast(__('admin.saved'), 'error'); });
   };
 
+  function loadSidebarBrand() {
+    fetch('/api/settings').then(function(r) { return r.json(); }).then(function(s) {
+      if (s.site_name) {
+        var el = document.getElementById('adminBrandName');
+        if (el) el.textContent = s.site_name;
+      }
+      if (s.logo_url) {
+        var logo = document.querySelector('.sidebar-brand-logo');
+        if (logo) {
+          logo.innerHTML = '<img src="' + s.logo_url + '" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">';
+        }
+      }
+    }).catch(function() {});
+  }
+
   if (document.getElementById('questionsWrap')) {
     initAdmin();
     window.loadAdminQuestions();
+    loadSidebarBrand();
     return;
   }
 
   initAdmin();
+  loadSidebarBrand();
   document.body.style.opacity = '1';
 })();
 

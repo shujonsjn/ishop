@@ -128,6 +128,17 @@
 
   window.applyHeaderSettings = function(s) {
     if (!s) return;
+    var promo = document.getElementById('headerPromo');
+    if (promo) {
+      promo.style.display = s.header_show_promo === '0' ? 'none' : '';
+      if (s.header_show_promo !== '0') {
+        var lang = localStorage.getItem('lang') || 'bn';
+        var text = lang === 'en' ? (s.header_promo_en || s.header_promo_bn || '') : (s.header_promo_bn || s.header_promo_en || '');
+        if (text) promo.innerHTML = text;
+        if (s.header_promo_bg) promo.style.background = s.header_promo_bg;
+        if (s.header_promo_color) promo.style.color = s.header_promo_color;
+      }
+    }
     var searchBox = document.getElementById('searchBox');
     if (searchBox) searchBox.style.display = s.header_show_search === '0' ? 'none' : '';
     var navHome = document.getElementById('navHome');

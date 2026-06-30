@@ -179,7 +179,8 @@
   api('GET', '/categories').then(function(cats) {
     var grid = document.getElementById('categoryGrid');
     if (!grid) return;
-    grid.innerHTML = cats.map(function(c, i) {
+    var mainCats = cats.filter(function(c) { return !c.parent_id || c.parent_id === 0; });
+    grid.innerHTML = mainCats.map(function(c, i) {
       var bg = catColors[i % catColors.length];
       var icon = c.image || catIcons[i % catIcons.length];
       var isImage = icon.indexOf('/') === 0;

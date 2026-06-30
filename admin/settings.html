@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/uploads/ishop-logo.svg">
 <title data-i18n="settings.title">সেটিংস v2.0</title>
-<link rel="stylesheet" href="../css/style.css?v=4.2">
+<link rel="stylesheet" href="../css/style.css?v=6.3">
 <script>
 (function(){try{var s=JSON.parse(localStorage.getItem('siteSettings'));if(!s)return;var r=document.documentElement;var p=[['header_bg','--header-bg'],['header_text_color','--header-text'],['body_bg','--body-bg'],['primary_color','--primary'],['footer_bg','--footer-bg'],['footer_text_color','--footer-text']];p.forEach(function(k){if(s[k[0]])r.style.setProperty(k[1],s[k[0]]);});var sn=s.site_name||'';document.addEventListener('DOMContentLoaded',function(){var el=document.getElementById('siteLogo')||document.querySelector('header .logo');if(el){var ad=el.querySelector('[data-i18n]');var adText=ad?' '+ad.textContent:'';if(s.logo_url){el.innerHTML='<img src="'+s.logo_url+'" alt="'+sn+'" style="height:48px;width:auto;" onerror="this.onerror=null;this.style.display=\'none\'">'+'<span class="site-name">'+sn+'</span>'+adText;}else{el.innerHTML=sn+'<span>'+adText+'</span>';}}document.querySelectorAll('.dz-footer-bottom p').forEach(function(f){f.textContent=f.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});var ti=document.querySelector('title');if(ti)ti.textContent=ti.textContent.replace(/\u0987\u09b6\u09aa/g,sn).replace(/iShop/g,sn);});}catch(e){}})();
 </script>
@@ -16,15 +16,33 @@
 <body>
 
 <header>
-  <div class="header-inner">
-    <a href="/admin/" class="logo" id="siteLogo"><span data-i18n="admin.brand_admin">অ্যাডমিন</span></a>
-    <nav><button class="lang-toggle" onclick="toggleLang()" id="langToggle">EN</button><a href="/" data-i18n="nav.gosite">সাইটে যান</a><a href="#" onclick="adminLogout()" data-i18n="nav.logout">লগআউট</a></nav>
+  <div class="header-main">
+    <a href="/" class="header-logo" id="siteLogo">ই<span>শপ</span></a>
+    <div style="flex:1"></div>
+    <div class="header-icons">
+      <a href="/profile.html#orders" class="header-icon-link" id="navOrders" title="Profile">
+        <span class="icon">👤</span>
+        <span>প্রোফাইল</span>
+      </a>
+      <a href="/cart.html" class="header-icon-link" id="navCart" title="Cart">
+        <span class="icon">🛒</span>
+        <span class="header-icon-badge" id="cartCount" style="display:none">0</span>
+        <span>কার্ট</span>
+      </a>
+    </div>
   </div>
 </header>
 
 <div class="admin-layout">
     <div class="admin-sidebar">
-      <div class="sidebar-brand">🛡️ Admin Panel</div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-logo">🛡️</div>
+        <div class="sidebar-brand-info">
+          <div class="sidebar-brand-name" id="adminBrandName">Admin Panel</div>
+          <div class="sidebar-brand-sub">Management Console</div>
+        </div>
+      </div>
+      <div class="sidebar-nav">
       <div class="sidebar-section">
         <div class="sidebar-section-title">Main</div>
         <a href="/admin/" data-nav="dashboard"><span class="sidebar-icon">📊</span> <span data-i18n="admin.dashboard">ড্যাশবোর্ড</span></a>
@@ -44,6 +62,15 @@
         <a href="/admin/pages.html" data-nav="pages"><span class="sidebar-icon">📄</span> পেজ এডিটর</a>
         <a href="/admin/settings.html" data-nav="settings" class="active"><span class="sidebar-icon">⚙️</span> <span data-i18n="admin.settings">সেটিংস</span></a>
         <a href="/admin/profile.html" data-nav="profile"><span class="sidebar-icon">👤</span> <span data-i18n="nav.profile">প্রোফাইল</span></a>
+      </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-avatar">👤</div>
+        <div class="sidebar-footer-info">
+          <div class="sidebar-footer-name" id="adminSidebarName">Admin</div>
+          <div class="sidebar-footer-role">Administrator</div>
+        </div>
+        <button class="sidebar-footer-logout" onclick="localStorage.clear();window.location='/'" title="Logout">⏻</button>
       </div>
     </div>
   <div class="admin-content">
@@ -131,6 +158,48 @@
     <!-- TAB: Header -->
     <div class="settings-panel" id="settingsTab_header">
       <h3 class="settings-panel-title">📌 হেডার সেটিংস</h3>
+
+      <!-- Promo Bar Section -->
+      <div class="settings-card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:16px;">📢</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:#111827;">প্রোমো বার</div>
+            <div style="font-size:12px;color:#9ca3af;">Promo banner at top of header</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:14px;">📢</span>
+            <span style="font-weight:600;font-size:14px;color:#374151;">প্রোমো বার দেখান</span>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="settingHeaderShowPromo" checked><span class="slider"></span></label>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">প্রোমো টেক্সট (বাংলা)</label>
+          <input type="text" id="settingHeaderPromoBn" placeholder="🚚 ফ্রি শিপিং ২৫০০ টাকার অর্ডারে | কোড: FESTIVES0" style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">প্রোমো টেক্সট (English)</label>
+          <input type="text" id="settingHeaderPromoEn" placeholder="🚚 FREE SHIPPING on orders over ৳2500 | Use Code: FESTIVES0" style="width:100%;padding:11px 14px;border:1px solid #e5e7eb;border-radius:10px;font-size:14px;color:#111827;background:#fff;box-sizing:border-box;">
+        </div>
+        <div class="bn-en-row">
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">ব্যাকগ্রাউন্ড রং</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingHeaderPromoBg" value="#0f172a" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid #e5e7eb;border-radius:4px;">
+              <input type="text" id="settingHeaderPromoBgText" value="#0f172a" placeholder="#0f172a" style="flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;">
+            </div>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label style="font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;">টেক্সট রং</label>
+            <div class="color-pick-row">
+              <input type="color" id="settingHeaderPromoColor" value="#e2e8f0" style="height:40px;width:80px;padding:2px;cursor:pointer;border:1px solid #e5e7eb;border-radius:4px;">
+              <input type="text" id="settingHeaderPromoColorText" value="#e2e8f0" placeholder="#e2e8f0" style="flex:1;padding:10px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;">
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Search Box Section -->
       <div class="settings-card" style="margin-bottom:16px;">
@@ -752,7 +821,13 @@ function loadFlashSettings() {
 }
 
 window.saveHeaderSettings = function() {
+  var links = collectCustomLinks();
   var data = {
+    header_show_promo: document.getElementById('settingHeaderShowPromo').checked ? '1' : '0',
+    header_promo_bn: document.getElementById('settingHeaderPromoBn').value.trim(),
+    header_promo_en: document.getElementById('settingHeaderPromoEn').value.trim(),
+    header_promo_bg: document.getElementById('settingHeaderPromoBg').value || '#0f172a',
+    header_promo_color: document.getElementById('settingHeaderPromoColor').value || '#e2e8f0',
     header_search_placeholder_bn: document.getElementById('settingHeaderSearchBn').value.trim(),
     header_search_placeholder_en: document.getElementById('settingHeaderSearchEn').value.trim(),
     header_show_search: document.getElementById('settingHeaderShowSearch').checked ? '1' : '0',
@@ -763,7 +838,10 @@ window.saveHeaderSettings = function() {
     header_show_admin: document.getElementById('settingHeaderShowAdmin').checked ? '1' : '0',
     header_show_lang: document.getElementById('settingHeaderShowLang').checked ? '1' : '0',
     header_show_auth: document.getElementById('settingHeaderShowAuth').checked ? '1' : '0',
-    header_padding: document.getElementById('settingHeaderPadding').value.trim()
+    header_padding: document.getElementById('settingHeaderPadding').value.trim(),
+    header_custom_links: JSON.stringify(links),
+    header_custom_nav_label_bn: document.getElementById('settingHeaderCustomNavLabelBn') ? document.getElementById('settingHeaderCustomNavLabelBn').value.trim() : '',
+    header_custom_nav_label_en: document.getElementById('settingHeaderCustomNavLabelEn') ? document.getElementById('settingHeaderCustomNavLabelEn').value.trim() : ''
   };
   apiAdmin('PUT', '/settings', data).then(function(res) {
     if (res.error) { toast(res.error, 'error'); return; }
